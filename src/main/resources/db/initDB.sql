@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS users_level;
+DROP TABLE IF EXISTS masters_level;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS marks;
 DROP TABLE IF EXISTS orderings;
@@ -18,11 +20,19 @@ CREATE TABLE users
 
 CREATE UNIQUE INDEX users_unique_email_idx ON users (number);
 
-CREATE TABLE base_services
+CREATE TABLE masters_level
 (
-    id      SERIAL PRIMARY KEY,
-    service VARCHAR NOT NULL,
-    price   INTEGER NOT NULL
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR          NOT NULL,
+    price_index DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE users_level
+(
+    user_id          INTEGER NOT NULL,
+    masters_level_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (masters_level_id) REFERENCES masters_level (id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_roles
@@ -33,14 +43,21 @@ CREATE TABLE user_roles
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE base_services
+(
+    id      SERIAL PRIMARY KEY,
+    service VARCHAR NOT NULL,
+    price   INTEGER NOT NULL
+);
+
 CREATE TABLE services
 (
-    id          SERIAL PRIMARY KEY,
-    master_id   INTEGER NOT NULL,
-    service_id  INTEGER NOT NULL,
-    continuance INTEGER NOT NULL,
+    id              SERIAL PRIMARY KEY,
+    master_id       INTEGER NOT NULL,
+    base_service_id INTEGER NOT NULL,
+    continuance     INTEGER NOT NULL,
     FOREIGN KEY (master_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (service_id) REFERENCES base_services (id)
+    FOREIGN KEY (base_service_id) REFERENCES base_services (id)
 );
 
 CREATE TABLE appointments
@@ -104,8 +121,15 @@ VALUES ('men''s haircut 1st group', 180),
        ('wave', 50),
        ('hair treatment', 100);
 
+INSERT INTO masters_level (name, price_index)
+VALUES ('young', 1.0),
+       ('top', 1.15),
+       ('pro', 1.3);
 
-INSERT INTO services (master_id, service_id, continuance)
+INSERT INTO users_level (user_id, masters_level_id)
+VALUES (2, 2);
+
+INSERT INTO services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),
        (2, 2, 25),
        (2, 3, 30),
@@ -127,5 +151,5 @@ VALUES (2, 3, 180, '13.11.2022 16:00:00', '650', '-1');
 INSERT INTO orderings (appointment_id, service_id)
 VALUES (1, 4),
        (1, 8);
-INSERT INTO marks (appointment_id, mark, comment, date) VALUES
-(1, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00')
+INSERT INTO marks (appointment_id, mark, comment, date)
+VALUES (1, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00')

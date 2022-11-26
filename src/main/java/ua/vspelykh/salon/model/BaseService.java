@@ -1,6 +1,8 @@
 package ua.vspelykh.salon.model;
 
-public class BaseService extends AbstractBaseEntity {
+import java.io.Serializable;
+
+public class BaseService extends AbstractBaseEntity implements Serializable {
 
     private String service;
     private int price;
