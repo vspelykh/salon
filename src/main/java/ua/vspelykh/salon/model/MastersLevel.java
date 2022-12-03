@@ -1,32 +1,18 @@
 package ua.vspelykh.salon.model;
 
-public class MastersLevel extends AbstractBaseEntity {
+import java.io.Serializable;
 
-    private String name;
-    private double index;
+public enum MastersLevel implements Serializable {
 
-    public MastersLevel() {
-    }
+    YOUNG(1), TOP(1.15), PRO(1.3);
 
-    public MastersLevel(Integer id, String name, double index) {
-        super(id);
-        this.name = name;
+    private final double index;
+
+    MastersLevel(double index) {
         this.index = index;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getIndex() {
         return index;
-    }
-
-    public void setIndex(double index) {
-        this.index = index;
     }
 }

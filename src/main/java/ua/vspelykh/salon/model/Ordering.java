@@ -1,16 +1,32 @@
 package ua.vspelykh.salon.model;
 
-public class Ordering extends AbstractBaseEntity{
+public class Ordering extends AbstractBaseEntity {
 
-    private Appointment appointment;
-    private Service service;
+    private Integer appointmentId;
+    private Integer serviceId;
 
     public Ordering() {
     }
 
-    public Ordering(Integer id, Appointment appointment, Service service) {
+    public Ordering(Integer id, Integer appointmentId, Integer serviceId) {
         super(id);
-        this.appointment = appointment;
-        this.service = service;
+        this.appointmentId = appointmentId;
+        this.serviceId = serviceId;
+    }
+
+    public Integer getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Integer appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public Integer getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Integer serviceId) {
+        this.serviceId = serviceId;
     }
 }

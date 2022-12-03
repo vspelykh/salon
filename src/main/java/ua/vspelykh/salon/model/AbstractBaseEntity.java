@@ -1,6 +1,8 @@
 package ua.vspelykh.salon.model;
 
-public abstract class AbstractBaseEntity {
+import java.io.Serializable;
+
+public abstract class AbstractBaseEntity implements Serializable {
 
     protected Integer id;
 
