@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS users_level;
-DROP TABLE IF EXISTS masters_level;
+DROP TABLE IF EXISTS user_level;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS marks;
 DROP TABLE IF EXISTS orderings;
@@ -20,25 +19,17 @@ CREATE TABLE users
 
 CREATE UNIQUE INDEX users_unique_email_idx ON users (number);
 
-CREATE TABLE masters_level
+CREATE TABLE user_level
 (
-    id          SERIAL PRIMARY KEY,
-    name        VARCHAR          NOT NULL,
-    price_index DOUBLE PRECISION NOT NULL
-);
-
-CREATE TABLE users_level
-(
-    user_id          INTEGER NOT NULL,
-    masters_level_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (masters_level_id) REFERENCES masters_level (id) ON DELETE CASCADE
+    user_id INTEGER NOT NULL,
+    level   VARCHAR NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_roles
 (
     user_id INTEGER NOT NULL,
-    role    VARCHAR,
+    role    VARCHAR NOT NULL,
     CONSTRAINT user_roles_idx UNIQUE (user_id, role),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -121,13 +112,8 @@ VALUES ('men''s haircut 1st group', 180),
        ('wave', 50),
        ('hair treatment', 100);
 
-INSERT INTO masters_level (name, price_index)
-VALUES ('young', 1.0),
-       ('top', 1.15),
-       ('pro', 1.3);
-
-INSERT INTO users_level (user_id, masters_level_id)
-VALUES (2, 2);
+INSERT INTO user_level (user_id, level)
+VALUES (2, 'TOP');
 
 INSERT INTO services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),
