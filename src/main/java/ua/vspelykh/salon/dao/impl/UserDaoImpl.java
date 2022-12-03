@@ -31,8 +31,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Override
     public int create(User entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (name, surname, email, number, password)" + " VALUES "
-                + "(?,?,?,?,?)";
+        String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setUserStatement(entity, statement);
             statement.executeUpdate();
@@ -63,7 +62,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByEmailAndPassword(String email, String password) throws DaoException {
         User user = null;
-        String query = "SELECT * FROM " + tableName + " WHERE email=? AND password=?";
+        String query = SELECT + tableName + " WHERE email=? AND password=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -108,7 +107,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     private List<User> findByRole(Role role) throws DaoException {
-        String query = "SELECT * FROM users u INNER JOIN user_roles ur ON u.id = ur.user_id AND ur.role=?";
+        String query = SELECT + "users u INNER JOIN user_roles ur ON u.id = ur.user_id AND ur.role=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, role.name());
             ResultSet resultSet = preparedStatement.executeQuery();

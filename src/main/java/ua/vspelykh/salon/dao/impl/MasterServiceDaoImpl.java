@@ -25,8 +25,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
 
     @Override
     public int create(Service entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (master_id, base_service_id, continuance)" + " VALUES "
-                + "(?,?,?)";
+        String query = INSERT + tableName + " (master_id, base_service_id, continuance)" + VALUES + "(?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setServiceStatement(entity, statement);
             statement.executeUpdate();
@@ -109,7 +108,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         }
 
         private String buildQuery() {
-            StringBuilder query = new StringBuilder("SELECT * FROM " + tableName);
+            StringBuilder query = new StringBuilder(SELECT + tableName);
             if (isAllParamsAreNull()) {
                 return query.toString();
             } else {

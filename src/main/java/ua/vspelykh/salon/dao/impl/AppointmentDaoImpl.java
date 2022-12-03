@@ -61,8 +61,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public int create(Appointment entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (master_id, client_id, continuance, date, price, discount)"
-                + " VALUES " + "(?,?,?,?,?,?)";
+        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount)"
+                + VALUES + "(?,?,?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setAppointmentStatement(entity, statement);
             statement.executeUpdate();
@@ -114,7 +114,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         public String buildQuery() {
-            return "SELECT * FROM " + tableName + " WHERE " + "DATE(date) = ? AND " + columnName + "=?";
+            return SELECT + tableName + " WHERE " + "DATE(date) = ? AND " + columnName + "=?";
         }
 
         public void setParams(PreparedStatement preparedStatement) throws SQLException {

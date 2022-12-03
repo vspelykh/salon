@@ -30,7 +30,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public int create(UserLevel entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (user_id, level)" + " VALUES " + "(?,?)";
+        String query = INSERT + tableName + " (user_id, level)" + VALUES + "(?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -59,7 +59,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public List<User> getUsersByLevel(UserLevel userLevel) throws DaoException {
-        String query = "SELECT * FROM users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=?";
+        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, userLevel.getLevel().name());
             ResultSet resultSet = statement.getGeneratedKeys();

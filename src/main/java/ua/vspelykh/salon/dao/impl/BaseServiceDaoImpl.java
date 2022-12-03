@@ -41,8 +41,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     @Override
     public int create(BaseService entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (service, price)" + " VALUES "
-                + "(?,?)";
+        String query = INSERT + tableName + " (service, price)" + VALUES + "(?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getService());
             statement.setInt(2, entity.getPrice());
@@ -89,7 +88,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
         }
 
         private String buildQuery() {
-            StringBuilder query = new StringBuilder("SELECT * FROM " + tableName + " WHERE service LIKE ?");
+            StringBuilder query = new StringBuilder(SELECT + tableName + " WHERE service LIKE ?");
             if (name == null || name.isEmpty()) {
                 name = "%";
             } else name = "%" + name + "%";

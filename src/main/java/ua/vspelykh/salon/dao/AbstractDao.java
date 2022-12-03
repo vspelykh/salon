@@ -12,6 +12,10 @@ import static ua.vspelykh.salon.dao.connection.DBCPDataSource.getConnection;
 
 public abstract class AbstractDao<T> implements Dao<T> {
 
+    protected static final String SELECT = "SELECT * FROM ";
+    protected static final String INSERT = "INSERT INTO ";
+    protected static final String VALUES = " VALUES ";
+
     protected Connection connection;
     protected RowMapper<T> rowMapper;
     protected final String tableName;

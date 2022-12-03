@@ -23,7 +23,7 @@ public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDa
 
     @Override
     public int create(Ordering entity) throws DaoException {
-        String query = "INSERT INTO " + tableName + " (appointment_id, service_id)" + " VALUES " + "(?,?)";
+        String query = INSERT + tableName + " (appointment_id, service_id)" + VALUES + "(?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setOrderingStatement(entity, statement);
             statement.executeUpdate();
