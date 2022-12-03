@@ -27,9 +27,14 @@ public class DBCPDataSource {
         ds.setMaxOpenPreparedStatements(100);
     }
 
-
-    public static Connection getConnection() throws SQLException {
-        return ds.getConnection();
+    public static Connection getConnection(){
+        Connection connection = null;
+        try {
+            connection = ds.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
     }
 
     private static void readProperties(Properties properties) {
