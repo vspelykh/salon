@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.AppointmentDao;
 import ua.vspelykh.salon.dao.Table;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentDaoImpl extends AbstractDao<Appointment> implements AppointmentDao {
+
+    private static final Logger LOG = LogManager.getLogger(AppointmentDaoImpl.class);
 
     public AppointmentDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getAppointmentRowMapper(), Table.APPOINTMENT);
@@ -55,6 +59,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
             return appointments;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }
@@ -70,11 +75,27 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for service was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert service", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
+        }
+    }
+
+    @Override
+    public void update(Appointment entity) throws DaoException {
+        String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
+                ", price = ?, discount = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
+            }
+        } catch (SQLException e) {
+            LOG.error(FAIL_UPDATE, e);
+            throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }
 
@@ -87,18 +108,6 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         statement.setInt(++k, entity.getPrice());
         statement.setInt(++k, entity.getDiscount());
         return ++k;
-    }
-
-    @Override
-    public void update(Appointment entity) throws DaoException {
-        String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
-                ", price = ?, discount = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
     }
 
     private class AppointmentQueryBuilder {

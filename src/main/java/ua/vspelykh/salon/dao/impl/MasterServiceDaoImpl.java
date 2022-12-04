@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.MasterServiceDao;
 import ua.vspelykh.salon.dao.Table;
@@ -18,10 +20,11 @@ import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<Service> implements MasterServiceDao {
 
+    private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
+
     public MasterServiceDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getMasterServiceRowMapper(), Table.SERVICE);
     }
-
 
     @Override
     public int create(Service entity) throws DaoException {
@@ -33,11 +36,11 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for service was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert service", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
@@ -54,9 +57,13 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         String query = "UPDATE services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(4, entity.getId());
-            statement.executeUpdate();
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
+            }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error(FAIL_UPDATE, e);
+            throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }
 
@@ -86,6 +93,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
             }
             return services;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }
@@ -112,7 +120,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
             if (isAllParamsAreNull()) {
                 return query.toString();
             } else {
-                query.append(" WHERE ");
+                query.append(WHERE);
                 if (userIds != null) {
                     query.append(" master_id IN (");
                     appendQuestionMarks(query, userIds);

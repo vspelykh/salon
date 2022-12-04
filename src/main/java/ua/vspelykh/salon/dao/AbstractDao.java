@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapper;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -12,9 +14,20 @@ import static ua.vspelykh.salon.dao.connection.DBCPDataSource.getConnection;
 
 public abstract class AbstractDao<T> implements Dao<T> {
 
+    private static final Logger LOG = LogManager.getLogger();
+
+    protected static final String FAIL_UPDATE = "Fail to update item in";
+    protected static final String FAIL_CREATE = "Fail to create item in";
+    protected static final String FAIL_FIND = "Fail to find entity ";
+    protected static final String FAIL_FIND_LIST = "Fail to find entities ";
+    protected static final String NO_ID = "No id was generated in ";
+
     protected static final String SELECT = "SELECT * FROM ";
     protected static final String INSERT = "INSERT INTO ";
     protected static final String VALUES = " VALUES ";
+    protected static final String DELETE = "DELETE FROM ";
+    protected static final String WHERE = " WHERE ";
+    protected static final String EQUAL = "=?";
 
     protected Connection connection;
     protected RowMapper<T> rowMapper;
@@ -33,7 +46,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     @Override
     public List<T> findAll() throws DaoException {
-        String query = "SELECT * FROM " + tableName;
+        String query = SELECT + tableName;
         try (Statement statement = getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             List<T> entities = new ArrayList<>();
@@ -43,59 +56,61 @@ public abstract class AbstractDao<T> implements Dao<T> {
             }
             return entities;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }
 
     @Override
     public void removeById(int id) throws DaoException {
-        String query = "DELETE FROM " + tableName + " WHERE " + Column.ID + "=?";
+        String query = DELETE + tableName + WHERE + Column.ID + EQUAL;
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, id);
-            statement.executeUpdate();
+            int i = statement.executeUpdate();
+            if (i != 1){
+                LOG.error("Item for delete didn't find in {}", tableName);
+                throw new DaoException("No item was deleted");
+            }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Fail to delete item.", e);
+            throw new DaoException("Fail to delete item, e");
         }
     }
 
     protected T findByParam(Object value, String param) throws DaoException {
-        T entity = null;
-        String query = "SELECT * FROM " + tableName + " WHERE " + param + "=?";
+        T entity;
+        String query = SELECT + tableName + WHERE + param + EQUAL;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 entity = rowMapper.map(resultSet);
             } else {
-                //log
-                throw new DaoException();
+                LOG.error("No entity from {} found by {} with value {}.", tableName, param, value);
+                throw new DaoException("No entity from " + tableName + " found by " + param + " with value " + value);
             }
         } catch (SQLException e) {
-
-            throw new DaoException();
-        } catch (DaoException e) {
-            e.printStackTrace();
+            LOG.error(e);
+            throw new DaoException("Fail to find entity in " + tableName + " by " + param + " with value " + value, e);
         }
         return entity;
     }
 
     protected List<T> findAllByParam(Object value, String param) throws DaoException {
         List<T> entities = new ArrayList<>();
-        String query = "SELECT * FROM " + tableName + " WHERE " + param + "=?";
+        String query = SELECT + tableName + WHERE + param + EQUAL;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 entities.add(rowMapper.map(resultSet));
             } else {
-                //log
-                throw new DaoException();
+                LOG.error("No entities from {} found by {} with value {}.", tableName, param, value);
+                throw new DaoException("No entities from " + tableName + " found by " + param + " with value " + value);
             }
         } catch (SQLException e) {
-
-            throw new DaoException();
-        } catch (DaoException e) {
-            e.printStackTrace();
+            LOG.error(e);
+            throw new DaoException(FAIL_FIND_LIST + tableName + " by " + param + " with value " + value, e);
         }
         return entities;
     }

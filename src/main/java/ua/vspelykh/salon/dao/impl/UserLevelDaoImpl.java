@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.UserLevelDao;
@@ -19,6 +21,8 @@ import java.util.List;
 
 public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLevelDao {
 
+    private static final Logger LOG = LogManager.getLogger(UserLevelDaoImpl.class);
+
     public UserLevelDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getUserLevelRowMapper(), Table.USER_LEVEL);
     }
@@ -37,11 +41,11 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("Fail to create UserLevel");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert UserLevel", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
@@ -51,9 +55,13 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, entity.getLevel().toString());
             statement.setInt(2, entity.getMasterId());
-            statement.executeUpdate();
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName);
+            }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error(FAIL_UPDATE, e);
+            throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }
 
@@ -69,6 +77,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
             }
             return users;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }

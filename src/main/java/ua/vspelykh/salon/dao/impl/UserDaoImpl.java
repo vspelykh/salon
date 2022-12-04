@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.UserDao;
@@ -20,6 +22,8 @@ import java.util.Set;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
+    private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
+
     public UserDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getUserRowMapper(), Table.USER);
     }
@@ -39,11 +43,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for user was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert user", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
@@ -53,15 +57,19 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             setUserStatement(entity, statement);
             statement.setInt(6, entity.getId());
-            statement.executeUpdate();
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
+            }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error(FAIL_UPDATE, e);
+            throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws DaoException {
-        User user = null;
+        User user;
         String query = SELECT + tableName + " WHERE email=? AND password=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
@@ -70,13 +78,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (resultSet.next()) {
                 user = rowMapper.map(resultSet);
             } else {
-                //log
-                throw new DaoException();
+                LOG.error("No entity from {} found by {} with password.", tableName, email);
+                throw new DaoException("No entity from " + tableName + " found by " + email + " with password.");
             }
         } catch (SQLException e) {
-            throw new DaoException();
-        } catch (DaoException e) {
-            e.printStackTrace();
+            LOG.error(FAIL_FIND + tableName +  " by email and password");
+            throw new DaoException(FAIL_FIND + tableName +  " by email and password");
         }
         return user;
     }
@@ -119,16 +126,18 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             return users;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }
 
     private void setUserStatement(User entity, PreparedStatement statement) throws SQLException {
-        statement.setString(1, entity.getName());
-        statement.setString(2, entity.getSurname());
-        statement.setString(3, entity.getEmail());
-        statement.setString(4, entity.getNumber());
-        statement.setString(5, entity.getPassword());
+        int k = 0;
+        statement.setString(++k, entity.getName());
+        statement.setString(++k, entity.getSurname());
+        statement.setString(++k, entity.getEmail());
+        statement.setString(++k, entity.getNumber());
+        statement.setString(++k, entity.getPassword());
     }
 
     private User setUserRoles(User user) throws DaoException {
@@ -142,7 +151,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             return user;
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Error during setting roles for user");
+            throw new DaoException("Error during setting roles for user", e);
         }
     }
 }

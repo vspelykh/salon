@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.MarkDao;
 import ua.vspelykh.salon.dao.Table;
@@ -13,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
+
+    private static final Logger LOG = LogManager.getLogger(MarkDaoImpl.class);
+
     public MarkDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getMarkRowMapper(), Table.MARK);
     }
@@ -21,21 +26,21 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     public int create(Mark entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, mark, comment, date)" + VALUES + "(?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            SetMarkStatement(entity, statement);
+            setMarkStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for service was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert service", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
-    private void SetMarkStatement(Mark entity, PreparedStatement statement) throws SQLException {
+    private void setMarkStatement(Mark entity, PreparedStatement statement) throws SQLException {
         int k = 0;
         statement.setInt(++k, entity.getAppointmentId());
         statement.setInt(++k, entity.getMark());
@@ -61,6 +66,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
             }
             return marks;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }

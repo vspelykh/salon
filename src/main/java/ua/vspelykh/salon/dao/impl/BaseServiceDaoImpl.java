@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.BaseServiceDao;
 import ua.vspelykh.salon.dao.Table;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements BaseServiceDao {
+
+    private static final Logger LOG = LogManager.getLogger(BaseServiceDaoImpl.class);
 
     public BaseServiceDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getBaseServiceRowMapper(), Table.BASE_SERVICE);
@@ -35,6 +39,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             }
             return baseServices;
         } catch (SQLException e) {
+            LOG.error(e);
             throw new DaoException(e);
         }
     }
@@ -50,11 +55,11 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for bs was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert bs", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
@@ -65,9 +70,13 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             statement.setString(1, entity.getService());
             statement.setInt(2, entity.getPrice());
             statement.setInt(3, entity.getId());
-            statement.executeUpdate();
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
+            }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error(FAIL_UPDATE, e);
+            throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }
 

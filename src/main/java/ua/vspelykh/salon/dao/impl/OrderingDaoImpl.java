@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dao.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.OrderingDao;
 import ua.vspelykh.salon.dao.Table;
@@ -17,6 +19,8 @@ import java.util.List;
 
 public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDao {
 
+    private static final Logger LOG = LogManager.getLogger(OrderingDaoImpl.class);
+
     public OrderingDaoImpl() {
         super(DBCPDataSource.getConnection(), RowMapperFactory.getOrderingRowMapper(), Table.ORDERING);
     }
@@ -31,11 +35,11 @@ public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDa
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                throw new DaoException("No id for service was generated");
+                throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-//            getLOG().error("Fail to insert item", e);
-            throw new DaoException("Fail to insert service", e);
+            LOG.error(FAIL_CREATE + tableName, e);
+            throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
 
