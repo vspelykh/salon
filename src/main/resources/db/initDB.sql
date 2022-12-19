@@ -23,6 +23,7 @@ CREATE TABLE user_level
 (
     user_id INTEGER NOT NULL,
     level   VARCHAR NOT NULL,
+    active  BOOLEAN NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -54,12 +55,12 @@ CREATE TABLE services
 CREATE TABLE appointments
 (
     id          SERIAL PRIMARY KEY,
-    master_id   INTEGER              NOT NULL,
-    client_id   INTEGER              NOT NULL,
-    continuance INTEGER              NOT NULL,
-    date        TIMESTAMP            NOT NULL,
-    price       INTEGER              NOT NULL,
-    discount    INTEGER DEFAULT '-1' NOT NULL,
+    master_id   INTEGER             NOT NULL,
+    client_id   INTEGER             NOT NULL,
+    continuance INTEGER             NOT NULL,
+    date        TIMESTAMP           NOT NULL,
+    price       INTEGER             NOT NULL,
+    discount    INTEGER DEFAULT '1' NOT NULL,
     FOREIGN KEY (master_id) REFERENCES users (id),
     FOREIGN KEY (client_id) REFERENCES users (id)
 );
@@ -70,7 +71,7 @@ CREATE TABLE orderings
     appointment_id INTEGER NOT NULL,
     service_id     INTEGER NOT NULL,
     FOREIGN KEY (service_id) REFERENCES services (id),
-    FOREIGN KEY (appointment_id) REFERENCES appointments (id)
+    FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
 --POPULATION DB:
@@ -82,13 +83,13 @@ CREATE TABLE marks
     mark           INTEGER   NOT NULL,
     comment        VARCHAR   NOT NULL,
     date           TIMESTAMP NOT NULL,
-    FOREIGN KEY (appointment_id) REFERENCES appointments (id)
+    FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
 INSERT INTO users (name, surname, email, number, password)
-VALUES ('Marina', 'Alkova', 'alkova@gmail.com', '+380661239900', 'password'),
-       ('Anastasia', 'Alkova', 'nastya22@gmail.com', '+380971239050', 'password'),
-       ('Alina', 'Ivanova', 'ivanovaa@gmail.com', '+380504561132', 'password');
+VALUES ('Marina', 'Alkova', 'alkova@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Anastasia', 'Alkova', 'nastya22@gmail.com', '+380971239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Alina', 'Ivanova', 'ivanovaa@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die');
 
 INSERT INTO user_roles
 VALUES (1, 'ADMINISTRATOR'),
@@ -112,8 +113,8 @@ VALUES ('men''s haircut 1st group', 180),
        ('wave', 50),
        ('hair treatment', 100);
 
-INSERT INTO user_level (user_id, level)
-VALUES (2, 'TOP');
+INSERT INTO user_level (user_id, level, active)
+VALUES (2, 'TOP', true);
 
 INSERT INTO services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),
