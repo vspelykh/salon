@@ -2,6 +2,7 @@ package ua.vspelykh.salon.dao.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.UserDao;
@@ -11,6 +12,7 @@ import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.util.exception.DaoException;
+import ua.vspelykh.salon.util.validation.Validation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static ua.vspelykh.salon.util.validation.Validation.checkPassword;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
@@ -37,6 +41,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public int create(User entity) throws DaoException {
         String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -46,7 +51,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
+            LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
             throw new DaoException(FAIL_CREATE + tableName, e);
         }
     }
@@ -55,6 +60,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public void update(User entity) throws DaoException {
         String query = "UPDATE users SET name = ?, surname = ?, email = ?, number = ?, password = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.setInt(6, entity.getId());
             int key = statement.executeUpdate();
@@ -64,6 +70,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         } catch (SQLException e) {
             LOG.error(FAIL_UPDATE, e);
             throw new DaoException(FAIL_UPDATE + tableName, e);
+        }
+    }
+
+    private void encryptPassword(User user) throws DaoException {
+        if (user.isNew() || !findById(user.getId()).getPassword().equals(user.getPassword())) {
+            BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
+            checkPassword(user.getPassword());
+            user.setPassword(encryptor.encryptPassword(user.getPassword()));
         }
     }
 
@@ -82,10 +96,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 throw new DaoException("No entity from " + tableName + " found by " + email + " with password.");
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_FIND + tableName +  " by email and password");
-            throw new DaoException(FAIL_FIND + tableName +  " by email and password");
+            LOG.error(String.format("%s %s by email and password", FAIL_FIND, tableName));
+            throw new DaoException(FAIL_FIND + tableName + " by email and password");
         }
-        return user;
+        return setUserRoles(user);
     }
 
     @Override
@@ -95,7 +109,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Override
     public User findByEmail(String email) throws DaoException {
-        return findByParam(email, Column.EMAIL);
+        return setUserRoles(findByParam(email, Column.EMAIL));
     }
 
     @Override
