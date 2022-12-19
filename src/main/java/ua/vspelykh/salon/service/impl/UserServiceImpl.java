@@ -1,11 +1,13 @@
 package ua.vspelykh.salon.service.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
-import ua.vspelykh.salon.service.UserLevelService;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -14,7 +16,9 @@ import java.util.List;
 
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 
-public class UserServiceImpl implements UserService, UserLevelService {
+public class UserServiceImpl implements UserService {
+
+    private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserDao userDao;
     private final UserLevelDao userLevelDao;
@@ -29,16 +33,21 @@ public class UserServiceImpl implements UserService, UserLevelService {
         try {
             return userDao.findById(id);
         } catch (DaoException e) {
-            throw new ServiceException("Can't find a user with id " + id, e);
+            LOG.error(String.format("Can't find a user with id %d", id));
+            throw new ServiceException(e);
         }
     }
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws ServiceException {
         try {
-            return userDao.findByEmailAndPassword(email, password);
+            BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+            User user = userDao.findByEmail(email);
+            if (passwordEncryptor.checkPassword(password, user.getPassword())) {
+                return user;
+            } else throw new ServiceException("Incorrect username or password");
         } catch (DaoException e) {
-            throw new ServiceException("Login or password is not correct", e);
+            throw new ServiceException("Incorrect username or password", e);
         }
     }
 
@@ -47,7 +56,8 @@ public class UserServiceImpl implements UserService, UserLevelService {
         try {
             return userDao.findByNumber(number);
         } catch (DaoException e) {
-            throw new ServiceException("User with number " + number + " don't find", e);
+            LOG.error(String.format("User with number %s didn't find", number));
+            throw new ServiceException(e);
         }
     }
 
@@ -70,7 +80,7 @@ public class UserServiceImpl implements UserService, UserLevelService {
     }
 
     @Override
-    public List<User> findMasters() throws ServiceException {
+    public List<User> findMasters(boolean isActive) throws ServiceException {
         try {
             return userDao.findMasters();
         } catch (DaoException e) {
@@ -95,26 +105,27 @@ public class UserServiceImpl implements UserService, UserLevelService {
                 userDao.create(user);
             } else userDao.update(user);
         } catch (DaoException e) {
-            //log
-            throw new ServiceException(e.getMessage(), e);
+            LOG.error("Error to save user");
+            throw new ServiceException(e);
         }
     }
-
 
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
             userDao.removeById(id);
         } catch (DaoException e) {
+            LOG.error("Error to delete user by id");
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<User> getUsersByLevel(UserLevel userLevel) throws ServiceException {
+    public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws ServiceException {
         try {
-            return userLevelDao.getUsersByLevel(userLevel);
+            return userLevelDao.getUsersByLevel(userLevel, isActive);
         } catch (DaoException e) {
+            LOG.error("Unable to get users by user level");
             throw new ServiceException(e);
         }
     }
@@ -124,6 +135,7 @@ public class UserServiceImpl implements UserService, UserLevelService {
         try {
             return userLevelDao.getUserLevelByUserId(userId);
         } catch (DaoException e) {
+            LOG.error("User must have a master role");
             throw new ServiceException(e);
         }
     }

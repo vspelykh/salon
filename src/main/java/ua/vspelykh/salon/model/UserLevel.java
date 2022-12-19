@@ -6,13 +6,15 @@ public class UserLevel implements Serializable {
 
     private int masterId;
     private MastersLevel level;
+    private boolean isActive;
 
     public UserLevel() {
     }
 
-    public UserLevel(int masterId, MastersLevel level) {
+    public UserLevel(int masterId, MastersLevel level, boolean isActive) {
         this.masterId = masterId;
         this.level = level;
+        this.isActive = isActive;
     }
 
     public int getMasterId() {
@@ -25,5 +27,17 @@ public class UserLevel implements Serializable {
 
     public void setLevel(MastersLevel level) {
         this.level = level;
+    }
+
+    public void setMasterId(int masterId) {
+        this.masterId = masterId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
