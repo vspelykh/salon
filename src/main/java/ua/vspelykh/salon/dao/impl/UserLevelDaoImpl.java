@@ -66,10 +66,10 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     }
 
     @Override
-    public List<User> getUsersByLevel(UserLevel userLevel) throws DaoException {
-        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=?";
+    public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException {
+        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=? AND active = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, userLevel.getLevel().name());
+            setStatement(statement, userLevel);
             ResultSet resultSet = statement.getGeneratedKeys();
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
@@ -81,6 +81,13 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
             throw new DaoException(e);
         }
     }
+
+    private void setStatement(PreparedStatement statement, UserLevel userLevel) throws SQLException {
+        int k = 0;
+        statement.setString(++k, userLevel.getLevel().name());
+        statement.setBoolean(++k, userLevel.isActive());
+    }
+
 
     @Override
     public UserLevel getUserLevelByUserId(Integer userId) throws DaoException {

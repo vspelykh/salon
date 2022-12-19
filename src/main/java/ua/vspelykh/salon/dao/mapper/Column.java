@@ -15,6 +15,7 @@ public final class Column {
 
     public static final String USER_ID = "user_id";
     public static final String MASTERS_LEVEL_ID = "masters_level_id";
+    public static final String ACTIVE = "active";
 
     public static final String ROLE = "role";
 

@@ -4,7 +4,6 @@ import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentDao extends Dao<Appointment> {

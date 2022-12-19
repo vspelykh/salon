@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserLevelDao extends Dao<UserLevel> {
 
-    List<User> getUsersByLevel(UserLevel userLevel) throws DaoException;
+    List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException;
 
     UserLevel getUserLevelByUserId(Integer userId) throws DaoException;
 
