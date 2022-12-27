@@ -2,6 +2,7 @@ package ua.vspelykh.salon.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapper;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -29,12 +30,10 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String WHERE = " WHERE ";
     protected static final String EQUAL = "=?";
 
-    protected Connection connection;
     protected RowMapper<T> rowMapper;
     protected final String tableName;
 
-    protected AbstractDao(Connection connection, RowMapper<T> rowMapper, String tableName) {
-        this.connection = connection;
+    protected AbstractDao (RowMapper<T> rowMapper, String tableName) {
         this.rowMapper = rowMapper;
         this.tableName = tableName;
     }
@@ -47,8 +46,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public List<T> findAll() throws DaoException {
         String query = SELECT + tableName;
-        try (Statement statement = getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()){
             List<T> entities = new ArrayList<>();
             while (resultSet.next()) {
                 T entity = rowMapper.map(resultSet);
@@ -80,7 +79,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected T findByParam(Object value, String param) throws DaoException {
         T entity;
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -99,7 +98,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected List<T> findAllByParam(Object value, String param) throws DaoException {
         List<T> entities = new ArrayList<>();
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

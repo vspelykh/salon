@@ -22,13 +22,13 @@ public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDa
     private static final Logger LOG = LogManager.getLogger(OrderingDaoImpl.class);
 
     public OrderingDaoImpl() {
-        super(DBCPDataSource.getConnection(), RowMapperFactory.getOrderingRowMapper(), Table.ORDERING);
+        super(RowMapperFactory.getOrderingRowMapper(), Table.ORDERING);
     }
 
     @Override
     public int create(Ordering entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, service_id)" + VALUES + "(?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setOrderingStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();

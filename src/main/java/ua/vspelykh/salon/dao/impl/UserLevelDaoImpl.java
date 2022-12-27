@@ -24,7 +24,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     private static final Logger LOG = LogManager.getLogger(UserLevelDaoImpl.class);
 
     public UserLevelDaoImpl() {
-        super(DBCPDataSource.getConnection(), RowMapperFactory.getUserLevelRowMapper(), Table.USER_LEVEL);
+        super(RowMapperFactory.getUserLevelRowMapper(), Table.USER_LEVEL);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public int create(UserLevel entity) throws DaoException {
         String query = INSERT + tableName + " (user_id, level)" + VALUES + "(?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -52,7 +52,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public void update(UserLevel entity) throws DaoException {
         String query = "UPDATE user_level SET level = ? WHERE user_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
             statement.setString(1, entity.getLevel().toString());
             statement.setInt(2, entity.getMasterId());
             int key = statement.executeUpdate();
@@ -68,7 +68,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException {
         String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=? AND active = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
             setStatement(statement, userLevel);
             ResultSet resultSet = statement.getGeneratedKeys();
             List<User> users = new ArrayList<>();

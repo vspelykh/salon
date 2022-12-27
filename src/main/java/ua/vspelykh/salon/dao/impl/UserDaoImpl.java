@@ -29,7 +29,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     private static final Logger LOG = LogManager.getLogger(UserDaoImpl.class);
 
     public UserDaoImpl() {
-        super(DBCPDataSource.getConnection(), RowMapperFactory.getUserRowMapper(), Table.USER);
+        super(RowMapperFactory.getUserRowMapper(), Table.USER);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public int create(User entity) throws DaoException {
         String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.executeUpdate();
@@ -59,7 +59,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public void update(User entity) throws DaoException {
         String query = "UPDATE users SET name = ?, surname = ?, email = ?, number = ?, password = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.setInt(6, entity.getId());
@@ -85,7 +85,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public User findByEmailAndPassword(String email, String password) throws DaoException {
         User user;
         String query = SELECT + tableName + " WHERE email=? AND password=?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -129,7 +129,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private List<User> findByRole(Role role) throws DaoException {
         String query = SELECT + "users u INNER JOIN user_roles ur ON u.id = ur.user_id AND ur.role=?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, role.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();
@@ -156,7 +156,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private User setUserRoles(User user) throws DaoException {
         String query = "SELECT role FROM user_roles WHERE user_id=?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
             statement.setInt(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<Role> roles = user.getRoles();
