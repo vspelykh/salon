@@ -11,8 +11,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.dao.connection.DBCPDataSource.getConnection;
-
 public abstract class AbstractDao<T> implements Dao<T> {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -33,7 +31,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected RowMapper<T> rowMapper;
     protected final String tableName;
 
-    protected AbstractDao (RowMapper<T> rowMapper, String tableName) {
+    protected AbstractDao(RowMapper<T> rowMapper, String tableName) {
         this.rowMapper = rowMapper;
         this.tableName = tableName;
     }
@@ -46,8 +44,9 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public List<T> findAll() throws DaoException {
         String query = SELECT + tableName;
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()){
+        try (Connection connection = DBCPDataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
             List<T> entities = new ArrayList<>();
             while (resultSet.next()) {
                 T entity = rowMapper.map(resultSet);
@@ -63,10 +62,11 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public void removeById(int id) throws DaoException {
         String query = DELETE + tableName + WHERE + Column.ID + EQUAL;
-        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             int i = statement.executeUpdate();
-            if (i != 1){
+            if (i != 1) {
                 LOG.error("Item for delete didn't find in {}", tableName);
                 throw new DaoException("No item was deleted");
             }
@@ -79,7 +79,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected T findByParam(Object value, String param) throws DaoException {
         T entity;
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -98,7 +99,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected List<T> findAllByParam(Object value, String param) throws DaoException {
         List<T> entities = new ArrayList<>();
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

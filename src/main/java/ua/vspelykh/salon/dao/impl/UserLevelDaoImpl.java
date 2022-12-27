@@ -12,10 +12,7 @@ import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +32,8 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public int create(UserLevel entity) throws DaoException {
         String query = INSERT + tableName + " (user_id, level)" + VALUES + "(?,?)";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -52,7 +50,8 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public void update(UserLevel entity) throws DaoException {
         String query = "UPDATE user_level SET level = ? WHERE user_id = ?";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, entity.getLevel().toString());
             statement.setInt(2, entity.getMasterId());
             int key = statement.executeUpdate();
@@ -68,7 +67,8 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
     @Override
     public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException {
         String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=? AND active = ?";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             setStatement(statement, userLevel);
             ResultSet resultSet = statement.getGeneratedKeys();
             List<User> users = new ArrayList<>();

@@ -25,7 +25,8 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     @Override
     public int create(Mark entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, mark, comment, date)" + VALUES + "(?,?,?,?)";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setMarkStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -56,7 +57,8 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     @Override
     public List<Mark> getMarksByMasterId(Integer masterId) throws DaoException {
         String query = SELECT + tableName + " WHERE appointment_id IN(SELECT id FROM appointments WHERE master_id=?)";
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Mark> marks = new ArrayList<>();

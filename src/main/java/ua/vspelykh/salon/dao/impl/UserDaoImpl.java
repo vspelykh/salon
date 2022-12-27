@@ -12,12 +12,8 @@ import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.util.exception.DaoException;
-import ua.vspelykh.salon.util.validation.Validation;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +36,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public int create(User entity) throws DaoException {
         String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.executeUpdate();
@@ -59,7 +56,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public void update(User entity) throws DaoException {
         String query = "UPDATE users SET name = ?, surname = ?, email = ?, number = ?, password = ? WHERE id = ?";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.setInt(6, entity.getId());
@@ -85,7 +83,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public User findByEmailAndPassword(String email, String password) throws DaoException {
         User user;
         String query = SELECT + tableName + " WHERE email=? AND password=?";
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -129,7 +128,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private List<User> findByRole(Role role) throws DaoException {
         String query = SELECT + "users u INNER JOIN user_roles ur ON u.id = ur.user_id AND ur.role=?";
-        try (PreparedStatement preparedStatement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, role.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();

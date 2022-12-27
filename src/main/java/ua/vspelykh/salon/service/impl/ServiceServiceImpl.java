@@ -2,7 +2,6 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.BaseServiceDao;
 import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.MasterServiceDao;
 import ua.vspelykh.salon.model.Service;

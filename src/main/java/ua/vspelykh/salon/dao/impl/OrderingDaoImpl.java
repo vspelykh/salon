@@ -11,10 +11,7 @@ import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDao {
@@ -28,7 +25,8 @@ public class OrderingDaoImpl extends AbstractDao<Ordering> implements OrderingDa
     @Override
     public int create(Ordering entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, service_id)" + VALUES + "(?,?)";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setOrderingStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
