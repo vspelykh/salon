@@ -156,7 +156,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private User setUserRoles(User user) throws DaoException {
         String query = "SELECT role FROM user_roles WHERE user_id=?";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<Role> roles = user.getRoles();
