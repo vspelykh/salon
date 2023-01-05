@@ -27,6 +27,17 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String DELETE = "DELETE FROM ";
     protected static final String WHERE = " WHERE ";
     protected static final String EQUAL = "=?";
+    protected static final String INNER_JOIN = " INNER JOIN ";
+    protected static final String LIMIT = " LIMIT ";
+    protected static final String OFFSET = " OFFSET ";
+    protected static final String ORDER_BY = " ORDER BY ";
+    protected static final String NAME_ASC = "name asc";
+    protected static final String NAME_DESC = "name desc";
+    protected static final String LEVEL_EXP = "level asc";
+    protected static final String LEVEL_YOUNG = "level desc";
+
+
+    protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.user_id";
 
     protected RowMapper<T> rowMapper;
     protected final String tableName;

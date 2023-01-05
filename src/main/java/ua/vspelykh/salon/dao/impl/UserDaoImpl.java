@@ -9,8 +9,10 @@ import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static ua.vspelykh.salon.dao.Table.USER_LEVEL;
 import static ua.vspelykh.salon.util.validation.Validation.checkPassword;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
@@ -122,8 +125,48 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
+    public List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds,
+                                                     String search, int page, int size, MasterSort sort) throws DaoException {
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, page, size, sort);
+        String query = queryBuilder.buildQuery();
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            queryBuilder.setParams(preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<User> masters = new ArrayList<>();
+            while (resultSet.next()) {
+                User entity = rowMapper.map(resultSet);
+                masters.add(entity);
+            }
+            return masters;
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
     public List<User> findAdministrators() throws DaoException {
         return findByRole(Role.ADMINISTRATOR);
+    }
+
+    @Override
+    public int getCountOfMasters() throws DaoException {
+        int count = 0;
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_MASTERS_QUERY)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            } else {
+                //TODO
+                throw new DaoException("TODO");
+            }
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException("TODO");
+        }
+        return count;
     }
 
     private List<User> findByRole(Role role) throws DaoException {
@@ -168,6 +211,117 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         } catch (SQLException e) {
             LOG.error("Error during setting roles for user");
             throw new DaoException("Error during setting roles for user", e);
+        }
+    }
+
+    private class MasterFilteredQueryBuilder {
+
+        private List<MastersLevel> levels;
+        private List<Integer> serviceIds;
+        private int page;
+        private int size;
+        private MasterSort sort;
+
+        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, int page, int size, MasterSort sort) {
+            this.levels = levels;
+            this.serviceIds = serviceIds;
+            this.page = page;
+            this.size = size;
+            this.sort = sort;
+        }
+
+        private String buildQuery() {
+            StringBuilder query = new StringBuilder(SELECT + tableName).append(" u");
+            if (isAllListsAreNull()) {
+                return shortQuery();
+            } else {
+                if (levels != null) {
+                    query.append(INNER_JOIN).append(USER_LEVEL).append(" ").append("ul ");
+                    query.append("ON u.id=ul.user_id and ul.level IN(");
+                    appendQuestionMarks(query, levels);
+                }
+                if (serviceIds != null) {
+                    query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
+                    query.append("s.base_service_id IN(");
+                    appendQuestionMarks(query, serviceIds);
+                    query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
+                }
+            }
+            return addPagingParams(query);
+        }
+
+        private String shortQuery() {
+            StringBuilder q = new StringBuilder(SELECT + tableName + " u" + INNER_JOIN + "user_level ul ON u.id = ul.user_id");
+            return addPagingParams(q);
+        }
+
+        private String addPagingParams(StringBuilder q) {
+            addSortingParams(q);
+            int offset;
+            if (page == 1) {
+                offset = 0;
+            } else {
+                offset = (page - 1) * size;
+            }
+            q.append(LIMIT).append(size);
+            q.append(OFFSET).append(offset);
+            return q.toString();
+        }
+
+        private void addSortingParams(StringBuilder q) {
+            q.append(ORDER_BY);
+            switch (sort) {
+                case NAME_ASC:
+                    q.append(NAME_ASC);
+                    break;
+                case NAME_DESC:
+                    q.append(NAME_DESC);
+                    break;
+                case FIRST_PRO:
+                    q.append(LEVEL_EXP);
+                    break;
+                case FIRST_YOUNG:
+                    q.append(LEVEL_YOUNG);
+                    break;
+                case RATING_ASC:
+                    //TODO
+                    break;
+                case RATING_DESC:
+                    //TODO
+                    break;
+            }
+        }
+
+        private void appendQuestionMarks(StringBuilder query, List<?> userIds) {
+            for (int i = 0; i < userIds.size(); i++) {
+                query.append("?");
+                if (i != userIds.size() - 1)
+                    query.append(",");
+            }
+            query.append(")");
+        }
+
+        private boolean isAllListsAreNull() {
+            return levels == null && serviceIds == null;
+        }
+
+        private void setParams(PreparedStatement preparedStatement) {
+            try {
+                int paramNum = 1;
+                if (levels != null) {
+                    for (MastersLevel level : levels) {
+                        preparedStatement.setString(paramNum++, level.name());
+                    }
+                }
+                if (serviceIds != null) {
+                    for (Integer serviceId : serviceIds) {
+                        preparedStatement.setInt(paramNum++, serviceId);
+                    }
+                }
+            } catch (SQLException e) {
+//                TODO
+                e.printStackTrace();
+            }
         }
     }
 }

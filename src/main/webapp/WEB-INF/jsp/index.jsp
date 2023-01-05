@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-<title>Lilith</title>
+    <title>Lilith</title>
 </head>
 <body>
 
@@ -31,7 +31,8 @@
                         <h1 class="carousel-font-style"></h1>
                         <p style="text-shadow: 2px 0 2px #0026bf"
                            class="carousel-font-style-small">Look information about our salon</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">Salon info</a></p>
+                        <p><a class="btn btn-lg btn-primary"
+                              href="${pageContext.request.contextPath}/salon?command=about">Salon info</a></p>
                     </div>
                 </div>
             </div>
@@ -43,7 +44,8 @@
                         <h1 class="carousel-font-style">.</h1>
                         <p style="text-shadow: 2px 0 2px #0026bf"
                            class="carousel-font-style-small">Best specialist in the city</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">Our masters</a></p>
+                        <p><a class="btn btn-lg btn-primary"
+                              href="${pageContext.request.contextPath}/salon?command=masters">Our masters</a></p>
                     </div>
                 </div>
             </div>
@@ -52,7 +54,8 @@
                      alt="top-30" width="700" height="400" class="fa"/>
                 <div class="container">
                     <div class="carousel-caption">
-                        <h1 style="text-shadow: 2px 0 2px #0026bf" class="carousel-font-style">Beauty salon "Lilith"</h1>
+                        <h1 style="text-shadow: 2px 0 2px #0026bf" class="carousel-font-style">Beauty salon
+                            "Lilith"</h1>
                         <p class="carousel-font-style-small">Be great</p>
                         <p><a class="btn btn-lg btn-primary" href="#">Make an appointment</a></p>
                     </div>

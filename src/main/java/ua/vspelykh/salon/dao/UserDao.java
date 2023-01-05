@@ -1,6 +1,8 @@
 package ua.vspelykh.salon.dao;
 
+import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public interface UserDao extends Dao<User> {
 
     List<User> findMasters() throws DaoException;
 
+    List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds,
+                                              String search, int page, int size, MasterSort sort) throws DaoException;
+
     List<User> findAdministrators() throws DaoException;
 
+    int getCountOfMasters() throws DaoException;
 }

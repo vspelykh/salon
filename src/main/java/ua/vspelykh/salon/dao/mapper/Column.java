@@ -34,4 +34,5 @@ public final class Column {
     public static final String MARK = "mark";
     public static final String COMMENT = "comment";
     public static final String SERVICE_ID = "service_id";
+    public static final String ABOUT = "about";
 }

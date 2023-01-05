@@ -12,6 +12,6 @@ public class UserLevelRowMapper implements RowMapper<UserLevel> {
     @Override
     public UserLevel map(ResultSet rs) throws SQLException {
         return new UserLevel(rs.getInt(Column.USER_ID), MastersLevel.valueOf(rs.getString(Column.LEVEL)),
-                rs.getBoolean(Column.ACTIVE));
+                rs.getString(Column.ABOUT), rs.getBoolean(Column.ACTIVE));
     }
 }

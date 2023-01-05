@@ -23,6 +23,7 @@ CREATE TABLE user_level
 (
     user_id INTEGER NOT NULL,
     level   VARCHAR NOT NULL,
+    about   VARCHAR NOT NULL,
     active  BOOLEAN NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -106,7 +107,7 @@ VALUES ('Marina', 'Alkova', 'alkova@gmail.com', '+380661239900', 'lm7vuxj9PYktix
        ('Tatiana', 'Kirsanova', 'emails12qmo@gmail.com', '+380571239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Yulia', 'Levchenko', 'emails127@gmail.com', '+380971249050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Anastasia', 'Romanova', 'emails12fr@gmail.com', '+380371239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
-       ('Karina', 'Karpenko', 'bestis@gmail.com', '+380971239020', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Karina', 'Karpenko', 'bestis@gmail.com', '+380971239029', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Anastasia', 'Semenova', 'bestis1@gmail.com', '+380971139050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Yulia', 'Lavamaris', 'bestis23@gmail.com', '+380971230050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die');
 
@@ -151,16 +152,16 @@ VALUES ('men''s haircut 1st group', 180),
        ('wave', 50),
        ('hair treatment', 100);
 
-INSERT INTO user_level (user_id, level, active)
-VALUES (2, 'TOP', true),
-       (4, 'TOP', true),
-       (5, 'TOP', true),
-       (6, 'TOP', true),
-       (7, 'TOP', true),
-       (8, 'TOP', true),
-       (9, 'TOP', true),
-       (10, 'TOP', true),
-       (11, 'TOP', true);
+INSERT INTO user_level (user_id, level, active, about)
+VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
+       (4, 'YOUNG', true, 'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (5, 'PRO', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (6, 'TOP', true, 'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (7, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
+       (8, 'TOP', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (9, 'TOP', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (10, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
+       (11, 'PRO', true, 'hairdresser-modeler, colorist');
 
 INSERT INTO services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),

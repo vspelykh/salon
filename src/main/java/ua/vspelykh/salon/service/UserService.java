@@ -1,7 +1,10 @@
 package ua.vspelykh.salon.service;
 
+import ua.vspelykh.salon.dto.UserMasterDTO;
+import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
+import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
@@ -34,4 +37,8 @@ public interface UserService {
 
     void update(UserLevel userLevel) throws ServiceException;
 
+    List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
+                                      String search, int page, int size, MasterSort sort) throws ServiceException;
+
+    int getCountOfMasters() throws ServiceException;
 }

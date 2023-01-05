@@ -1,6 +1,9 @@
 package ua.vspelykh.salon.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public enum MastersLevel implements Serializable {
 
@@ -14,5 +17,15 @@ public enum MastersLevel implements Serializable {
 
     public double getIndex() {
         return index;
+    }
+
+    public String getName() {
+        return this.name();
+    }
+
+    public static List<MastersLevel> list(){
+        List<MastersLevel> levels = new ArrayList<>();
+        Collections.addAll(levels, values());
+        return levels;
     }
 }
