@@ -31,13 +31,36 @@
                 </li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-            </form>
-
             <div class="text-end">
-                <button type="button" class="btn btn-outline-light me-2">Login</button>
-                <button type="button" class="btn btn-warning">Sign-up</button>
+                <c:choose>
+                    <c:when test="${!sessionScope.get('isLogged')}">
+                        <label>
+                            <a href="${pageContext.request.contextPath}/salon?command=login">
+                                <button type="button" class="btn btn-outline-light me-2">Login
+                                </button>
+                            </a>
+                        </label>
+                        <label>
+                            <a href="${pageContext.request.contextPath}/salon?command=sign-up">
+                                <button type="button" class="btn btn-info">Sign-up</button>
+                            </a>
+                        </label>
+                    </c:when>
+                    <c:otherwise>
+                        <label>
+                            <a href="${pageContext.request.contextPath}/salon?command=logout">
+                                <button type="button" class="btn btn-outline-light me-2">Logout
+                                </button>
+                            </a>
+                        </label>
+                        <label>
+                            <a href="${pageContext.request.contextPath}/salon?command=profile">
+                                <button type="button" class="btn btn-success me-2">Profile
+                                </button>
+                            </a>
+                        </label>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

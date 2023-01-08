@@ -11,30 +11,32 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 
 public class MastersCommand extends Command {
 
     private final UserService userService = ServiceFactory.getUserService();
     private final BaseServiceService baseService = ServiceFactory.getBaseServiceService();
-    private static final String LEVELS = "levels";
-    private static final String SERVICES = "services";
-    private static final String MASTERS = "masters";
 
-    //TODO String constants for params!
+
     @Override
     public void process() throws ServletException, IOException {
         try {
             request.setAttribute(LEVELS, MastersLevel.list());
             request.setAttribute(SERVICES, baseService.findAll());
-            request.setAttribute("sizes", new int[]{1, 2, 5, 10});
-            request.setAttribute("sorts", MasterSort.list());
+            request.setAttribute(SIZES, SIZE_ARRAY);
+            request.setAttribute(SORTS, MasterSort.list());
             List<MastersLevel> levels = setLevelsParam();
             List<Integer> serviceIds = setServiceIds();
-            int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
-            int size = request.getParameter("size") == null ? 5 : Integer.parseInt(request.getParameter("size"));
-            MasterSort sort = request.getParameter("sort") == null ? MasterSort.NAME_ASC : MasterSort.valueOf(request.getParameter("sort"));
-            String search = request.getParameter("search");
+            int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
+            int size = request.getParameter(SIZE) == null ? 5 : Integer.parseInt(request.getParameter(SIZE));
+            MasterSort sort = request.getParameter(SORT) == null ? MasterSort.NAME_ASC
+                    : MasterSort.valueOf(request.getParameter(SORT));
+            String search = request.getParameter(SEARCH);
             List<UserMasterDTO> mastersDto = userService.getMastersDto(levels, serviceIds, search, page, size, sort);
             request.setAttribute(MASTERS, mastersDto);
             setCheckedLists(levels, serviceIds, search);
@@ -46,24 +48,24 @@ public class MastersCommand extends Command {
     }
 
     private void setPaginationParams(int page, int size, int countOfItems, MasterSort sort) {
-        request.setAttribute("pageChecked", page);
-        request.setAttribute("sizeChecked", size);
-        request.setAttribute("sortChecked", sort);
+        request.setAttribute(PAGE + CHECKED, page);
+        request.setAttribute(SIZE + CHECKED, size);
+        request.setAttribute(SORT + CHECKED, sort);
         int[] pages = new int[(int) Math.ceil(countOfItems * 1.0 / size)];
         for (int i = 1, j = 0; i <= pages.length; j++, i++) {
             pages[j] = i;
         }
-        request.setAttribute("lastPage", pages.length);
-        request.setAttribute("pagesArray", pages);
-        request.setAttribute("numOfPages", Math.ceil(countOfItems * 1.0 / size));
+        request.setAttribute(LAST_PAGE, pages.length);
+        request.setAttribute(PAGES_ARRAY, pages);
+        request.setAttribute(NUMBER_OF_PAGES, Math.ceil(countOfItems * 1.0 / size));
         String path = "?" + request.getQueryString().replaceAll("&page=[0-9]*", "");
-        request.setAttribute("pathStr", path);
+        request.setAttribute(PATH_STR, path);
     }
 
     private void setCheckedLists(List<MastersLevel> levels, List<Integer> serviceIds, String search) {
-        request.setAttribute("levelsChecked", levels);
-        request.setAttribute("servicesChecked", serviceIds);
-        request.setAttribute("searchChecked", search);
+        request.setAttribute(LEVELS + CHECKED, levels);
+        request.setAttribute(SERVICES + CHECKED, serviceIds);
+        request.setAttribute(SEARCH + CHECKED, search);
 
     }
 
@@ -74,7 +76,7 @@ public class MastersCommand extends Command {
                 levels.add(MastersLevel.valueOf(level));
             }
             return levels;
-        } else return null;
+        } else return Collections.emptyList();
     }
 
     private List<Integer> setServiceIds() {
@@ -84,13 +86,11 @@ public class MastersCommand extends Command {
                 serviceIds.add(Integer.valueOf(level));
             }
             return serviceIds;
-        } else return null;
+        } else return Collections.emptyList();
     }
 
     private boolean checkNullParam(String param) {
         return param != null && !param.isEmpty();
     }
 
-    private void setMastersToAttr() {
-    }
 }

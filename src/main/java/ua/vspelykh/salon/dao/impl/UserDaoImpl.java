@@ -232,15 +232,15 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private String buildQuery() {
             StringBuilder query = new StringBuilder(SELECT + tableName).append(" u");
-            if (isAllListsAreNull()) {
+            if (isAllListsAreEmpty()) {
                 return shortQuery();
             } else {
-                if (levels != null) {
+                if (!levels.isEmpty()) {
                     query.append(INNER_JOIN).append(USER_LEVEL).append(" ").append("ul ");
                     query.append("ON u.id=ul.user_id and ul.level IN(");
                     appendQuestionMarks(query, levels);
                 }
-                if (serviceIds != null) {
+                if (!serviceIds.isEmpty()) {
                     query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
                     query.append("s.base_service_id IN(");
                     appendQuestionMarks(query, serviceIds);
@@ -301,19 +301,19 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             query.append(")");
         }
 
-        private boolean isAllListsAreNull() {
-            return levels == null && serviceIds == null;
+        private boolean isAllListsAreEmpty() {
+            return levels.isEmpty() && serviceIds.isEmpty();
         }
 
         private void setParams(PreparedStatement preparedStatement) {
             try {
                 int paramNum = 1;
-                if (levels != null) {
+                if (!levels.isEmpty()) {
                     for (MastersLevel level : levels) {
                         preparedStatement.setString(paramNum++, level.name());
                     }
                 }
-                if (serviceIds != null) {
+                if (!serviceIds.isEmpty()) {
                     for (Integer serviceId : serviceIds) {
                         preparedStatement.setInt(paramNum++, serviceId);
                     }
