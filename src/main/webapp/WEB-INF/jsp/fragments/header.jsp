@@ -25,8 +25,9 @@
                 </li>
                 <li><a href="${pageContext.request.contextPath}/salon?command=pricing" class="nav-link px-2 text-white">Pricing</a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/salon?command=cabinet" class="nav-link px-2 text-white">Your
-                    appointments</a></li>
+                <li><a href="${pageContext.request.contextPath}/salon?command=consultation"
+                       class="nav-link px-2 text-white">Consultation</a>
+                </li>
                 <li><a href="${pageContext.request.contextPath}/salon?command=about" class="nav-link px-2 text-white">About</a>
                 </li>
             </ul>

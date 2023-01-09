@@ -25,7 +25,7 @@
     </form>
     <c:choose>
         <c:when test="${users != null}">
-            <table id="mastersTable" class="table table-striped table-hover table-bordered">
+            <table id="rolesTable" class="table table-striped table-hover table-bordered">
                 <thead>
                 <tr>
                     <th>Name<i></i></th>

@@ -16,6 +16,11 @@ public class CommandNames {
     public static final String PROFILE = "profile";
     public static final String ADMIN = "admin";
     public static final String CHANGE_ROLE = "change-role";
+    public static final String CONSULTATION = "consultation";
+    public static final String CONSULTATION_POST = "consultation-post";
+    public static final String CONSULTATION_GET = "consultations";
+    public static final String CONSULTATION_DELETE = "consultation-delete";
+
 
     private CommandNames() {
     }

@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS base_services;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS consultations;
 
 CREATE TABLE users
 (
@@ -21,10 +22,10 @@ CREATE UNIQUE INDEX users_unique_email_idx ON users (number);
 
 CREATE TABLE user_level
 (
-    id INTEGER NOT NULL,
-    level   VARCHAR NOT NULL,
-    about   VARCHAR NOT NULL,
-    active  BOOLEAN NOT NULL,
+    id     INTEGER NOT NULL,
+    level  VARCHAR NOT NULL,
+    about  VARCHAR NOT NULL,
+    active BOOLEAN NOT NULL,
     FOREIGN KEY (id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -75,7 +76,6 @@ CREATE TABLE orderings
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
---POPULATION DB:
 
 CREATE TABLE marks
 (
@@ -86,6 +86,16 @@ CREATE TABLE marks
     date           TIMESTAMP NOT NULL,
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
+
+CREATE TABLE consultations
+(
+    id     SERIAL PRIMARY KEY,
+    name   VARCHAR NOT NULL,
+    number VARCHAR NOT NULL,
+    date   TIMESTAMP DEFAULT now()
+);
+
+--POPULATION DB:
 
 INSERT INTO users (name, surname, email, number, password)
 VALUES ('Marina', 'Alkova', 'admin@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
@@ -154,12 +164,17 @@ VALUES ('men''s haircut 1st group', 180),
 
 INSERT INTO user_level (id, level, active, about)
 VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
-       (4, 'YOUNG', true, 'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
-       (5, 'PRO', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
-       (6, 'TOP', true, 'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (4, 'YOUNG', true,
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (5, 'PRO', true,
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (6, 'TOP', true,
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
        (7, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
-       (8, 'TOP', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
-       (9, 'TOP', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (8, 'TOP', true,
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+       (9, 'TOP', true,
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
        (10, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
        (11, 'PRO', true, 'hairdresser-modeler, colorist');
 

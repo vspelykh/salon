@@ -73,6 +73,13 @@
           <version>1.2</version>
       </dependency>
 
+<!--      Calendar-->
+      <dependency>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-calendar</artifactId>
+          <version>v3-rev411-1.25.0</version>
+      </dependency>
+
 <!--      Test-->
       <dependency>
       <groupId>org.junit.jupiter</groupId>

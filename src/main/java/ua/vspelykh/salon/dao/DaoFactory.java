@@ -1,6 +1,7 @@
 package ua.vspelykh.salon.dao;
 
 import ua.vspelykh.salon.dao.impl.*;
+import ua.vspelykh.salon.model.Consultation;
 
 public class DaoFactory {
 
@@ -14,6 +15,7 @@ public class DaoFactory {
     private static final AppointmentDao appointmentDao = new AppointmentDaoImpl();
     private static final OrderingDao orderingDao = new OrderingDaoImpl();
     private static final MarkDao markDao = new MarkDaoImpl();
+    private static final ConsultationDao consultationDao = new ConsultationDaoImpl();
 
     public static UserDao getUserDao() {
         return userDao;
@@ -41,5 +43,9 @@ public class DaoFactory {
 
     public static MarkDao getMarkDao() {
         return markDao;
+    }
+
+    public static ConsultationDao getConsultationDao(){
+        return consultationDao;
     }
 }

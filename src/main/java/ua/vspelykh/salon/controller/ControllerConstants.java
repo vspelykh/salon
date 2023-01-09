@@ -9,7 +9,7 @@ public class ControllerConstants {
     public static final String HOME_REDIRECT = "/salon";
     public static final String PROFILE = "profile";
     public static final String ABOUT = "about";
-
+    public static final String COMMAND_PARAM = "?command=";
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
     public static final String ROLES = "roles";

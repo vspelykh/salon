@@ -1,5 +1,9 @@
 package ua.vspelykh.salon.controller.command;
 
+import ua.vspelykh.salon.controller.command.appointment.ConsultationCommand;
+import ua.vspelykh.salon.controller.command.appointment.ConsultationDeleteCommand;
+import ua.vspelykh.salon.controller.command.appointment.ConsultationGetCommand;
+import ua.vspelykh.salon.controller.command.appointment.ConsultationPostCommand;
 import ua.vspelykh.salon.controller.command.login.*;
 import ua.vspelykh.salon.controller.command.user.AdminCommand;
 import ua.vspelykh.salon.controller.command.user.ChangeRoleCommand;
@@ -37,6 +41,10 @@ public class CommandFactory {
         commands.put(ADMIN, new AdminCommand());
         commands.put(ROLES, new RolesCommand());
         commands.put(CHANGE_ROLE, new ChangeRoleCommand());
+        commands.put(CONSULTATION, new ConsultationCommand());
+        commands.put(CONSULTATION_POST, new ConsultationPostCommand());
+        commands.put(CONSULTATION_GET, new ConsultationGetCommand());
+        commands.put(CONSULTATION_DELETE, new ConsultationDeleteCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

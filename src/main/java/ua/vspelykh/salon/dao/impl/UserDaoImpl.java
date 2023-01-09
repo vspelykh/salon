@@ -314,7 +314,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 return shortQuery();
             } else {
                 query.append(INNER_JOIN).append(USER_LEVEL).append(" ").append("ul ");
-                query.append("ON u.id=ul.user_id ");
+                query.append("ON u.id=ul.id ");
                 appendLevels(query);
                 appendServices(query);
                 appendSearch(query);
@@ -372,7 +372,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private String shortQuery() {
-            StringBuilder q = new StringBuilder(SELECT + tableName + " u" + INNER_JOIN + "user_level ul ON u.id = ul.user_id");
+            StringBuilder q = new StringBuilder(SELECT + tableName + " u" + INNER_JOIN + "user_level ul ON u.id = ul.id");
             return addPagingParams(q);
         }
 

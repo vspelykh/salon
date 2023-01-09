@@ -47,7 +47,6 @@
             margin-left:-15px;" class="checkmark">✓</i>
         </div>
         <h1>Success</h1>
-        <p>Successfully registered<br/> </p>
     </div>
     </body>
     </html>
