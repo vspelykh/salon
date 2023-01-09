@@ -26,10 +26,7 @@ public class MastersCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         try {
-            request.setAttribute(LEVELS, MastersLevel.list());
-            request.setAttribute(SERVICES, baseService.findAll());
-            request.setAttribute(SIZES, SIZE_ARRAY);
-            request.setAttribute(SORTS, MasterSort.list());
+            setFilterAttributes();
             List<MastersLevel> levels = setLevelsParam();
             List<Integer> serviceIds = setServiceIds();
             int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
@@ -40,11 +37,39 @@ public class MastersCommand extends Command {
             List<UserMasterDTO> mastersDto = userService.getMastersDto(levels, serviceIds, search, page, size, sort);
             request.setAttribute(MASTERS, mastersDto);
             setCheckedLists(levels, serviceIds, search);
-            setPaginationParams(page, size, userService.getCountOfMasters(), sort);
+            int countOfItems = userService.getCountOfMasters(levels, serviceIds, search);
+            setPaginationParams(page, size, countOfItems, sort);
             forward(MASTERS);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setFilterAttributes() throws ServiceException {
+        request.setAttribute(LEVELS, MastersLevel.list());
+        request.setAttribute(SERVICES, baseService.findAll());
+        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(SORTS, MasterSort.list());
+    }
+
+    private List<MastersLevel> setLevelsParam() {
+        if (checkNullParam(request.getParameter(LEVELS))) {
+            List<MastersLevel> levels = new ArrayList<>();
+            for (String level : request.getParameterValues(LEVELS)) {
+                levels.add(MastersLevel.valueOf(level));
+            }
+            return levels;
+        } else return Collections.emptyList();
+    }
+
+    private List<Integer> setServiceIds() {
+        if (checkNullParam(request.getParameter(SERVICES))) {
+            List<Integer> serviceIds = new ArrayList<>();
+            for (String level : request.getParameterValues(SERVICES)) {
+                serviceIds.add(Integer.valueOf(level));
+            }
+            return serviceIds;
+        } else return Collections.emptyList();
     }
 
     private void setPaginationParams(int page, int size, int countOfItems, MasterSort sort) {
@@ -67,26 +92,6 @@ public class MastersCommand extends Command {
         request.setAttribute(SERVICES + CHECKED, serviceIds);
         request.setAttribute(SEARCH + CHECKED, search);
 
-    }
-
-    private List<MastersLevel> setLevelsParam() {
-        if (checkNullParam(request.getParameter(LEVELS))) {
-            List<MastersLevel> levels = new ArrayList<>();
-            for (String level : request.getParameterValues(LEVELS)) {
-                levels.add(MastersLevel.valueOf(level));
-            }
-            return levels;
-        } else return Collections.emptyList();
-    }
-
-    private List<Integer> setServiceIds() {
-        if (checkNullParam(request.getParameter(SERVICES))) {
-            List<Integer> serviceIds = new ArrayList<>();
-            for (String level : request.getParameterValues(SERVICES)) {
-                serviceIds.add(Integer.valueOf(level));
-            }
-            return serviceIds;
-        } else return Collections.emptyList();
     }
 
     private boolean checkNullParam(String param) {

@@ -40,5 +40,5 @@ public interface UserService {
     List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
                                       String search, int page, int size, MasterSort sort) throws ServiceException;
 
-    int getCountOfMasters() throws ServiceException;
+    int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException;
 }

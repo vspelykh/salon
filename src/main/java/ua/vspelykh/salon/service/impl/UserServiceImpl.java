@@ -17,7 +17,6 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
@@ -172,41 +171,27 @@ public class UserServiceImpl implements UserService {
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
             List<Integer> ids = new ArrayList<>();
             masters.forEach(user -> ids.add(user.getId()));
-            List<UserLevel> userLevels = userLevelDao.findAll().stream().filter(ul -> ids.contains(ul.getMasterId()))
+
+            List<UserLevel> userLevels = userLevelDao.findAll().stream()
+                    .filter(ul -> ids.contains(ul.getMasterId()))
                     .collect(Collectors.toList());
             for (int i = 0; i < masters.size(); i++) {
                 dtos.add(UserMasterDTO.build(masters.get(i), userLevels.get(i)));
             }
-            return filterByName(dtos, search);
+            return dtos;
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public int getCountOfMasters() throws ServiceException {
+    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException {
         try {
-            return userDao.getCountOfMasters();
+            return userDao.getCountOfMasters(levels, serviceIds, search);
         } catch (DaoException e){
             //TODO
             throw new ServiceException(e);
         }
     }
 
-    private List<UserMasterDTO> filterByName(List<UserMasterDTO> dtos, String search) {
-        if (search == null || search.isEmpty()) {
-            return dtos;
-        }
-        String[] strings = search.split("[ ]+");
-        Predicate<UserMasterDTO> predicate = master -> {
-            String full = master.getName() + " " + master.getSurname();
-            for (String s : strings) {
-                if (full.toLowerCase().contains(s.toLowerCase())) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        return dtos.stream().filter(predicate).collect(Collectors.toList());
-    }
 }

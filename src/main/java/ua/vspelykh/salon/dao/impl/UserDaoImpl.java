@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.vspelykh.salon.dao.Table.USER_LEVEL;
+import static ua.vspelykh.salon.dao.mapper.Column.NAME;
+import static ua.vspelykh.salon.dao.mapper.Column.SURNAME;
 import static ua.vspelykh.salon.util.validation.Validation.checkPassword;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
@@ -127,7 +129,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds,
                                                      String search, int page, int size, MasterSort sort) throws DaoException {
-        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, page, size, sort);
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, page, size, sort, search);
         String query = queryBuilder.buildQuery();
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -151,10 +153,13 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public int getCountOfMasters() throws DaoException {
-        int count = 0;
+    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws DaoException {
+        int count;
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, search);
+        String query = queryBuilder.buildCountQuery();
         try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_MASTERS_QUERY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
@@ -221,33 +226,78 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         private int page;
         private int size;
         private MasterSort sort;
+        private String search;
 
-        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, int page, int size, MasterSort sort) {
+        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds,
+                                          int page, int size, MasterSort sort, String search) {
             this.levels = levels;
             this.serviceIds = serviceIds;
             this.page = page;
             this.size = size;
             this.sort = sort;
+            this.search = search;
+        }
+
+        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, String search) {
+            this.levels = levels;
+            this.serviceIds = serviceIds;
+            this.search = search;
         }
 
         private String buildQuery() {
             StringBuilder query = new StringBuilder(SELECT + tableName).append(" u");
-            if (isAllListsAreEmpty()) {
+            if (isAllListsAndSearchAreEmpty()) {
                 return shortQuery();
             } else {
-                if (!levels.isEmpty()) {
-                    query.append(INNER_JOIN).append(USER_LEVEL).append(" ").append("ul ");
-                    query.append("ON u.id=ul.user_id and ul.level IN(");
-                    appendQuestionMarks(query, levels);
-                }
-                if (!serviceIds.isEmpty()) {
-                    query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
-                    query.append("s.base_service_id IN(");
-                    appendQuestionMarks(query, serviceIds);
-                    query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
-                }
+                query.append(INNER_JOIN).append(USER_LEVEL).append(" ").append("ul ");
+                query.append("ON u.id=ul.user_id ");
+                appendLevels(query);
+                appendServices(query);
+                appendSearch(query);
             }
             return addPagingParams(query);
+        }
+
+        private void appendSearch(StringBuilder query) {
+            if (search != null && !search.isEmpty()) {
+                String[] strings = search.split("[ ]+");
+                query.append(WHERE);
+                for (String s : strings) {
+                    query.append(NAME).append(ILIKE).append(String.format("'%%%s%%'", s)).append(OR);
+                }
+                for (String s : strings) {
+                    query.append(SURNAME).append(ILIKE).append(String.format("'%%%s%%'", s)).append(OR);
+                }
+                query.replace(query.length() - 4, query.length(), "");
+            }
+        }
+
+        private void appendServices(StringBuilder query) {
+            if (!serviceIds.isEmpty()) {
+                query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
+                query.append("s.base_service_id IN(");
+                appendQuestionMarks(query, serviceIds);
+                query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
+            }
+        }
+
+        private void appendLevels(StringBuilder query) {
+            if (!levels.isEmpty()) {
+                query.append("and ul.level IN(");
+                appendQuestionMarks(query, levels);
+            }
+        }
+
+        private String buildCountQuery() {
+            StringBuilder query = new StringBuilder(COUNT_MASTERS_QUERY);
+            if (isAllListsAndSearchAreEmpty()) {
+                return query.toString();
+            }
+            appendLevels(query);
+            appendServices(query);
+            appendSearch(query);
+            System.out.println(query);
+            return query.toString();
         }
 
         private String shortQuery() {
@@ -301,8 +351,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             query.append(")");
         }
 
-        private boolean isAllListsAreEmpty() {
-            return levels.isEmpty() && serviceIds.isEmpty();
+        private boolean isAllListsAndSearchAreEmpty() {
+            return levels.isEmpty() && serviceIds.isEmpty() && (search == null || search.isEmpty());
         }
 
         private void setParams(PreparedStatement preparedStatement) {
