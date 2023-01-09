@@ -11,6 +11,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.dao.Table.USER_LEVEL;
+import static ua.vspelykh.salon.dao.Table.USER_ROLES;
+import static ua.vspelykh.salon.dao.mapper.Column.ROLE;
+import static ua.vspelykh.salon.dao.mapper.Column.USER_ID;
+
 public abstract class AbstractDao<T> implements Dao<T> {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -37,8 +42,11 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String LEVEL_YOUNG = "level desc";
     protected static final String ILIKE = " ILIKE ";
     protected static final String OR = " OR ";
+    protected static final String AND = " AND ";
 
     protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.user_id ";
+    protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
+    protected static final String UPDATE_ROLE_QUERY = DELETE + USER_ROLES + WHERE + USER_ID + EQUAL + AND + ROLE + EQUAL;
 
     protected RowMapper<T> rowMapper;
     protected final String tableName;

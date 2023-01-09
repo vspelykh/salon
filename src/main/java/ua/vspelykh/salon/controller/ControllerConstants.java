@@ -40,4 +40,5 @@ public class ControllerConstants {
     public static final String PAGES_ARRAY =  "pagesArray";
     public static final String NUMBER_OF_PAGES = "numOfPages";
     public static final String PATH_STR =  "pathStr";
+    public static final String ACTION = "action";
 }

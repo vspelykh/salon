@@ -2,9 +2,11 @@ package ua.vspelykh.salon.service;
 
 import ua.vspelykh.salon.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.MastersLevel;
+import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.MasterSort;
+import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
@@ -41,4 +43,8 @@ public interface UserService {
                                       String search, int page, int size, MasterSort sort) throws ServiceException;
 
     int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException;
+
+    List<User> findBySearch(String search) throws ServiceException;
+
+    void updateRole(int userId, String action, Role role) throws ServiceException;
 }

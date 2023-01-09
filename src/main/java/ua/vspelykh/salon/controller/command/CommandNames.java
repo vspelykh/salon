@@ -14,6 +14,8 @@ public class CommandNames {
     public static final String REGISTRATION = "reg";
     public static final String SUCCESS = "success";
     public static final String PROFILE = "profile";
+    public static final String ADMIN = "admin";
+    public static final String CHANGE_ROLE = "change-role";
 
     private CommandNames() {
     }

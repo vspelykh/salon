@@ -10,20 +10,23 @@
     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <c:choose>
             <c:when test="${isAdmin}">
-                <li><a href="${pageContext.request.contextPath}/salon" class="nav-link px-2 text-primary">Admin page</a>
+                <li><a href="${pageContext.request.contextPath}/salon?command=admin" class="nav-link px-2 text-primary">Admin
+                    page</a>
                 </li>
             </c:when>
         </c:choose>
         <c:choose>
             <c:when test="${isMaster}">
-                <li><a href="${pageContext.request.contextPath}/salon" class="nav-link px-2 text-primary">Hairdresser
+                <li><a href="${pageContext.request.contextPath}/salon?command=dashboard"
+                       class="nav-link px-2 text-primary">Hairdresser
                     page</a>
                 </li>
             </c:when>
         </c:choose>
         <c:choose>
             <c:when test="${isClient}">
-                <li><a href="${pageContext.request.contextPath}/salon" class="nav-link px-2 text-primary">Client
+                <li><a href="${pageContext.request.contextPath}/salon?command=my-appointments"
+                       class="nav-link px-2 text-primary">Client
                     page</a>
                 </li>
             </c:when>

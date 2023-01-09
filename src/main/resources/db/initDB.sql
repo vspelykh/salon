@@ -21,11 +21,11 @@ CREATE UNIQUE INDEX users_unique_email_idx ON users (number);
 
 CREATE TABLE user_level
 (
-    user_id INTEGER NOT NULL,
+    id INTEGER NOT NULL,
     level   VARCHAR NOT NULL,
     about   VARCHAR NOT NULL,
     active  BOOLEAN NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_roles
@@ -88,8 +88,8 @@ CREATE TABLE marks
 );
 
 INSERT INTO users (name, surname, email, number, password)
-VALUES ('Marina', 'Alkova', 'alkova@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
-       ('Anastasia', 'Semenova', 'nastya22@gmail.com', '+380971239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+VALUES ('Marina', 'Alkova', 'admin@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Anastasia', 'Semenova', 'master@gmail.com', '+380971239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Alina', 'Ivanova', 'ivanovaa@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Galina', 'Shevchenko', 'random1@gmail.com', '+380970239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Valentina', 'Glushko', 'random12@gmail.com', '+380972239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
@@ -152,7 +152,7 @@ VALUES ('men''s haircut 1st group', 180),
        ('wave', 50),
        ('hair treatment', 100);
 
-INSERT INTO user_level (user_id, level, active, about)
+INSERT INTO user_level (id, level, active, about)
 VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
        (4, 'YOUNG', true, 'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
        (5, 'PRO', true,'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),

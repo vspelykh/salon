@@ -31,9 +31,10 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public int create(UserLevel entity) throws DaoException {
-        String query = INSERT + tableName + " (user_id, level)" + VALUES + "(?,?)";
+        String query = INSERT + tableName + " (id, level, active, about)" + VALUES + "(?,?,?,?)";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            setStatement(statement, entity);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -49,7 +50,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public void update(UserLevel entity) throws DaoException {
-        String query = "UPDATE user_level SET level = ? WHERE user_id = ?";
+        String query = "UPDATE user_level SET level = ? WHERE id = ?";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, entity.getLevel().toString());
@@ -66,7 +67,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException {
-        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.user_id WHERE ul.level=? AND active = ?";
+        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.id WHERE ul.level=? AND active = ?";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             setStatement(statement, userLevel);
@@ -84,8 +85,10 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     private void setStatement(PreparedStatement statement, UserLevel userLevel) throws SQLException {
         int k = 0;
+        statement.setInt(++k, userLevel.getMasterId());
         statement.setString(++k, userLevel.getLevel().name());
         statement.setBoolean(++k, userLevel.isActive());
+        statement.setString(++k, userLevel.getAbout());
     }
 
 

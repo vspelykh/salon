@@ -3,26 +3,27 @@ package ua.vspelykh.salon.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.AbstractDao;
-import ua.vspelykh.salon.dao.Table;
-import ua.vspelykh.salon.dao.UserDao;
+import ua.vspelykh.salon.dao.*;
 import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
+import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
 import static ua.vspelykh.salon.dao.Table.USER_LEVEL;
-import static ua.vspelykh.salon.dao.mapper.Column.NAME;
-import static ua.vspelykh.salon.dao.mapper.Column.SURNAME;
+import static ua.vspelykh.salon.dao.mapper.Column.*;
 import static ua.vspelykh.salon.util.validation.Validation.checkPassword;
 
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
@@ -131,20 +132,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                                                      String search, int page, int size, MasterSort sort) throws DaoException {
         MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, page, size, sort, search);
         String query = queryBuilder.buildQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            queryBuilder.setParams(preparedStatement);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<User> masters = new ArrayList<>();
-            while (resultSet.next()) {
-                User entity = rowMapper.map(resultSet);
-                masters.add(entity);
-            }
-            return masters;
-        } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException(e);
-        }
+        return getUsersFromDB(queryBuilder, query);
     }
 
     @Override
@@ -172,6 +160,69 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             throw new DaoException("TODO");
         }
         return count;
+    }
+
+    @Override
+    public List<User> findBySearch(String search) throws DaoException {
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(search);
+        String query = queryBuilder.buildSearchQuery();
+        return setUserRoles(getUsersFromDB(queryBuilder, query));
+    }
+
+    @Override
+    public void updateRole(int userId, String action, Role role) throws DaoException {
+        String query;
+        if (ADD.equals(action)) {
+            query = ADD_ROLE_QUERY;
+        } else if (REMOVE.equals(action)) {
+            query = UPDATE_ROLE_QUERY;
+        } else throw new DaoException();
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            setUserRoleStatement(statement, userId, role);
+            statement.executeUpdate();
+            if (isNewHairdresser(action, role)) {
+                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
+                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", true));
+            } else if (isMasterRemoved(action, role)) {
+                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
+                userLevelDao.removeById(userId);
+            }
+        } catch (SQLException e) {
+            //TODO
+            throw new DaoException();
+        }
+    }
+
+    private boolean isMasterRemoved(String action, Role role) {
+        return action.equals(REMOVE) && role == Role.HAIRDRESSER;
+    }
+
+    private boolean isNewHairdresser(String action, Role role) {
+        return action.equals(ADD) && role == Role.HAIRDRESSER;
+    }
+
+    private void setUserRoleStatement(PreparedStatement statement, int userId, Role role) throws SQLException {
+        int k = 0;
+        statement.setInt(++k, userId);
+        statement.setString(++k, String.valueOf(role));
+    }
+
+    private List<User> getUsersFromDB(MasterFilteredQueryBuilder queryBuilder, String query) throws DaoException {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            queryBuilder.setParams(preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                User entity = rowMapper.map(resultSet);
+                users.add(entity);
+            }
+            return users;
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
     }
 
     private List<User> findByRole(Role role) throws DaoException {
@@ -219,6 +270,13 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
     }
 
+    private List<User> setUserRoles(List<User> users) throws DaoException {
+        for (User user : users) {
+            setUserRoles(user);
+        }
+        return users;
+    }
+
     private class MasterFilteredQueryBuilder {
 
         private List<MastersLevel> levels;
@@ -242,6 +300,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             this.levels = levels;
             this.serviceIds = serviceIds;
             this.search = search;
+        }
+
+        public MasterFilteredQueryBuilder(String search) {
+            this.search = search;
+            levels = Collections.emptyList();
+            serviceIds = Collections.emptyList();
         }
 
         private String buildQuery() {
@@ -296,7 +360,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             appendLevels(query);
             appendServices(query);
             appendSearch(query);
-            System.out.println(query);
+            return query.toString();
+        }
+
+        private String buildSearchQuery() {
+            StringBuilder query = new StringBuilder(SELECT + tableName);
+            query.append(WHERE);
+            query.append(NUMBER).append(ILIKE).append(String.format("'%%%s%%'", search)).append(OR);
+            query.append(EMAIL).append(ILIKE).append(String.format("'%%%s%%'", search));
             return query.toString();
         }
 

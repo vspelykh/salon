@@ -8,6 +8,7 @@ import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
 import ua.vspelykh.salon.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.MastersLevel;
+import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.service.UserService;
@@ -189,6 +190,26 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.getCountOfMasters(levels, serviceIds, search);
         } catch (DaoException e){
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<User> findBySearch(String search) throws ServiceException{
+        try {
+            return userDao.findBySearch(search);
+        } catch (DaoException e) {
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void updateRole(int userId, String action, Role role) throws ServiceException {
+        try {
+            userDao.updateRole(userId, action, role);
+        } catch (DaoException e) {
             //TODO
             throw new ServiceException(e);
         }

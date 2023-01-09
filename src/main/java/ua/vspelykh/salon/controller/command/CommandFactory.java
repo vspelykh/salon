@@ -1,7 +1,10 @@
 package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.controller.command.login.*;
+import ua.vspelykh.salon.controller.command.user.AdminCommand;
+import ua.vspelykh.salon.controller.command.user.ChangeRoleCommand;
 import ua.vspelykh.salon.controller.command.user.ProfileCommand;
+import ua.vspelykh.salon.controller.command.user.RolesCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static ua.vspelykh.salon.controller.Controller.COMMAND;
+import static ua.vspelykh.salon.controller.ControllerConstants.ROLES;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
 
 public class CommandFactory {
@@ -30,6 +34,9 @@ public class CommandFactory {
         commands.put(REGISTRATION, new RegistrationCommand());
         commands.put(SUCCESS, new SuccessCommand());
         commands.put(PROFILE, new ProfileCommand());
+        commands.put(ADMIN, new AdminCommand());
+        commands.put(ROLES, new RolesCommand());
+        commands.put(CHANGE_ROLE, new ChangeRoleCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {
