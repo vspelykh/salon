@@ -11,7 +11,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.dao.Table.USER_LEVEL;
 import static ua.vspelykh.salon.dao.Table.USER_ROLES;
 import static ua.vspelykh.salon.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.dao.mapper.Column.USER_ID;

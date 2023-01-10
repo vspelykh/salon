@@ -1,7 +1,6 @@
 package ua.vspelykh.salon.dao;
 
 import ua.vspelykh.salon.dao.impl.*;
-import ua.vspelykh.salon.model.Consultation;
 
 public class DaoFactory {
 

@@ -6,7 +6,6 @@ import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.MasterSort;
-import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;

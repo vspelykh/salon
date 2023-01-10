@@ -1,6 +1,5 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.service.impl.BaseServiceServiceImpl;
 import ua.vspelykh.salon.service.impl.ConsultationServiceImpl;
 import ua.vspelykh.salon.service.impl.UserServiceImpl;
