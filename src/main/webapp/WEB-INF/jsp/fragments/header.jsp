@@ -29,26 +29,30 @@
                 <li><a href="${pageContext.request.contextPath}/salon"
                        class="nav-link px-2 text-secondary"><fmt:message key="main.home"/> </a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/salon?command=masters" class="nav-link px-2 text-white">Masters</a>
+                <li><a href="${pageContext.request.contextPath}/salon?command=masters" class="nav-link px-2 text-white"><fmt:message
+                        key="main.masters"/></a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/salon?command=pricing" class="nav-link px-2 text-white">Pricing</a>
+                <li><a href="${pageContext.request.contextPath}/salon?command=pricing" class="nav-link px-2 text-white"><fmt:message
+                        key="main.pricing"/></a>
                 </li>
                 <li><a href="${pageContext.request.contextPath}/salon?command=consultation"
-                       class="nav-link px-2 text-white">Consultation</a>
+                       class="nav-link px-2 text-white"><fmt:message key="main.consultation"/></a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/salon?command=about" class="nav-link px-2 text-white">About</a>
+                <li><a href="${pageContext.request.contextPath}/salon?command=about"
+                       class="nav-link px-2 text-white"><fmt:message key="main.about"/></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="true">Language</a>
+                       data-bs-toggle="dropdown" aria-expanded="true"><fmt:message key="main.lang"/></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item"
                                href="${pageContext.request.contextPath}/salon?${requestScope.get("path")}&lang=ua"><i
                                 class="flag flag-ukraine"></i></i>
-                            Ukrainian</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/salon?${requestScope.get("path")}&lang=en"><i
+                            <fmt:message key="main.ua"/></a></li>
+                        <li><a class="dropdown-item"
+                               href="${pageContext.request.contextPath}/salon?${requestScope.get("path")}&lang=en"><i
                                 class="flag flag-united-kingdom"></i></i>
-                            English</a></li>
+                            <fmt:message key="main.en"/></a></li>
                     </ul>
                 </li>
             </ul>
@@ -58,26 +62,27 @@
                     <c:when test="${!sessionScope.get('isLogged')}">
                         <label>
                             <a href="${pageContext.request.contextPath}/salon?command=login">
-                                <button type="button" class="btn btn-outline-light me-2">Login
+                                <button type="button" class="btn btn-outline-light me-2"><fmt:message key="main.login"/>
                                 </button>
                             </a>
                         </label>
                         <label>
                             <a href="${pageContext.request.contextPath}/salon?command=sign-up">
-                                <button type="button" class="btn btn-info">Sign-up</button>
+                                <button type="button" class="btn btn-info"><fmt:message key="main.sign"/></button>
                             </a>
                         </label>
                     </c:when>
                     <c:otherwise>
                         <label>
                             <a href="${pageContext.request.contextPath}/salon?command=logout">
-                                <button type="button" class="btn btn-outline-light me-2">Logout
+                                <button type="button" class="btn btn-outline-light me-2"><fmt:message
+                                        key="main.logout"/>
                                 </button>
                             </a>
                         </label>
                         <label>
                             <a href="${pageContext.request.contextPath}/salon?command=profile">
-                                <button type="button" class="btn btn-success me-2">Profile
+                                <button type="button" class="btn btn-success me-2"><fmt:message key="main.profile"/>
                                 </button>
                             </a>
                         </label>
