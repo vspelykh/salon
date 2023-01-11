@@ -7,6 +7,8 @@
 <html>
 <head>
     <title>Our masters</title>
+    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setBundle basename="localization.messages"/>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -29,7 +31,7 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
                                                 aria-controls="panelsStayOpen-collapseOne">
-                                            Services:
+                                            <fmt:message key="master.services"/>
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
@@ -54,7 +56,7 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
                                                 aria-controls="panelsStayOpen-collapseTwo">
-                                            Levels:
+                                            <fmt:message key="master.levels"/>
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
@@ -84,16 +86,17 @@
                     <div class="table-wrapper">
                         <div class="table-title">
                             <div class="">
-                                <div class="col-sm-8"><h2>Our <b>Masters</b></h2></div>
+                                <div class="col-sm-8"><h2><fmt:message key="master.our"/> <b><fmt:message
+                                        key="master.masters"/></b></h2></div>
                                 <%--    params--%>
-                                <label for="size">Size:</label>
+                                <label for="size"><fmt:message key="master.size"/></label>
                                 <select name="size" id="size">
                                     <c:forEach items="${sizes}" var="item">
                                         <option value="${item}" ${sizeChecked == item ? 'selected="selected"' : ''}>
                                                 ${item}</option>
                                     </c:forEach>
                                 </select>
-                                <label for="sort">Sort:</label>
+                                <label for="sort"><fmt:message key="master.sort"/></label>
                                 <select name="sort" id="sort">
                                     <c:forEach items="${sorts}" var="item">
                                         <option value="${item.name()}" ${sortChecked == item ? 'selected="selected"' : ''}>
@@ -109,10 +112,10 @@
                                 <table id="mastersTable" class="table table-striped table-hover table-bordered">
                                     <thead>
                                     <tr>
-                                        <th>Photo<i></i></th>
-                                        <th>Name<i></i></th>
-                                        <th>About<i></i></th>
-                                        <th>Level<i></i></th>
+                                        <th><fmt:message key="master.photo"/><i></i></th>
+                                        <th><fmt:message key="master.name"/><i></i></th>
+                                        <th><fmt:message key="master.about"/><i></i></th>
+                                        <th><fmt:message key="master.level"/><i></i></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -135,7 +138,7 @@
                 <ul class="pagination justify-content-center">
                     <li ${pageChecked == 1 ? "class='page-item disabled'" : "class='page-item'"}>
                         <a href="${pageContext.request.contextPath}/salon${pathStr}&page=${pageChecked-1}"
-                           class="page-link">Previous</a>
+                           class="page-link"><fmt:message key="carousel.previous"/></a>
                     </li>
                     <c:forEach items="${pagesArray}" var="item">
                         <li ${pageChecked == item ? "class='page-item active''" : "'class='page-item'"}>
@@ -145,7 +148,8 @@
                     </c:forEach>
                     <li ${pageChecked == lastPage ? "class='page-item disabled'" : "class='page-item'"}>
                         <a class="page-link"
-                           href="${pageContext.request.contextPath}/salon${pathStr}&page=${pageChecked+1}">Next</a>
+                           href="${pageContext.request.contextPath}/salon${pathStr}&page=${pageChecked+1}"><fmt:message
+                                key="carousel.next"/></a>
                     </li>
                 </ul>
             </nav>
