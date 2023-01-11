@@ -20,6 +20,7 @@ public class CommandNames {
     public static final String CONSULTATION_POST = "consultation-post";
     public static final String CONSULTATION_GET = "consultations";
     public static final String CONSULTATION_DELETE = "consultation-delete";
+    public static final String CALENDAR = "calendar";
 
 
     private CommandNames() {
