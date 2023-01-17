@@ -5,6 +5,7 @@ import ua.vspelykh.salon.model.UserLevel;
 
 public class UserMasterDTO {
 
+    private int id;
     private String name;
     private String surname;
     private String email;
@@ -12,8 +13,12 @@ public class UserMasterDTO {
     private String level;
     private String about;
 
+    public UserMasterDTO() {
+    }
+
     public static UserMasterDTO build(User user, UserLevel userLevel){
         UserMasterDTO dto = new UserMasterDTO();
+        dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setSurname(user.getSurname());
         dto.setEmail(user.getEmail());
@@ -21,6 +26,14 @@ public class UserMasterDTO {
         dto.setLevel(String.valueOf(userLevel.getLevel()));
         dto.setAbout(userLevel.getAbout());
         return dto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -15,6 +15,7 @@ public class DaoFactory {
     private static final OrderingDao orderingDao = new OrderingDaoImpl();
     private static final MarkDao markDao = new MarkDaoImpl();
     private static final ConsultationDao consultationDao = new ConsultationDaoImpl();
+    private static final WorkingDayDao wdd = new WorkingDayDaoImpl();
 
     public static UserDao getUserDao() {
         return userDao;
@@ -46,5 +47,9 @@ public class DaoFactory {
 
     public static ConsultationDao getConsultationDao(){
         return consultationDao;
+    }
+
+    public static WorkingDayDao getWorkingDayDao() {
+        return wdd;
     }
 }

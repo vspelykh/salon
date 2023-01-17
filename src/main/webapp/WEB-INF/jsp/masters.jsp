@@ -1,6 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="ua.vspelykh.salon.model.MastersLevel" %>
-<%@ page import="java.util.Enumeration" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -116,15 +113,32 @@
                                         <th><fmt:message key="master.name"/><i></i></th>
                                         <th><fmt:message key="master.about"/><i></i></th>
                                         <th><fmt:message key="master.level"/><i></i></th>
+                                        <c:choose>
+                                            <c:when test="${isAdmin}">
+                                                <th></th>
+                                            </c:when>
+                                        </c:choose>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach items="${masters}" var="item">
                                         <tr>
                                             <td></td>
-                                            <td>${item.name} ${item.surname}</td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/salon?command=calendar&id=${item.id}"
+                                                   class="nav-link px-2 text-decoration-underline">${item.name} ${item.surname}</a>
+                                            </td>
                                             <td>${item.about}</td>
                                             <td>${item.level}</td>
+                                            <c:choose>
+                                                <c:when test="${isAdmin}">
+                                                    <th>
+                                                        <a href="${pageContext.request.contextPath}/salon?command=schedule&id=${item.id}"
+                                                           class="btn btn-primary nav-link px-2 text-white"><fmt:message
+                                                                key="master.manage"/></a>
+                                                    </th>
+                                                </c:when>
+                                            </c:choose>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

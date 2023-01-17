@@ -41,4 +41,7 @@ public class ControllerConstants {
     public static final String NUMBER_OF_PAGES = "numOfPages";
     public static final String PATH_STR =  "pathStr";
     public static final String ACTION = "action";
+    public static final String DAYS = "days";
+    public static final String SCHEDULE_REDIRECT = "/salon?command=schedule&id=";
+
 }

@@ -2,10 +2,7 @@ package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.controller.command.appointment.*;
 import ua.vspelykh.salon.controller.command.login.*;
-import ua.vspelykh.salon.controller.command.user.AdminCommand;
-import ua.vspelykh.salon.controller.command.user.ChangeRoleCommand;
-import ua.vspelykh.salon.controller.command.user.ProfileCommand;
-import ua.vspelykh.salon.controller.command.user.RolesCommand;
+import ua.vspelykh.salon.controller.command.user.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -43,6 +40,8 @@ public class CommandFactory {
         commands.put(CONSULTATION_GET, new ConsultationGetCommand());
         commands.put(CONSULTATION_DELETE, new ConsultationDeleteCommand());
         commands.put(CALENDAR, new CalendarCommand());
+        commands.put(SCHEDULE, new ScheduleCommand());
+        commands.put(EDIT_SCHEDULE, new EditScheduleCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
-    <title>Calendar #1</title>
+    <title>Calendar ${name.name} ${name.surname}</title>
     <fmt:setLocale value="${cookie['lang'].value}"/>
     <fmt:setBundle basename="localization.messages"/>
 </head>
@@ -23,37 +23,47 @@
 <jsp:include page="fragments/header.jsp"/>
 <div class="container">
     <div class="content">
-
+        <br>
         <div class="container text-left">
             <div class="row justify-content-center">
+                <h2 class="mb-5 text-center">Calendar for ${user.name} ${user.surname}. Choose the day</h2>
                 <div class="col-lg-3">
-                    <h2 class="mb-5 text-center">Calendar #1 (Date Picker)</h2>
-                    <form action="#">
+                    <form onsubmit="return validateForm()" id="calendar"
+                          name="calendar-form" action="${pageContext.request.contextPath}/salon">
+                        <label>
+                            <input hidden name="command" value="calendar">
+                        </label>
+                        <label>
+                            <input hidden name="id" value="${user.id}">
+                        </label>
                         <div class="form-group">
-                            <label for="chooseDay"></label><input id="chooseDay" type="datetime-local"
-                                                                  class="form-control" placeholder="Pick A Date">
+                            <label><input name="day" type="datetime-local" class="form-control"
+                                          placeholder="${placeholder}">
+                            </label>
+                            <button onclick="document.getElementById('form-id').submit();">Submit</button>
                         </div>
                     </form>
+                    <h6>${day.userId}</h6>
+                    <c:forEach items="${slots}" var="item">
+                        ${item}
+                    </c:forEach>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        flatpickr("input[type=datetime-local]", {
-            dateFormat: "Y-d-m",
+        flatpickr("#calendar, input[type=datetime-local]", {
+            dateFormat: "d-m-Y",
             enableTime: false,
             minDate: "today",
             maxDate: new Date().fp_incr(90),
             "enable": [
                 function (date) {
-                    var d = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear();
                     <c:forEach items="${days}" var="item">
-
-                    if (date.getMonth() + 1 === ${item.getMonth().getValue()}
-                        && date.getDate() === ${item.getDayOfMonth()}
-                        && date.getFullYear() === ${item.getYear()}) {
+                    if (date.getMonth() + 1 === ${item.getDate().getMonth().getValue()}
+                        && date.getDate() === ${item.getDate().getDayOfMonth()}
+                        && date.getFullYear() === ${item.getDate().getYear()}) {
                         return true;
                     }
                     </c:forEach>
@@ -61,6 +71,14 @@
                 }
             ],
         });
+
+        function validateForm() {
+            var x = document.forms["calendar"]["day"].value;
+            if (x == "") {
+                alert("Day must be filled out");
+                return false;
+            }
+        }
     </script>
 </div>
 <jsp:include page="fragments/footer.jsp"/>

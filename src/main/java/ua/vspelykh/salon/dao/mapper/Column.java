@@ -35,4 +35,6 @@ public final class Column {
     public static final String COMMENT = "comment";
     public static final String SERVICE_ID = "service_id";
     public static final String ABOUT = "about";
+    public static final String TIME_START = "time_start";
+    public static final String TIME_END = "time_end";
 }

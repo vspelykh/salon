@@ -1,0 +1,11 @@
+.cool-date {
+    background-color: #ac2bac;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+}

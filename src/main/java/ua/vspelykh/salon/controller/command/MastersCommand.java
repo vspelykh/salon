@@ -2,6 +2,7 @@ package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.MastersLevel;
+import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.service.UserService;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
@@ -39,6 +41,8 @@ public class MastersCommand extends Command {
             setCheckedLists(levels, serviceIds, search);
             int countOfItems = userService.getCountOfMasters(levels, serviceIds, search);
             setPaginationParams(page, size, countOfItems, sort);
+            Set<Role> roles = (Set<Role>) request.getSession().getAttribute("roles");
+            request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
             forward(MASTERS);
         } catch (ServiceException e) {
             e.printStackTrace();

@@ -9,6 +9,7 @@ import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 

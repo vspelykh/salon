@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS orderings;
 DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS base_services;
 DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS working_days;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS consultations;
 
@@ -93,6 +94,17 @@ CREATE TABLE consultations
     name   VARCHAR NOT NULL,
     number VARCHAR NOT NULL,
     date   TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE working_days
+(
+    id      SERIAL PRIMARY KEY,
+    user_id INTEGER   NOT NULL,
+    date    DATE NOT NULL,
+    time_start TIME NOT NULL,
+    time_end TIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT user_working_day UNIQUE(user_id, date)
 );
 
 --POPULATION DB:
@@ -216,3 +228,21 @@ VALUES (1, 4),
        (1, 8);
 INSERT INTO marks (appointment_id, mark, comment, date)
 VALUES (1, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00');
+
+INSERT INTO working_days (user_id, date, time_start, time_end)
+VALUES (2, '20.01.2023', '8:00', '20:00'),
+       (2, '13.01.2023','8:00', '20:00'),
+       (2, '21.01.2023', '8:00', '20:00'),
+       (2, '24.01.2023', '8:00', '20:00'),
+       (2, '25.01.2023', '8:00', '20:00'),
+       (2, '28.01.2023', '8:00', '20:00'),
+       (2, '29.01.2023', '8:00', '20:00'),
+       (2, '30.01.2023', '8:00', '20:00'),
+       (2, '31.01.2023', '8:00', '20:00'),
+       (2, '2.02.2023', '8:00', '20:00'),
+       (2, '3.02.2023', '8:00', '20:00'),
+       (2, '5.02.2023', '8:00', '20:00'),
+       (2, '6.02.2023', '8:00', '20:00'),
+       (2, '9.02.2023', '8:00', '20:00'),
+       (2, '10.02.2023', '8:00', '20:00'),
+       (2, '12.02.2023', '8:00', '20:00');

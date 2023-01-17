@@ -42,6 +42,11 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String ILIKE = " ILIKE ";
     protected static final String OR = " OR ";
     protected static final String AND = " AND ";
+    protected static final String ON_CONFLICT = "  ON CONFLICT ";
+    protected static final String DO_UPDATE = "  DO UPDATE ";
+    protected static final String SET = "SET ";
+
+
 
     protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.id ";
     protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
