@@ -29,7 +29,7 @@
                 <h2 class="mb-5 text-center">Calendar for ${user.name} ${user.surname}. Choose the day</h2>
                 <div class="col-lg-3">
                     <c:choose>
-                        <c:when test="${exc == y}">
+                        <c:when test="${param.exc == 'y'}">
                             <h6 style="color: red">Time slot have already occupied or duration not allowed anymore</h6>
                         </c:when>
                     </c:choose>
