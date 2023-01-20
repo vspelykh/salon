@@ -6,14 +6,16 @@ public class UserLevel implements Serializable {
 
     private int masterId;
     private MastersLevel level;
+    private String about;
     private boolean isActive;
 
     public UserLevel() {
     }
 
-    public UserLevel(int masterId, MastersLevel level, boolean isActive) {
+    public UserLevel(int masterId, MastersLevel level, String about, boolean isActive) {
         this.masterId = masterId;
         this.level = level;
+        this.about = about;
         this.isActive = isActive;
     }
 
@@ -39,5 +41,21 @@ public class UserLevel implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    @Override
+    public String toString() {
+        return "UserLevel{" +
+                "masterId=" + masterId +
+                ", level=" + level +
+                '}';
     }
 }

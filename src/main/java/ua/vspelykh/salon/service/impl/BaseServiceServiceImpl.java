@@ -22,6 +22,15 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     }
 
     @Override
+    public BaseService findById(Integer id) throws ServiceException {
+        try {
+            return bsDao.findById(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public List<BaseService> findAll() throws ServiceException {
         try {
             return bsDao.findAll();
@@ -37,7 +46,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
             if (baseService.isNew()) {
                 bsDao.create(baseService);
             } else bsDao.update(baseService);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             LOG.error("Error to save base service");
             throw new ServiceException(e);
         }
@@ -47,7 +56,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     public void delete(Integer baseServiceId) throws ServiceException {
         try {
             bsDao.removeById(baseServiceId);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             LOG.error("Error to delete base service by id");
             throw new ServiceException(e);
         }

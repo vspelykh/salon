@@ -1,8 +1,10 @@
 package ua.vspelykh.salon.dao.connection;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.postgresql.Driver;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,6 +12,9 @@ import java.util.Properties;
 
 public class DBCPDataSource {
 
+    private static final Logger LOG = LogManager.getLogger(DBCPDataSource.class);
+
+    private static final String DB_PROPERTY_PATH = "db/dbConnection.properties";
     private static final String DB_URL = "db.url";
     private static final String DB_USER = "db.user";
     private static final String DB_PASSWORD = "db.password";
@@ -22,28 +27,28 @@ public class DBCPDataSource {
         ds.setUrl(properties.getProperty(DB_URL));
         ds.setUsername(properties.getProperty(DB_USER));
         ds.setPassword(properties.getProperty(DB_PASSWORD));
+        ds.setDriver(new Driver());
         ds.setMinIdle(5);
         ds.setMaxIdle(10);
         ds.setMaxOpenPreparedStatements(100);
     }
 
-    public static Connection getConnection(){
-        Connection connection = null;
+    public static Connection getConnection() throws SQLException {
         try {
-            connection = ds.getConnection();
+            return ds.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Error to connect to DB");
         }
-        return connection;
     }
 
     private static void readProperties(Properties properties) {
-        try (FileReader reader = new FileReader("src/main/resources/db/dbConnection.properties")) {
-            properties.load(reader);
+        try {
+            properties.load(DBCPDataSource.class.getClassLoader().getResourceAsStream(DB_PROPERTY_PATH));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error to read property file for DB connection");
         }
     }
 
-    private DBCPDataSource(){ }
+    private DBCPDataSource() {
+    }
 }

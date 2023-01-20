@@ -3,6 +3,7 @@ package ua.vspelykh.salon.dao;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.util.exception.DaoException;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 

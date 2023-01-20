@@ -1,11 +1,14 @@
 package ua.vspelykh.salon.service;
 
+import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
 
 public interface ServiceService {
+
+    Service findById(Integer id) throws ServiceException;
 
     List<Service> getAllByMasterId(Integer masterId) throws ServiceException;
 
@@ -18,4 +21,5 @@ public interface ServiceService {
 
     void delete(Integer id) throws ServiceException;
 
+    List<MasterServiceDto> getDTOsByMasterId(int masterId) throws ServiceException;
 }

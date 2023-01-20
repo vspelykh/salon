@@ -9,7 +9,7 @@ public class User extends AbstractBaseEntity {
     private String surname;
     private String email;
     private String number;
-    private String password;
+    private transient String password;
     private Set<Role> roles = new HashSet<>();
 
     public User() {

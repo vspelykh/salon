@@ -23,7 +23,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     private static final Logger LOG = LogManager.getLogger(AppointmentDaoImpl.class);
 
     public AppointmentDaoImpl() {
-        super(DBCPDataSource.getConnection(), RowMapperFactory.getAppointmentRowMapper(), Table.APPOINTMENT);
+        super(RowMapperFactory.getAppointmentRowMapper(), Table.APPOINTMENT);
     }
 
     @Override
@@ -49,7 +49,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     private List<Appointment> getByDateAndEntityId(LocalDate date, int entityId, String column) throws DaoException {
         AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(date, entityId, column);
         String query = queryBuilder.buildQuery();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Appointment> appointments = new ArrayList<>();
@@ -68,7 +69,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     public int create(Appointment entity) throws DaoException {
         String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount)"
                 + VALUES + "(?,?,?,?,?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setAppointmentStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -87,7 +89,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     public void update(Appointment entity) throws DaoException {
         String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
                 ", price = ?, discount = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
             int key = statement.executeUpdate();
             if (key != 1) {

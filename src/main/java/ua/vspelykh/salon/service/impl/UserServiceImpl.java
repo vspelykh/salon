@@ -6,13 +6,19 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
+import ua.vspelykh.salon.dto.UserMasterDTO;
+import ua.vspelykh.salon.model.MastersLevel;
+import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 
@@ -157,4 +163,56 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
+                                             String search, int page, int size, MasterSort sort) throws ServiceException {
+        try {
+            List<UserMasterDTO> dtos = new ArrayList<>();
+            List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
+            List<Integer> ids = new ArrayList<>();
+            masters.forEach(user -> ids.add(user.getId()));
+
+            List<UserLevel> userLevels = userLevelDao.findAll().stream()
+                    .filter(ul -> ids.contains(ul.getMasterId()))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < masters.size(); i++) {
+                dtos.add(UserMasterDTO.build(masters.get(i), userLevels.get(i)));
+            }
+            return dtos;
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException {
+        try {
+            return userDao.getCountOfMasters(levels, serviceIds, search);
+        } catch (DaoException e){
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<User> findBySearch(String search) throws ServiceException{
+        try {
+            return userDao.findBySearch(search);
+        } catch (DaoException e) {
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void updateRole(int userId, String action, Role role) throws ServiceException {
+        try {
+            userDao.updateRole(userId, action, role);
+        } catch (DaoException e) {
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
 }

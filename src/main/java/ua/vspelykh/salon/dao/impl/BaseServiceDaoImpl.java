@@ -10,10 +10,7 @@ import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +19,15 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     private static final Logger LOG = LogManager.getLogger(BaseServiceDaoImpl.class);
 
     public BaseServiceDaoImpl() {
-        super(DBCPDataSource.getConnection(), RowMapperFactory.getBaseServiceRowMapper(), Table.BASE_SERVICE);
+        super(RowMapperFactory.getBaseServiceRowMapper(), Table.BASE_SERVICE);
     }
 
     @Override
     public List<BaseService> findByFilter(String name, Integer priceFrom, Integer priceTo) throws DaoException {
         BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(name, priceFrom, priceTo);
         String query = queryBuilder.buildQuery();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BaseService> baseServices = new ArrayList<>();
@@ -47,7 +45,8 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     @Override
     public int create(BaseService entity) throws DaoException {
         String query = INSERT + tableName + " (service, price)" + VALUES + "(?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getService());
             statement.setInt(2, entity.getPrice());
             statement.executeUpdate();
@@ -66,7 +65,8 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     @Override
     public void update(BaseService entity) throws DaoException {
         String query = "UPDATE base_services SET service = ?, price = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, entity.getService());
             statement.setInt(2, entity.getPrice());
             statement.setInt(3, entity.getId());

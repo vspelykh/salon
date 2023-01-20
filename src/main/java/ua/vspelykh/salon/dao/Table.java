@@ -11,4 +11,6 @@ public final class Table {
     public static final String APPOINTMENT = "appointments";
     public static final String ORDERING = "orderings";
     public static final String MARK = "marks";
+    public static final String CONSULTATION = "consultations";
+    public static final String WORKING_DAYS = "working_days";
 }
