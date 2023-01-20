@@ -28,6 +28,11 @@
             <div class="row justify-content-center">
                 <h2 class="mb-5 text-center">Calendar for ${user.name} ${user.surname}. Choose the day</h2>
                 <div class="col-lg-3">
+                    <c:choose>
+                        <c:when test="${exc == y}">
+                            <h6 style="color: red">Time slot have already occupied or duration not allowed anymore</h6>
+                        </c:when>
+                    </c:choose>
                     <form onsubmit="return validateForm()" id="calendar"
                           name="calendar-form" action="${pageContext.request.contextPath}/salon">
                         <label>
@@ -43,45 +48,59 @@
                             <button onclick="document.getElementById('form-id').submit();">Submit</button>
                         </div>
                     </form>
-                    <h6>${day.userId}</h6>
-                    <c:forEach items="${slots}" var="item">
-                        ${item}
-                    </c:forEach>
+                    <form action="${pageContext.request.contextPath}/salon">
+                        <label>
+                            <input hidden name="command" value="appointment">
+                        </label>
+                        <label>
+                            <input hidden name="day" value="${placeholder}">
+                        </label>
+                        <input hidden name="id" value="${user.id}">
+                        <br>
+                        <c:forEach items="${slots}" var="item">
+                            <input type="radio" class="btn-check" required name="time" id="${item}"
+                                   value="${item}" autocomplete="off"/>
+                            <label class="btn btn-secondary" for="${item}">${item}</label>
+                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${slots != null}">
+                                <button type="submit">Create an appointment</button>
+                            </c:when>
+                        </c:choose>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        flatpickr("#calendar, input[type=datetime-local]", {
-            dateFormat: "d-m-Y",
-            enableTime: false,
-            minDate: "today",
-            maxDate: new Date().fp_incr(90),
-            "enable": [
-                function (date) {
-                    <c:forEach items="${days}" var="item">
-                    if (date.getMonth() + 1 === ${item.getDate().getMonth().getValue()}
-                        && date.getDate() === ${item.getDate().getDayOfMonth()}
-                        && date.getFullYear() === ${item.getDate().getYear()}) {
-                        return true;
-                    }
-                    </c:forEach>
-                    return false;
+</div>
+<script>
+    flatpickr("#calendar, input[type=datetime-local]", {
+        dateFormat: "d-m-Y",
+        enableTime: false,
+        minDate: "today",
+        maxDate: new Date().fp_incr(90),
+        "enable": [
+            function (date) {
+                <c:forEach items="${days}" var="item">
+                if (date.getMonth() + 1 === ${item.getDate().getMonth().getValue()}
+                    && date.getDate() === ${item.getDate().getDayOfMonth()}
+                    && date.getFullYear() === ${item.getDate().getYear()}) {
+                    return true;
                 }
-            ],
-        });
-
-        function validateForm() {
-            var x = document.forms["calendar"]["day"].value;
-            if (x == "") {
-                alert("Day must be filled out");
+                </c:forEach>
                 return false;
             }
-        }
-    </script>
-</div>
-<jsp:include page="fragments/footer.jsp"/>
+        ],
+    });
 
+    function validateForm() {
+        var x = document.forms["calendar"]["day"].value;
+        if (x == "") {
+            alert("Day must be filled out");
+            return false;
+        }
+    }
+</script>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

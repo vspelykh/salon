@@ -32,4 +32,8 @@ public abstract class Command {
     protected void redirect(String target) throws ServletException, IOException {
         response.sendRedirect(target);
     }
+
+    protected boolean checkNullParam(String param) {
+        return param != null && !param.isEmpty();
+    }
 }

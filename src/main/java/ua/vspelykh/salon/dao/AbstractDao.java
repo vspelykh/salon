@@ -47,7 +47,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String SET = "SET ";
 
 
-
     protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.id ";
     protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
     protected static final String UPDATE_ROLE_QUERY = DELETE + USER_ROLES + WHERE + USER_ID + EQUAL + AND + ROLE + EQUAL;
@@ -127,16 +126,13 @@ public abstract class AbstractDao<T> implements Dao<T> {
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 entities.add(rowMapper.map(resultSet));
-            } else {
-                LOG.error("No entities from {} found by {} with value {}.", tableName, param, value);
-                throw new DaoException("No entities from " + tableName + " found by " + param + " with value " + value);
             }
+            return entities;
         } catch (SQLException e) {
             LOG.error(e);
             throw new DaoException(FAIL_FIND_LIST + tableName + " by " + param + " with value " + value, e);
         }
-        return entities;
     }
 }

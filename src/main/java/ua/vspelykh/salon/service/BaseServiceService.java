@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface BaseServiceService {
 
+    BaseService findById(Integer id) throws ServiceException;
+
     List<BaseService> findAll() throws ServiceException;
 
     void save(BaseService baseService) throws ServiceException;

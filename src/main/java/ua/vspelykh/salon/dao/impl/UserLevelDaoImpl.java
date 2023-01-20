@@ -94,7 +94,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public UserLevel getUserLevelByUserId(Integer userId) throws DaoException {
-        return findByParam(userId, Column.USER_ID);
+        return findByParam(userId, Column.ID);
     }
 
 }

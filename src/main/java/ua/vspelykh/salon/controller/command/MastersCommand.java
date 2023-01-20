@@ -69,8 +69,8 @@ public class MastersCommand extends Command {
     private List<Integer> setServiceIds() {
         if (checkNullParam(request.getParameter(SERVICES))) {
             List<Integer> serviceIds = new ArrayList<>();
-            for (String level : request.getParameterValues(SERVICES)) {
-                serviceIds.add(Integer.valueOf(level));
+            for (String service : request.getParameterValues(SERVICES)) {
+                serviceIds.add(Integer.valueOf(service));
             }
             return serviceIds;
         } else return Collections.emptyList();
@@ -96,10 +96,6 @@ public class MastersCommand extends Command {
         request.setAttribute(SERVICES + CHECKED, serviceIds);
         request.setAttribute(SEARCH + CHECKED, search);
 
-    }
-
-    private boolean checkNullParam(String param) {
-        return param != null && !param.isEmpty();
     }
 
 }

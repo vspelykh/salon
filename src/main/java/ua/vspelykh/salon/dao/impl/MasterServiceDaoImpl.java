@@ -2,12 +2,12 @@ package ua.vspelykh.salon.dao.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.AbstractDao;
-import ua.vspelykh.salon.dao.MasterServiceDao;
-import ua.vspelykh.salon.dao.Table;
+import ua.vspelykh.salon.dao.*;
 import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.dto.MasterServiceDto;
+import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<Service> implements MasterServiceDao {
+
+    private BaseServiceDao baseServiceDao = DaoFactory.getBaseServiceDao();
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
 
@@ -66,7 +68,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
 
     @Override
     public List<Service> getAllByUserId(Integer userId) throws DaoException {
-        return findAllByParam(userId, Column.USER_ID);
+        return findAllByParam(userId, Column.MASTER_ID);
     }
 
     @Override
@@ -94,6 +96,17 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
             LOG.error(e);
             throw new DaoException(e);
         }
+    }
+
+    public List<MasterServiceDto> getDTOsByMasterId(int masterId) throws DaoException{
+        List<Service> services = getAllByUserId(masterId);
+        List<MasterServiceDto> dtos = new ArrayList<>();
+        for (Service service : services){
+            BaseService baseService = baseServiceDao.findById(service.getBaseServiceId());
+            MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseService, service.getContinuance());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     private class MasterServiceFilteredQueryBuilder {

@@ -16,6 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-
+        String  s = "men's haircut 1st group|20|180|1";
+        System.out.println(s.split("[|]")[2]);
     }
 }

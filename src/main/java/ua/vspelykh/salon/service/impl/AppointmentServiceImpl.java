@@ -9,9 +9,10 @@ import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import static ua.vspelykh.salon.util.validation.Validation.validateAppointment;
 
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -31,11 +32,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void save(Appointment appointment) throws ServiceException {
+        if (!validateAppointment(appointment)){
+            throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
+        }
         try {
             if (appointment.isNew()) {
                 appointmentDao.create(appointment);
             } else appointmentDao.update(appointment);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             LOG.error("Error to save an appointment");
             throw new ServiceException(e);
         }

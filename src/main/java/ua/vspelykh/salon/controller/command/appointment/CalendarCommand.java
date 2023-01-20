@@ -1,7 +1,6 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.ServiceFactory;
@@ -14,21 +13,23 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.util.TimeSlotsUtils.getSlots;
+import static ua.vspelykh.salon.util.TimeSlotsUtils.removeOccupiedSlots;
 
 public class CalendarCommand extends Command {
 
-    private static final String DAY = "day";
+    protected static final String DAY = "day";
+    protected static final String TIME = "time";
     private static final String USER = "user";
     private static final String datePattern = "dd-MM-yyyy";
     private static final String SLOTS = "slots";
     private static final String PLACEHOLDER = "placeholder";
-    private static final int INTERVAL = 30;
+    public static final int INTERVAL = 30;
 
     private WorkingDayService workingDayService = ServiceFactory.getWorkingDayService();
     private UserService userService = ServiceFactory.getUserService();
@@ -56,36 +57,9 @@ public class CalendarCommand extends Command {
     }
 
     private void addTimeSlotsToAttributes(WorkingDay day) throws ServiceException {
-        List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd());
-        removeOccupiedSlots(slots, appointmentService.getByDateAndMasterId(day.getDate(), day.getUserId()));
+        List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
+        removeOccupiedSlots(slots, appointmentService.getByDateAndMasterId(day.getDate(), day.getUserId()), INTERVAL);
         request.setAttribute(SLOTS, slots);
     }
 
-    private List<LocalTime> getSlots(LocalTime timeStart, LocalTime timeEnd) {
-        List<LocalTime> slots = new ArrayList<>();
-        slots.add(timeStart);
-        while (timeStart.isBefore(timeEnd.minusMinutes(INTERVAL))) {
-            timeStart = timeStart.plusMinutes(INTERVAL);
-            slots.add(timeStart);
-        }
-        return slots;
-    }
-
-    private void removeOccupiedSlots(List<LocalTime> slots, List<Appointment> appointments) {
-        for (Appointment appointment : appointments) {
-            LocalTime startTime = appointment.getDate().toLocalTime();
-            double d = (double) appointment.getContinuance() / (double) INTERVAL;
-            int countOfSlots = (int) Math.ceil(d);
-            List<LocalTime> slotsForRemove = new ArrayList<>();
-            slotsForRemove.add(startTime);
-            LocalTime copy = LocalTime.of(startTime.getHour(), startTime.getMinute());
-            for (int i = 0; i < countOfSlots - 1; i++) {
-                copy = copy.plusMinutes(INTERVAL);
-                slotsForRemove.add(copy);
-            }
-            slots.removeAll(slotsForRemove);
-        }
-    }
 }
-//TODO: Super, slots are done! Need to check it with different continuance. Set date as value in the input field,
-// Form for appointment.

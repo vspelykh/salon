@@ -12,6 +12,7 @@ public class ServiceFactory {
     private static final ConsultationService consultationService = new ConsultationServiceImpl();
     private static final WorkingDayService workingDayService = new WorkingDayServiceImpl();
     private static final AppointmentService appointmentService = new AppointmentServiceImpl();
+    private static final ServiceService serviceService = new ServiceServiceImpl();
 
     public static UserService getUserService() {
         return userService;
@@ -31,5 +32,9 @@ public class ServiceFactory {
 
     public static AppointmentService getAppointmentService() {
         return appointmentService;
+    }
+
+    public static ServiceService getServiceService() {
+        return serviceService;
     }
 }

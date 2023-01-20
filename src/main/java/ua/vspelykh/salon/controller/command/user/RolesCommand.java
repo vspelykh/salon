@@ -20,7 +20,7 @@ public class RolesCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         String search = request.getParameter(SEARCH);
-        if (search != null && !search.isEmpty()) {
+        if (checkNullParam(search)) {
             try {
                 request.setAttribute("master", Role.HAIRDRESSER);
                 request.setAttribute("admin", Role.ADMINISTRATOR);
