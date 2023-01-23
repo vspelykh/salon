@@ -26,6 +26,7 @@ public class CommandNames {
     public static final String APPOINTMENT = "appointment";
     public static final String APPOINTMENTS = "appointments";
     public static final String CREATE_APPOINTMENT = "create-appointment";
+    public static final String FEEDBACK = "feedback";
 
     private CommandNames() {
     }
