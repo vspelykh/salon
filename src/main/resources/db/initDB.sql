@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS marks;
 DROP TABLE IF EXISTS orderings;
 DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS base_services;
+DROP TABLE IF EXISTS service_categories;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS working_days;
 DROP TABLE IF EXISTS users;
@@ -23,10 +24,11 @@ CREATE UNIQUE INDEX users_unique_email_idx ON users (number);
 
 CREATE TABLE user_level
 (
-    id     INTEGER NOT NULL,
-    level  VARCHAR NOT NULL,
-    about  VARCHAR NOT NULL,
-    active BOOLEAN NOT NULL,
+    id       INTEGER NOT NULL,
+    level    VARCHAR NOT NULL,
+    about    VARCHAR NOT NULL,
+    about_ua VARCHAR NOT NULL,
+    active   BOOLEAN NOT NULL,
     FOREIGN KEY (id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -38,11 +40,21 @@ CREATE TABLE user_roles
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE base_services
+CREATE TABLE service_categories
 (
     id      SERIAL PRIMARY KEY,
-    service VARCHAR NOT NULL,
-    price   INTEGER NOT NULL
+    name    VARCHAR NOT NULL,
+    name_ua VARCHAR NOT NULL
+);
+
+CREATE TABLE base_services
+(
+    id          SERIAL PRIMARY KEY,
+    category_id INTEGER NOT NULL,
+    service     VARCHAR NOT NULL,
+    service_ua  VARCHAR NOT NULL,
+    price       INTEGER NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES service_categories (id)
 );
 
 CREATE TABLE services
@@ -64,6 +76,7 @@ CREATE TABLE appointments
     date        TIMESTAMP           NOT NULL,
     price       INTEGER             NOT NULL,
     discount    INTEGER DEFAULT '1' NOT NULL,
+    status      VARCHAR             NOT NULL,
     FOREIGN KEY (master_id) REFERENCES users (id),
     FOREIGN KEY (client_id) REFERENCES users (id)
 );
@@ -98,13 +111,13 @@ CREATE TABLE consultations
 
 CREATE TABLE working_days
 (
-    id      SERIAL PRIMARY KEY,
-    user_id INTEGER   NOT NULL,
-    date    DATE NOT NULL,
-    time_start TIME NOT NULL,
-    time_end TIME NOT NULL,
+    id         SERIAL PRIMARY KEY,
+    user_id    INTEGER NOT NULL,
+    date       DATE    NOT NULL,
+    time_start TIME    NOT NULL,
+    time_end   TIME    NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT user_working_day UNIQUE(user_id, date)
+    CONSTRAINT user_working_day UNIQUE (user_id, date)
 );
 
 --POPULATION DB:
@@ -158,37 +171,50 @@ VALUES (1, 'ADMINISTRATOR'),
        (21, 'CLIENT'),
        (5, 'CLIENT');
 
-INSERT INTO base_services (service, price)
-VALUES ('men''s haircut 1st group', 180),
-       ('men''s haircut 2nd group', 200),
-       ('men''s haircut 3rd group', 220),
-       ('women''s haircut 1st group', 250),
-       ('women''s haircut 2nd group', 300),
-       ('women''s haircut 3rd group', 350),
-       ('head washing', 25),
-       ('coloring', 400),
-       ('highlighting', 120),
-       ('alignment (straightening)', 60),
-       ('styling', 50),
-       ('lamination', 100),
-       ('wave', 50),
-       ('hair treatment', 100);
+INSERT INTO service_categories(name, name_ua)
+VALUES ('Men''s', 'Чоловічі'),
+       ('Women''s', 'Жіночі'),
+       ('Others', 'Інші');
 
-INSERT INTO user_level (id, level, active, about)
-VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
+INSERT INTO base_services (category_id, service, service_ua, price)
+VALUES (1, 'men''s haircut 1st group', 'чоловіча стрижка 1 групи', 180),
+       (1, 'men''s haircut 2nd group', 'чоловіча стрижка 2 групи', 200),
+       (1, 'men''s haircut 3rd group', 'чоловіча стрижка 3 групи', 220),
+       (2, 'women''s haircut 1st group', 'жіноча стрижка 1 групи', 250),
+       (2, 'women''s haircut 2nd group', 'жіноча стрижка 2 групи', 300),
+       (2, 'women''s haircut 3rd group', 'жіноча стрижка 3 групи', 350),
+       (3, 'head washing', 'миття голови', 25),
+       (3, 'coloring', 'фарбування', 400),
+       (3, 'highlighting', 'мелірування', 120),
+       (3, 'alignment (straightening)', 'вирівнювання (випрямлення)', 60),
+       (3, 'styling', 'укладання', 50),
+       (3, 'lamination', 'ламінування', 100),
+       (3, 'wave', 'завивка', 50),
+       (3, 'hair treatment', 'лікування волосся', 100);
+
+INSERT INTO user_level (id, level, active, about, about_ua)
+VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist',
+        'перукар-модельєр, колорист, спеціаліст біозавивки'),
        (4, 'YOUNG', true,
-        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist',
+        'перукар-модельєр, дизайнер зачісок, чоловічих та дитячих стрижок, бровіст'),
        (5, 'PRO', true,
-        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist',
+        'перукар-модельєр, дизайнер зачісок, чоловічих та дитячих стрижок, бровіст'),
        (6, 'TOP', true,
-        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
-       (7, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist',
+        'перукар-модельєр, дизайнер зачісок, чоловічих та дитячих стрижок, бровіст'),
+       (7, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist',
+        'перукар-модельєр, колорист, спеціаліст біозавивки'),
        (8, 'TOP', true,
-        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist',
+        'перукар-модельєр, дизайнер зачісок, чоловічих та дитячих стрижок, бровіст'),
        (9, 'TOP', true,
-        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist'),
-       (10, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist'),
-       (11, 'PRO', true, 'hairdresser-modeler, colorist');
+        'hairdresser-fashion designer, designer of hairstyles, men''s and children''s haircuts, eyebrow artist',
+        'перукар-модельєр, дизайнер зачісок, чоловічих та дитячих стрижок, бровіст'),
+       (10, 'YOUNG', true, 'hairdresser-modeler, colorist, bio-perm specialist',
+        'перукар-модельєр, колорист, спеціаліст біозавивки'),
+       (11, 'PRO', true, 'hairdresser-modeler, colorist', 'перукар-модельєр, колорист');
 
 INSERT INTO services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),
@@ -220,8 +246,8 @@ VALUES (2, 1, 20),
        (4, 13, 10),
        (4, 14, 60);
 
-INSERT INTO appointments (master_id, client_id, continuance, date, price, discount)
-VALUES (2, 3, 180, '13.11.2022 16:00:00', '650', '-1');
+INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status)
+VALUES (2, 3, 180, '13.11.2022 16:00:00', '650', '-1', 'SUCCESS');
 
 INSERT INTO orderings (appointment_id, service_id)
 VALUES (1, 4),
@@ -231,7 +257,7 @@ VALUES (1, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00');
 
 INSERT INTO working_days (user_id, date, time_start, time_end)
 VALUES (2, '20.01.2023', '8:00', '20:00'),
-       (2, '13.01.2023','8:00', '20:00'),
+       (2, '13.01.2023', '8:00', '20:00'),
        (2, '21.01.2023', '8:00', '20:00'),
        (2, '24.01.2023', '8:00', '20:00'),
        (2, '25.01.2023', '8:00', '20:00'),
