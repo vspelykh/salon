@@ -28,6 +28,7 @@
                         <span>Please, choose another slot or date, if you need more time.</span>
                         <hr class="mt-1">
                     </div>
+
                     <div class="col-12">
                         <form name="form-order" action="${pageContext.request.contextPath}/salon" method="post"
                               onchange="appointmentAction()">

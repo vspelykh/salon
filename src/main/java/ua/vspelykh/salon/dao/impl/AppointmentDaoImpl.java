@@ -42,6 +42,26 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     }
 
     @Override
+    public List<Appointment> getAllByDate(LocalDate date) throws DaoException {
+        AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(date);
+        String query = queryBuilder.buildAppointmentsForEmailQuery();
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            queryBuilder.setParamsForEmailQuery(preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Appointment> appointments = new ArrayList<>();
+            while (resultSet.next()) {
+                Appointment entity = rowMapper.map(resultSet);
+                appointments.add(entity);
+            }
+            return appointments;
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
     public List<Appointment> getByDateAndMasterId(LocalDate date, int masterId) throws DaoException {
         return getByDateAndEntityId(date, masterId, Column.MASTER_ID);
     }
@@ -115,9 +135,10 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     private class AppointmentQueryBuilder {
 
+        private final String dateQuery = SELECT + tableName + WHERE + "DATE(date)" + EQUAL;
         private final LocalDate date;
-        private final int entityId;
-        private final String columnName;
+        private int entityId;
+        private String columnName;
 
         public AppointmentQueryBuilder(LocalDate date, int entityId, String columnName) {
             this.date = date;
@@ -125,14 +146,26 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             this.columnName = columnName;
         }
 
+        public AppointmentQueryBuilder(LocalDate date) {
+            this.date = date;
+        }
+
         public String buildQuery() {
-            return SELECT + tableName + " WHERE " + "DATE(date) = ? AND " + columnName + "=?";
+            return dateQuery + AND + columnName + EQUAL;
         }
 
         public void setParams(PreparedStatement preparedStatement) throws SQLException {
             int k = 0;
             preparedStatement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
             preparedStatement.setInt(++k, entityId);
+        }
+
+        public String buildAppointmentsForEmailQuery() {
+            return dateQuery;
+        }
+
+        public void setParamsForEmailQuery(PreparedStatement preparedStatement) throws SQLException {
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
         }
     }
 }

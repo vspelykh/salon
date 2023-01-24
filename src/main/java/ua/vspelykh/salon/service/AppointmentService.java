@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.service;
 
+import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,5 +20,7 @@ public interface AppointmentService {
     List<Appointment> getByClientId(Integer clientId) throws ServiceException;
 
     List<Appointment> getByDateAndMasterId(LocalDate date, int masterId) throws ServiceException;
+
+    List<AppointmentDto> getAllByDate(LocalDate date) throws ServiceException;
 
 }

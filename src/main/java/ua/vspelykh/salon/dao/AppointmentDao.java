@@ -17,4 +17,5 @@ public interface AppointmentDao extends Dao<Appointment> {
 
     List<Appointment> getByDateAndClientId(LocalDate date, int clientId) throws DaoException;
 
+    List<Appointment> getAllByDate(LocalDate date) throws DaoException;
 }
