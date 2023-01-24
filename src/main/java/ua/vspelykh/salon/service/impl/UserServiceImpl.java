@@ -170,14 +170,9 @@ public class UserServiceImpl implements UserService {
         try {
             List<UserMasterDTO> dtos = new ArrayList<>();
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
-            List<Integer> ids = new ArrayList<>();
-            masters.forEach(user -> ids.add(user.getId()));
 
-            List<UserLevel> userLevels = userLevelDao.findAll().stream()
-                    .filter(ul -> ids.contains(ul.getMasterId()))
-                    .collect(Collectors.toList());
-            for (int i = 0; i < masters.size(); i++) {
-                dtos.add(UserMasterDTO.build(masters.get(i), userLevels.get(i)));
+            for (User currentMaster : masters) {
+                dtos.add(UserMasterDTO.build(currentMaster, userLevelDao.getUserLevelByUserId(currentMaster.getId())));
             }
             return dtos;
         } catch (DaoException e) {
