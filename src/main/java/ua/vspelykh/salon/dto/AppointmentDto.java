@@ -1,5 +1,6 @@
 package ua.vspelykh.salon.dto;
 
+import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.model.User;
@@ -17,6 +18,10 @@ public class AppointmentDto {
     private int price;
     private int discount;
     private List<Ordering> orderings;
+    private AppointmentStatus status;
+
+    public AppointmentDto() {
+    }
 
     public Integer getId() {
         return id;
@@ -80,5 +85,13 @@ public class AppointmentDto {
 
     public void setOrderings(List<Ordering> orderings) {
         this.orderings = orderings;
+    }
+
+    public AppointmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
     }
 }

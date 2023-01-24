@@ -42,7 +42,7 @@ public class CreateAppointmentCommand extends Command {
             LocalTime time = LocalTime.parse(request.getParameter(TIME));
             Appointment appointment = new Appointment(null, master.getId(), client.getId(),
                     getTotalContinuance(services), LocalDateTime.of(date, time),
-                    getTotalPrice(services, userService.getUserLevelByUserId(master.getId())), 1);
+                    getTotalPrice(services, userService.getUserLevelByUserId(master.getId())), 1, AppointmentStatus.RESERVED);
             appointmentService.save(appointment);
             forward(HOME_PAGE);
         } catch (ServiceException e) {

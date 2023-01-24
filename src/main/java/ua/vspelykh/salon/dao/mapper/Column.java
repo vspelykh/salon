@@ -25,6 +25,7 @@ public final class Column {
     public static final String MASTER_ID = "master_id";
     public static final String BASE_SERVICE_ID = "base_service_id";
     public static final String CONTINUANCE = "continuance";
+    public static final String STATUS = "status";
 
     public static final String CLIENT_ID = "client_id";
     public static final String DATE = "date";
@@ -37,4 +38,6 @@ public final class Column {
     public static final String ABOUT = "about";
     public static final String TIME_START = "time_start";
     public static final String TIME_END = "time_end";
+
+    public static final String UA = "_ua";
 }
