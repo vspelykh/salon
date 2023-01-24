@@ -11,8 +11,7 @@
 </head>
 
 <header class="p-3 bg-dark text-white">
-    <fmt:setLocale value="${cookie['lang'].value}"/>
-
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
     <%
         request.setAttribute("path", request.getQueryString());

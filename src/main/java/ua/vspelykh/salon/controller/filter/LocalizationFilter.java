@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.HOME_REDIRECT;
 
-public class CookieLocaleFilter implements Filter {
+public class LocalizationFilter implements Filter {
     public static final String LANG = "lang";
     private static final String regex = "[?&]?lang=[\\w]{2}";
 
@@ -19,8 +19,7 @@ public class CookieLocaleFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         if (req.getParameter(LANG) != null) {
-            Cookie cookie = new Cookie(LANG, req.getParameter(LANG));
-            res.addCookie(cookie);
+            req.getSession().setAttribute(LANG, req.getParameter(LANG));
             String path = req.getContextPath() + HOME_REDIRECT;
             if (!req.getQueryString().matches(regex)) {
                 path += "?" + req.getQueryString().replaceAll(regex, "");

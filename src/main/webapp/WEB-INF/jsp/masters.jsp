@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Our masters</title>
-    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
 </head>
 <body>

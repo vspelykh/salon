@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Manage schedule of masters</title>
-    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">

@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Appointment</title>
-    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
     <script src="static/scripts.js"></script>
 
