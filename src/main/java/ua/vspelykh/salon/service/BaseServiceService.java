@@ -1,5 +1,6 @@
 package ua.vspelykh.salon.service;
 
+import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -9,7 +10,7 @@ public interface BaseServiceService {
 
     BaseService findById(Integer id) throws ServiceException;
 
-    List<BaseService> findAll() throws ServiceException;
+    List<BaseServiceDto> findAll(String locale) throws ServiceException;
 
     void save(BaseService baseService) throws ServiceException;
 

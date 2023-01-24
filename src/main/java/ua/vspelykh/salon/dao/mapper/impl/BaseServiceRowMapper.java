@@ -12,6 +12,6 @@ public class BaseServiceRowMapper implements RowMapper<BaseService> {
 
     @Override
     public BaseService map(ResultSet rs) throws SQLException {
-        return new BaseService(rs.getInt(ID), rs.getString(SERVICE), rs.getInt(PRICE));
+        return new BaseService(rs.getInt(ID), rs.getString(SERVICE), rs.getString(SERVICE + UA), rs.getInt(PRICE));
     }
 }

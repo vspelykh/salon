@@ -3,6 +3,8 @@ package ua.vspelykh.salon.dto;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 
+import java.util.Objects;
+
 public class UserMasterDTO {
 
     private int id;
@@ -16,7 +18,7 @@ public class UserMasterDTO {
     public UserMasterDTO() {
     }
 
-    public static UserMasterDTO build(User user, UserLevel userLevel){
+    public static UserMasterDTO build(User user, UserLevel userLevel, String locale) {
         UserMasterDTO dto = new UserMasterDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
@@ -24,7 +26,11 @@ public class UserMasterDTO {
         dto.setEmail(user.getEmail());
         dto.setNumber(user.getNumber());
         dto.setLevel(String.valueOf(userLevel.getLevel()));
-        dto.setAbout(userLevel.getAbout());
+        if (Objects.equals(locale, "ua")) {
+            dto.setAbout(userLevel.getAboutUa());
+        } else {
+            dto.setAbout(userLevel.getAbout());
+        }
         return dto;
     }
 

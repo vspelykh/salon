@@ -4,12 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.BaseServiceDao;
 import ua.vspelykh.salon.dao.DaoFactory;
+import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BaseServiceServiceImpl implements BaseServiceService {
 
@@ -31,9 +34,9 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     }
 
     @Override
-    public List<BaseService> findAll() throws ServiceException {
+    public List<BaseServiceDto> findAll(String locale) throws ServiceException {
         try {
-            return bsDao.findAll();
+            return toDtos(bsDao.findAll(), locale);
         } catch (DaoException e) {
             LOG.error("Error to get all base services");
             throw new ServiceException(e);
@@ -70,5 +73,25 @@ public class BaseServiceServiceImpl implements BaseServiceService {
             LOG.error("Error to get base services by filter");
             throw new ServiceException(e);
         }
+    }
+
+    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale){
+        List<BaseServiceDto> dtos = new ArrayList<>();
+        for (BaseService baseService : baseServices){
+            dtos.add(toDto(baseService, locale));
+        }
+        return dtos;
+    }
+
+    private BaseServiceDto toDto(BaseService baseService, String locale) {
+        BaseServiceDto dto = new BaseServiceDto();
+        dto.setId(baseService.getId());
+        if (Objects.equals(locale, "ua")) {
+            dto.setService(baseService.getServiceUa());
+        } else {
+            dto.setService(baseService.getService());
+        }
+        dto.setPrice(baseService.getPrice());
+        return dto;
     }
 }

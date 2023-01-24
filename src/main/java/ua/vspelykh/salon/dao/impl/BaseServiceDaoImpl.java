@@ -44,11 +44,10 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     @Override
     public int create(BaseService entity) throws DaoException {
-        String query = INSERT + tableName + " (service, price)" + VALUES + "(?,?)";
+        String query = INSERT + tableName + " (service, service_ua, price)" + VALUES + "(?,?,?)";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, entity.getService());
-            statement.setInt(2, entity.getPrice());
+            setStatement(statement, entity);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -60,6 +59,13 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             LOG.error(FAIL_CREATE + tableName, e);
             throw new DaoException(FAIL_CREATE + tableName, e);
         }
+    }
+
+    private void setStatement(PreparedStatement statement, BaseService entity) throws SQLException {
+        int k = 0;
+        statement.setString(++k, entity.getService());
+        statement.setString(++k, entity.getServiceUa());
+        statement.setInt(++k, entity.getPrice());
     }
 
     @Override

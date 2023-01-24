@@ -183,7 +183,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             statement.executeUpdate();
             if (isNewHairdresser(action, role)) {
                 UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
-                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", true));
+                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", " ", true));
             } else if (isMasterRemoved(action, role)) {
                 UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
                 userLevelDao.removeById(userId);

@@ -18,7 +18,6 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 
@@ -166,13 +165,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
-                                             String search, int page, int size, MasterSort sort) throws ServiceException {
+                                             String search, int page, int size, MasterSort sort, String locale) throws ServiceException {
         try {
             List<UserMasterDTO> dtos = new ArrayList<>();
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
-                dtos.add(UserMasterDTO.build(currentMaster, userLevelDao.getUserLevelByUserId(currentMaster.getId())));
+                dtos.add(UserMasterDTO.build(currentMaster, userLevelDao.getUserLevelByUserId(currentMaster.getId()), locale));
             }
             return dtos;
         } catch (DaoException e) {

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.SERVICES;
 import static ua.vspelykh.salon.controller.command.CommandNames.PRICING;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
 public class PricingCommand extends Command {
     BaseServiceService service = ServiceFactory.getBaseServiceService();
@@ -16,7 +17,7 @@ public class PricingCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         try {
-            request.setAttribute(SERVICES,service.findAll());
+            request.setAttribute(SERVICES,service.findAll(String.valueOf(request.getSession().getAttribute(LANG))));
             forward(PRICING);
         } catch (ServiceException e) {
             e.printStackTrace();

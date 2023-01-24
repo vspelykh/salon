@@ -18,6 +18,7 @@ import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
 public class MastersCommand extends Command {
 
@@ -36,7 +37,8 @@ public class MastersCommand extends Command {
             MasterSort sort = request.getParameter(SORT) == null ? MasterSort.NAME_ASC
                     : MasterSort.valueOf(request.getParameter(SORT));
             String search = request.getParameter(SEARCH);
-            List<UserMasterDTO> mastersDto = userService.getMastersDto(levels, serviceIds, search, page, size, sort);
+            String locale = String.valueOf(request.getSession().getAttribute(LANG));
+            List<UserMasterDTO> mastersDto = userService.getMastersDto(levels, serviceIds, search, page, size, sort, locale);
             request.setAttribute(MASTERS, mastersDto);
             setCheckedLists(levels, serviceIds, search);
             int countOfItems = userService.getCountOfMasters(levels, serviceIds, search);
@@ -51,7 +53,7 @@ public class MastersCommand extends Command {
 
     private void setFilterAttributes() throws ServiceException {
         request.setAttribute(LEVELS, MastersLevel.list());
-        request.setAttribute(SERVICES, baseService.findAll());
+        request.setAttribute(SERVICES, baseService.findAll(String.valueOf(request.getSession().getAttribute(LANG))));
         request.setAttribute(SIZES, SIZE_ARRAY);
         request.setAttribute(SORTS, MasterSort.list());
     }
