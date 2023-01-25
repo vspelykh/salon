@@ -244,7 +244,12 @@ VALUES (2, 1, 20),
        (4, 11, 30),
        (4, 12, 20),
        (4, 13, 10),
-       (4, 14, 60);
+       (5, 1, 60),
+       (5, 2, 30),
+       (5, 3, 30),
+       (6, 4, 20),
+       (6, 5, 10),
+       (6, 6, 60);
 
 INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status)
 VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS'),

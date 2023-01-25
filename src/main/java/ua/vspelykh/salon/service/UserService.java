@@ -38,10 +38,10 @@ public interface UserService {
 
     void update(UserLevel userLevel) throws ServiceException;
 
-    List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
+    List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                       String search, int page, int size, MasterSort sort, String locale) throws ServiceException;
 
-    int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException;
+    int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds, String search) throws ServiceException;
 
     List<User> findBySearch(String search) throws ServiceException;
 

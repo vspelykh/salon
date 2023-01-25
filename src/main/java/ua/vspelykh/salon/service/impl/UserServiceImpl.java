@@ -165,10 +165,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserMasterDTO> getMastersDto(List<MastersLevel> levels, List<Integer> serviceIds,
-                                             String search, int page, int size, MasterSort sort, String locale) throws ServiceException {
+                                             List<Integer> categoriesIds, String search, int page, int size, MasterSort sort, String locale) throws ServiceException {
         try {
             List<UserMasterDTO> dtos = new ArrayList<>();
-            List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
+            List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, categoriesIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
                 List<Mark> marks = markDao.getMarksByMasterId(currentMaster.getId());
@@ -190,9 +190,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException {
+    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds, String search) throws ServiceException {
         try {
-            return userDao.getCountOfMasters(levels, serviceIds, search);
+            return userDao.getCountOfMasters(levels, serviceIds, categoriesIds, search);
         } catch (DaoException e) {
             //TODO
             throw new ServiceException(e);

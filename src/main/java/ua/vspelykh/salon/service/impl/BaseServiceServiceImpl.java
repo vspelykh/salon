@@ -3,9 +3,11 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.BaseServiceDao;
+import ua.vspelykh.salon.dao.Dao;
 import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.model.BaseService;
+import ua.vspelykh.salon.model.ServiceCategory;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -18,6 +20,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceServiceImpl.class);
 
+    private static final Dao<ServiceCategory> scs = DaoFactory.getServiceCategoryDao();
     private final BaseServiceDao bsDao;
 
     public BaseServiceServiceImpl() {
@@ -66,30 +69,43 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     }
 
     @Override
-    public List<BaseService> findByFilter(String name, Integer priceFrom, Integer priceTo) throws ServiceException {
+    public List<BaseServiceDto> findByFilter(List<Integer> categoriesIds, int page, int size, String locale) throws ServiceException {
         try {
-            return bsDao.findByFilter(name, priceFrom, priceTo);
+            return toDtos(bsDao.findByFilter(categoriesIds, page, size), locale);
         } catch (DaoException e) {
-            LOG.error("Error to get base services by filter");
+            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
 
-    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale){
+    @Override
+    public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException {
+        try {
+            return bsDao.getCountOfCategories(categoriesIds, page, size);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws DaoException {
         List<BaseServiceDto> dtos = new ArrayList<>();
-        for (BaseService baseService : baseServices){
+        for (BaseService baseService : baseServices) {
             dtos.add(toDto(baseService, locale));
         }
         return dtos;
     }
 
-    private BaseServiceDto toDto(BaseService baseService, String locale) {
+    private BaseServiceDto toDto(BaseService baseService, String locale) throws DaoException {
         BaseServiceDto dto = new BaseServiceDto();
+        ServiceCategory category = scs.findById(baseService.getCategoryId());
         dto.setId(baseService.getId());
         if (Objects.equals(locale, "ua")) {
             dto.setService(baseService.getServiceUa());
+            dto.setCategory(category.getNameUa());
         } else {
             dto.setService(baseService.getService());
+            dto.setCategory(category.getName());
         }
         dto.setPrice(baseService.getPrice());
         return dto;

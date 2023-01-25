@@ -14,6 +14,7 @@ public class RowMapperFactory {
     private static final MarkRowMapper markRowMapper = new MarkRowMapper();
     private static final  ConsultationRowMapper consultationRowMapper = new ConsultationRowMapper();
     private static final  WorkingDayRowMapper workingDayRowMapper = new WorkingDayRowMapper();
+    private static final ServiceCategoryRowMapper serviceCategoryRowMapper = new ServiceCategoryRowMapper();
 
     private RowMapperFactory() {
 
@@ -53,5 +54,9 @@ public class RowMapperFactory {
 
     public static RowMapper<WorkingDay> getWorkingDayRowMapper() {
         return workingDayRowMapper;
+    }
+
+    public static RowMapper<ServiceCategory> getServiceCategoryRowMapper() {
+        return serviceCategoryRowMapper;
     }
 }

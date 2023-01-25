@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class BaseService extends AbstractBaseEntity implements Serializable {
 
     private String service;
+    private int categoryId;
     private String serviceUa;
     private int price;
 
@@ -12,11 +13,20 @@ public class BaseService extends AbstractBaseEntity implements Serializable {
 
     }
 
-    public BaseService(Integer id, String service, String serviceUa, int price) {
+    public BaseService(Integer id, String service, int categoryId, String serviceUa, int price) {
         super(id);
         this.service = service;
+        this.categoryId = categoryId;
         this.serviceUa = serviceUa;
         this.price = price;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getService() {

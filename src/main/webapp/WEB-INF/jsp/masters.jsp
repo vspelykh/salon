@@ -23,6 +23,29 @@
                             <!--                        accordion-->
                             <div class="accordion" id="accordionPanelsStayOpenExample">
                                 <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingCat">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapseCat" aria-expanded="false"
+                                                aria-controls="panelsStayOpen-collapseCat">
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseCat" class="accordion-collapse collapse"
+                                         aria-labelledby="panelsStayOpen-headingCat">
+                                        <div class="accordion-body">
+                                            <label class="form-check">
+                                                <c:forEach items="${categories}" var="item">
+                                                    <label><input name="categories" type="checkbox" value="${item.id}"
+                                                        ${categoriesChecked.contains(item.id) ? 'checked="checked"' : ''}>
+                                                        <c:out value="${item.name}"/>
+                                                    </label>
+                                                    <br>
+                                                </c:forEach>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <div class="accordion-item">
                                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                                         <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
@@ -169,6 +192,7 @@
                     </li>
                 </ul>
             </nav>
+        </div>
     </form>
 </div>
 <br>

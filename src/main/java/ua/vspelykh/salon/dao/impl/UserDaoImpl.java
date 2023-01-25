@@ -128,9 +128,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds,
+    public List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                                      String search, int page, int size, MasterSort sort) throws DaoException {
-        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, page, size, sort, search);
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, categoriesIds,
+                page, size, sort, search);
         String query;
         if (sort.equals(MasterSort.RATING_ASC) || sort.equals(MasterSort.RATING_DESC)) {
             query = queryBuilder.buildQueryWithRatingSorting();
@@ -146,9 +147,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws DaoException {
+    public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds, String search) throws DaoException {
         int count;
-        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, search);
+        MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, categoriesIds, search);
         String query = queryBuilder.buildCountQuery();
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -286,24 +287,28 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private List<MastersLevel> levels;
         private List<Integer> serviceIds;
+        private List<Integer> categoriesIds;
         private int page;
         private int size;
         private MasterSort sort;
         private String search;
 
-        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds,
+        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                           int page, int size, MasterSort sort, String search) {
             this.levels = levels;
             this.serviceIds = serviceIds;
+            this.categoriesIds = categoriesIds;
             this.page = page;
             this.size = size;
             this.sort = sort;
             this.search = search;
         }
 
-        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, String search) {
+        public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds,
+                                          List<Integer> categoriesIds, String search) {
             this.levels = levels;
             this.serviceIds = serviceIds;
+            this.categoriesIds = categoriesIds;
             this.search = search;
         }
 
@@ -332,6 +337,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
                 query.append("s.base_service_id IN(");
                 appendQuestionMarks(query, serviceIds);
+                if (!categoriesIds.isEmpty()) {
+                    query.append(AND);
+                }
+                appendCategories(query);
+                query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
+            } else if (!categoriesIds.isEmpty()){
+                query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
+                appendCategories(query);
                 query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
             }
         }
@@ -340,6 +353,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (!levels.isEmpty()) {
                 query.append("and ul.level IN(");
                 appendQuestionMarks(query, levels);
+            }
+        }
+
+        private void appendCategories(StringBuilder q) {
+            if (!categoriesIds.isEmpty()) {
+                q.append(" s.base_service_id IN(SELECT id from base_services WHERE category_id IN(");
+                appendQuestionMarks(q, categoriesIds);
+                q.append(")");
             }
         }
 
@@ -416,18 +437,30 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private boolean isAllListsAndSearchAreEmpty() {
-            return levels.isEmpty() && serviceIds.isEmpty() && (search == null || search.isEmpty());
+            return levels.isEmpty() && serviceIds.isEmpty() && (search == null || search.isEmpty())
+                    && (categoriesIds == null || categoriesIds.isEmpty());
         }
 
         private void setParams(PreparedStatement preparedStatement) throws SQLException {
             int paramNum = 1;
             if (MasterSort.RATING_ASC.equals(sort) || MasterSort.RATING_DESC.equals(sort)) {
                 paramNum = setServices(preparedStatement, paramNum);
+                paramNum = setCategories(preparedStatement, paramNum);
                 setLevels(preparedStatement, paramNum);
             } else {
                 paramNum = setLevels(preparedStatement, paramNum);
-                setServices(preparedStatement, paramNum);
+                paramNum = setServices(preparedStatement, paramNum);
+                setCategories(preparedStatement, paramNum);
             }
+        }
+
+        private int setCategories(PreparedStatement preparedStatement, int paramNum) throws SQLException {
+            if (!categoriesIds.isEmpty()) {
+                for (Integer id : categoriesIds) {
+                    preparedStatement.setInt(paramNum++, id);
+                }
+            }
+            return paramNum;
         }
 
         private int setLevels(PreparedStatement preparedStatement, int paramNum) throws SQLException {

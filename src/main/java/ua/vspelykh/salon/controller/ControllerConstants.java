@@ -27,6 +27,7 @@ public class ControllerConstants {
     public static final String USER_LEVEL = "userLevel";
     public static final String LEVELS = "levels";
     public static final String SERVICES = "services";
+    public static final String CATEGORIES = "categories";
     public static final String MASTERS = "masters";
     public static final String SIZE = "size";
     public static final String SEARCH = "search";

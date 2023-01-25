@@ -34,6 +34,8 @@ public final class Column {
     public static final String APPOINTMENT_ID = "appointment_id";
     public static final String MARK = "mark";
     public static final String COMMENT = "comment";
+    public static final String CATEGORY = "category";
+    public static final String CATEGORY_ID = "category_id";
     public static final String SERVICE_ID = "service_id";
     public static final String ABOUT = "about";
     public static final String TIME_START = "time_start";

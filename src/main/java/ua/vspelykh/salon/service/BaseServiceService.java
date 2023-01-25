@@ -16,6 +16,7 @@ public interface BaseServiceService {
 
     void delete(Integer baseServiceId) throws ServiceException;
 
-    List<BaseService> findByFilter(String name, Integer priceFrom, Integer priceTo) throws ServiceException;
+    List<BaseServiceDto> findByFilter(List<Integer> categoriesIds, int page, int size, String locale) throws ServiceException;
 
+    int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException;
 }
