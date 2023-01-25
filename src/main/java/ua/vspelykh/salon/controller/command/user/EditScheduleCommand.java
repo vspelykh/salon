@@ -1,11 +1,14 @@
 package ua.vspelykh.salon.controller.command.user;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Appointment;
+import ua.vspelykh.salon.dto.AppointmentDto;
+import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.service.WorkingDayService;
+import ua.vspelykh.salon.util.ScheduleBuilder;
+import ua.vspelykh.salon.util.ScheduleItem;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -17,6 +20,8 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENTS;
+import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getLocaleDate;
 
@@ -46,9 +51,13 @@ public class EditScheduleCommand extends Command {
             } else if (DELETE.equals(request.getParameter(ACTION))) {
                 workingDayService.deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
             } else {
-                List<Appointment> appointments =
-                        appointmentService.getByDateAndMasterId(getLocaleDate(datesArray[0]), userId);
-                request.setAttribute(APPOINTMENTS, appointments);
+                List<AppointmentDto> appointments =
+                        appointmentService.getDtosByDateAndMasterId(getLocaleDate(datesArray[0]), userId);
+                WorkingDay day = workingDayService.getDayByUserIdAndDate(userId, getLocaleDate(datesArray[0]));
+                String locale = (String) request.getSession().getAttribute(LANG);
+                ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale);
+                List<ScheduleItem> build = builder.build();
+                request.setAttribute(SCHEDULE, build);
                 forward(APPOINTMENTS);
             }
 
@@ -61,4 +70,5 @@ public class EditScheduleCommand extends Command {
     private Time parseTime(String time) {
         return Time.valueOf(LocalTime.parse(time));
     }
+
 }

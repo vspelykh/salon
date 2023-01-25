@@ -9,7 +9,6 @@ import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -86,6 +85,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> getByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
         try {
             return appointmentDao.getByDateAndMasterId(date, masterId);
+        } catch (DaoException e) {
+            LOG.error("Error to find appointment by date and master id");
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<AppointmentDto> getDtosByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
+        try {
+            return toDTOs(getByDateAndMasterId(date, masterId));
         } catch (DaoException e) {
             LOG.error("Error to find appointment by date and master id");
             throw new ServiceException(e);

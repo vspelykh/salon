@@ -11,10 +11,11 @@
 <jsp:include page="fragments/header.jsp"/>
 <div class="container">
 
+    <c:forEach var="item" items="${schedule}">
+        ${item.start} - ${item.end}, ${item.info}
+        <br>
+    </c:forEach>
 </div>
 <jsp:include page="fragments/footer.jsp"/>
-<c:forEach items="${appointments}" var="item">
-    ${item.clientId}
-</c:forEach>
 </body>
 </html>

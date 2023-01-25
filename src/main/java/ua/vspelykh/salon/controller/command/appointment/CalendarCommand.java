@@ -23,7 +23,7 @@ import static ua.vspelykh.salon.util.TimeSlotsUtils.removeOccupiedSlots;
 
 public class CalendarCommand extends Command {
 
-    protected static final String DAY = "day";
+    public static final String DAY = "day";
     protected static final String TIME = "time";
     private static final String USER = "user";
     private static final String datePattern = "dd-MM-yyyy";
@@ -51,7 +51,7 @@ public class CalendarCommand extends Command {
                 request.setAttribute(PLACEHOLDER, "Pick A Date");
             }
         } catch (ServiceException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         forward(CALENDAR);
     }

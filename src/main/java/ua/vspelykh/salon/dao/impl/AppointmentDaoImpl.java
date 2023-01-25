@@ -18,6 +18,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.dao.mapper.Column.DATE;
+
 public class AppointmentDaoImpl extends AbstractDao<Appointment> implements AppointmentDao {
 
     private static final Logger LOG = LogManager.getLogger(AppointmentDaoImpl.class);
@@ -151,7 +153,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         public String buildQuery() {
-            return dateQuery + AND + columnName + EQUAL;
+            return dateQuery + AND + columnName + EQUAL + ORDER_BY + DATE;
         }
 
         public void setParams(PreparedStatement preparedStatement) throws SQLException {
