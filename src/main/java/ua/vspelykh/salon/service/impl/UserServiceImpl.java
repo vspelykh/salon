@@ -4,13 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.dao.DaoFactory;
+import ua.vspelykh.salon.dao.MarkDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
 import ua.vspelykh.salon.dto.UserMasterDTO;
-import ua.vspelykh.salon.model.MastersLevel;
-import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.model.UserLevel;
+import ua.vspelykh.salon.model.*;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -27,10 +25,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final UserLevelDao userLevelDao;
+    private final MarkDao markDao;
 
     public UserServiceImpl() {
         userDao = DaoFactory.getUserDao();
         userLevelDao = DaoFactory.getUserLevelDao();
+        markDao = DaoFactory.getMarkDao();
     }
 
     @Override
@@ -171,7 +171,9 @@ public class UserServiceImpl implements UserService {
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
-                dtos.add(UserMasterDTO.build(currentMaster, userLevelDao.getUserLevelByUserId(currentMaster.getId()), locale));
+                List<Mark> marks = markDao.getMarksByMasterId(currentMaster.getId());
+                UserLevel userLevel = userLevelDao.getUserLevelByUserId(currentMaster.getId());
+                dtos.add(UserMasterDTO.build(currentMaster, userLevel, countRating(marks), locale));
             }
             return dtos;
         } catch (DaoException e) {
@@ -179,18 +181,26 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private double countRating(List<Mark> marks) {
+        double rating = 0;
+        for (Mark mark : marks) {
+            rating += mark.getMark();
+        }
+        return rating / marks.size();
+    }
+
     @Override
     public int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, String search) throws ServiceException {
         try {
             return userDao.getCountOfMasters(levels, serviceIds, search);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             //TODO
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<User> findBySearch(String search) throws ServiceException{
+    public List<User> findBySearch(String search) throws ServiceException {
         try {
             return userDao.findBySearch(search);
         } catch (DaoException e) {

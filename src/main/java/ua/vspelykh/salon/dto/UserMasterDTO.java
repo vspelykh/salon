@@ -3,6 +3,8 @@ package ua.vspelykh.salon.dto;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class UserMasterDTO {
@@ -14,11 +16,14 @@ public class UserMasterDTO {
     private String number;
     private String level;
     private String about;
+    private String rating;
+
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     public UserMasterDTO() {
     }
 
-    public static UserMasterDTO build(User user, UserLevel userLevel, String locale) {
+    public static UserMasterDTO build(User user, UserLevel userLevel, double rating, String locale) {
         UserMasterDTO dto = new UserMasterDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
@@ -30,6 +35,12 @@ public class UserMasterDTO {
             dto.setAbout(userLevel.getAboutUa());
         } else {
             dto.setAbout(userLevel.getAbout());
+        }
+        if (Double.isNaN(rating)){
+            dto.setRating("0.0");
+        } else {
+            df.setRoundingMode(RoundingMode.UP);
+            dto.setRating(df.format(rating));
         }
         return dto;
     }
@@ -88,6 +99,14 @@ public class UserMasterDTO {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 
     @Override

@@ -113,6 +113,7 @@
                                         <th><fmt:message key="master.name"/><i></i></th>
                                         <th><fmt:message key="master.about"/><i></i></th>
                                         <th><fmt:message key="master.level"/><i></i></th>
+                                        <th>Rating</th>
                                         <c:choose>
                                             <c:when test="${isAdmin}">
                                                 <th></th>
@@ -139,6 +140,7 @@
                                                     </th>
                                                 </c:when>
                                             </c:choose>
+                                            <td>${item.rating}</td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

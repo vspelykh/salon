@@ -45,7 +45,12 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String ON_CONFLICT = "  ON CONFLICT ";
     protected static final String DO_UPDATE = "  DO UPDATE ";
     protected static final String SET = "SET ";
+    protected static final String HAVING = " HAVING ";
+    protected static final String SEARCH_PATTERN = "'%%%s%%'";
 
+    protected static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
+            "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN marks m ON u.id=" +
+            "(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id)";
 
     protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.id ";
     protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
