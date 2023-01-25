@@ -12,6 +12,12 @@ public class BaseServiceRowMapper implements RowMapper<BaseService> {
 
     @Override
     public BaseService map(ResultSet rs) throws SQLException {
-        return new BaseService(rs.getInt(ID), rs.getString(SERVICE), rs.getInt(PRICE));
+        BaseService baseService = new BaseService();
+        baseService.setId(rs.getInt(ID));
+        baseService.setCategoryId(rs.getInt(CATEGORY_ID));
+        baseService.setService(rs.getString(SERVICE));
+        baseService.setServiceUa(rs.getString(SERVICE + UA));
+        baseService.setPrice(rs.getInt(PRICE));
+        return baseService;
     }
 }

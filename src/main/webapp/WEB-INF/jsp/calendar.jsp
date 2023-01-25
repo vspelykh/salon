@@ -16,7 +16,7 @@
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
     <title>Calendar ${name.name} ${name.surname}</title>
-    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
 </head>
 <body>

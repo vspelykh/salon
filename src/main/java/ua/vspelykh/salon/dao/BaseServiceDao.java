@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface BaseServiceDao extends Dao<BaseService> {
 
-    List<BaseService> findByFilter(String name, Integer priceFrom, Integer priceTo) throws DaoException;
+    List<BaseService> findByFilter(List<Integer> categoriesIds, int page, int size) throws DaoException;
 
+    int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws DaoException;
 }

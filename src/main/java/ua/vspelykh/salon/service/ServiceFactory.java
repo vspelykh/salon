@@ -4,6 +4,7 @@ import ua.vspelykh.salon.service.impl.*;
 
 public class ServiceFactory {
 
+
     private ServiceFactory() {
     }
 
@@ -14,6 +15,7 @@ public class ServiceFactory {
     private static final AppointmentService appointmentService = new AppointmentServiceImpl();
     private static final ServiceService serviceService = new ServiceServiceImpl();
     private static final MarkService markService = new MarkServiceImpl();
+    private static final ServiceCategoryService serviceCategoryService = new ServiceCategoryServiceImpl();
 
     public static UserService getUserService() {
         return userService;
@@ -41,5 +43,9 @@ public class ServiceFactory {
 
     public static MarkService gerMarkService() {
         return markService;
+    }
+
+    public static ServiceCategoryService getServiceCategoryService() {
+        return serviceCategoryService;
     }
 }

@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Our masters</title>
-    <fmt:setLocale value="${cookie['lang'].value}"/>
+    <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
 </head>
 <body>
@@ -22,6 +22,29 @@
                         <div class="nav">
                             <!--                        accordion-->
                             <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingCat">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapseCat" aria-expanded="false"
+                                                aria-controls="panelsStayOpen-collapseCat">
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseCat" class="accordion-collapse collapse"
+                                         aria-labelledby="panelsStayOpen-headingCat">
+                                        <div class="accordion-body">
+                                            <label class="form-check">
+                                                <c:forEach items="${categories}" var="item">
+                                                    <label><input name="categories" type="checkbox" value="${item.id}"
+                                                        ${categoriesChecked.contains(item.id) ? 'checked="checked"' : ''}>
+                                                        <c:out value="${item.name}"/>
+                                                    </label>
+                                                    <br>
+                                                </c:forEach>
+                                            </label>
+                                        </div>
+                                    </div>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                                         <button class="accordion-button collapsed" type="button"
@@ -113,6 +136,7 @@
                                         <th><fmt:message key="master.name"/><i></i></th>
                                         <th><fmt:message key="master.about"/><i></i></th>
                                         <th><fmt:message key="master.level"/><i></i></th>
+                                        <th>Rating</th>
                                         <c:choose>
                                             <c:when test="${isAdmin}">
                                                 <th></th>
@@ -139,6 +163,7 @@
                                                     </th>
                                                 </c:when>
                                             </c:choose>
+                                            <td>${item.rating}</td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
@@ -167,6 +192,7 @@
                     </li>
                 </ul>
             </nav>
+        </div>
     </form>
 </div>
 <br>

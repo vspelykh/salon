@@ -1,25 +1,65 @@
 package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.service.BaseServiceService;
+import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.ServiceFactory;
+import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.SERVICES;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.PRICING;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
 public class PricingCommand extends Command {
-    BaseServiceService service = ServiceFactory.getBaseServiceService();
+
+    private BaseServiceService service = ServiceFactory.getBaseServiceService();
+    private ServiceCategoryService categoryService = ServiceFactory.getServiceCategoryService();
+
 
     @Override
     public void process() throws ServletException, IOException {
         try {
-            request.setAttribute(SERVICES,service.findAll());
+            String locale = String.valueOf(request.getSession().getAttribute(LANG));
+            request.setAttribute(CATEGORIES, categoryService.findAll(locale));
+            List<Integer> categoriesIds = setCategoriesIds();
+            int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
+            int size = request.getParameter(SIZE) == null ? 5 : Integer.parseInt(request.getParameter(SIZE));
+
+            request.setAttribute(SERVICES, service.findByFilter(categoriesIds, page, size, locale));
+            int countOfItems = service.getCountOfCategories(categoriesIds, page, size);
+            setPaginationParams(page, size, countOfItems);
+            setCheckedList(categoriesIds);
             forward(PRICING);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
     }
+
+    private void setCheckedList(List<Integer> categoriesIds) {
+        request.setAttribute(CATEGORIES + CHECKED, categoriesIds);
+    }
+
+    private List<Integer> setCategoriesIds() {
+        if (checkNullParam(request.getParameter(CATEGORIES))) {
+            List<Integer> categoriesIds = new ArrayList<>();
+            for (String categories : request.getParameterValues(CATEGORIES)) {
+                categoriesIds.add(Integer.valueOf(categories));
+            }
+            return categoriesIds;
+        } else return Collections.emptyList();
+    }
+
+    private void setPaginationParams(int page, int size, int countOfItems) {
+        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(PAGE + CHECKED, page);
+        request.setAttribute(SIZE + CHECKED, size);
+        countAndSet(size, countOfItems);
+    }
+
 }

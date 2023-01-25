@@ -14,6 +14,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.dao.mapper.Column.CATEGORY_ID;
+
 public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements BaseServiceDao {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceDaoImpl.class);
@@ -23,8 +25,8 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     }
 
     @Override
-    public List<BaseService> findByFilter(String name, Integer priceFrom, Integer priceTo) throws DaoException {
-        BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(name, priceFrom, priceTo);
+    public List<BaseService> findByFilter(List<Integer> categoriesIds, int page, int size) throws DaoException {
+        BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds, page, size);
         String query = queryBuilder.buildQuery();
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -43,12 +45,33 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     }
 
     @Override
+    public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws DaoException {
+        int count;
+        BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds, page, size);
+        String query = queryBuilder.buildCountQuery();
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            queryBuilder.setParams(preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            } else {
+                //TODO
+                throw new DaoException("TODO");
+            }
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException("TODO");
+        }
+        return count;
+    }
+
+    @Override
     public int create(BaseService entity) throws DaoException {
-        String query = INSERT + tableName + " (service, price)" + VALUES + "(?,?)";
+        String query = INSERT + tableName + " (service, service_ua, price)" + VALUES + "(?,?,?)";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, entity.getService());
-            statement.setInt(2, entity.getPrice());
+            setStatement(statement, entity);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -60,6 +83,13 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             LOG.error(FAIL_CREATE + tableName, e);
             throw new DaoException(FAIL_CREATE + tableName, e);
         }
+    }
+
+    private void setStatement(PreparedStatement statement, BaseService entity) throws SQLException {
+        int k = 0;
+        statement.setString(++k, entity.getService());
+        statement.setString(++k, entity.getServiceUa());
+        statement.setInt(++k, entity.getPrice());
     }
 
     @Override
@@ -82,41 +112,62 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     private class BaseServiceFilteredQueryBuilder {
 
-        private String name;
-        private final Integer priceFrom;
-        private final Integer priceTo;
+        private List<Integer> categoriesIds;
+        private final Integer page;
+        private final Integer size;
 
-        private BaseServiceFilteredQueryBuilder(String name, Integer priceFrom, Integer priceTo) {
-            this.name = name;
-            if (priceFrom == null) {
-                this.priceFrom = 0;
-            } else {
-                this.priceFrom = priceFrom;
-            }
-            this.priceTo = priceTo;
+        private BaseServiceFilteredQueryBuilder(List<Integer> categoriesIds, Integer page, Integer size) {
+            this.categoriesIds = categoriesIds;
+            this.page = page;
+            this.size = size;
         }
 
         private String buildQuery() {
-            StringBuilder query = new StringBuilder(SELECT + tableName + " WHERE service LIKE ?");
-            if (name == null || name.isEmpty()) {
-                name = "%";
-            } else name = "%" + name + "%";
-            query.append(" AND price>=?");
-            if (priceTo != null) {
-                query.append(" AND price<=?");
+            StringBuilder query = new StringBuilder(SELECT + tableName);
+            appendCategoriesIds(query);
+            return setPagingParamsAndGetQuery(query);
+        }
+
+        private String setPagingParamsAndGetQuery(StringBuilder query) {
+            int offset;
+            if (page == 1) {
+                offset = 0;
+            } else {
+                offset = (page - 1) * size;
             }
+            query.append(LIMIT).append(size);
+            query.append(OFFSET).append(offset);
             return query.toString();
         }
 
-        private void setParams(PreparedStatement preparedStatement) {
-            try {
-                preparedStatement.setString(1, name);
-                preparedStatement.setInt(2, priceFrom);
-                if (priceTo != null) {
-                    preparedStatement.setInt(3, priceTo);
+        private void appendQuestionMarks(StringBuilder query, List<?> userIds) {
+            for (int i = 0; i < userIds.size(); i++) {
+                query.append("?");
+                if (i != userIds.size() - 1)
+                    query.append(",");
+            }
+            query.append(")");
+        }
+
+        private void setParams(PreparedStatement preparedStatement) throws SQLException {
+            int num = 0;
+            if (!categoriesIds.isEmpty()) {
+                for (Integer id : categoriesIds) {
+                    preparedStatement.setInt(++num, id);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            }
+        }
+
+        public String buildCountQuery() {
+            StringBuilder query = new StringBuilder(COUNT_SERVICES_QUERY);
+            appendCategoriesIds(query);
+            return query.toString();
+        }
+
+        private void appendCategoriesIds(StringBuilder query) {
+            if (!categoriesIds.isEmpty()) {
+                query.append(WHERE + CATEGORY_ID + " IN(");
+                appendQuestionMarks(query, categoriesIds);
             }
         }
     }

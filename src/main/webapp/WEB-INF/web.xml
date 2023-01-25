@@ -23,7 +23,7 @@
   </filter-mapping>
   <filter>
     <filter-name>LanguageFilter</filter-name>
-    <filter-class>ua.vspelykh.salon.controller.filter.CookieLocaleFilter</filter-class>
+    <filter-class>ua.vspelykh.salon.controller.filter.LocalizationFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>LanguageFilter</filter-name>

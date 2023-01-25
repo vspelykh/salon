@@ -26,7 +26,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     private static final Logger LOG = LogManager.getLogger(WorkingDayDaoImpl.class);
 
     public WorkingDayDaoImpl() {
-        super(RowMapperFactory.getWorkingDayRowMapper(), Table.WORKING_DAYS);
+        super(RowMapperFactory.getWorkingDayRowMapper(), Table.WORKING_DAY);
     }
 
     @Override
