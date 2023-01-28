@@ -25,22 +25,13 @@
             <div class="row justify-content-center">
                 <h2 class="mb-5 text-center">Schedule for ${user.name} ${user.surname}.</h2>
                 <div class="col-lg-3">
-                    <form onsubmit="return validateForm()" id="schedule" method="post"
+                    <form onsubmit="return validateForm()" id="get-schedule" method="get"
                           name="schedule-form" action="${pageContext.request.contextPath}/salon">
                         <label>
-                            <input hidden name="command" value="edit-schedule">
+                            <input hidden name="command" value="get-schedule">
                         </label>
                         <label>
                             <input hidden name="id" value="${user.id}">
-                        </label>
-                        <h6 style="color: #ac2bac">Working days</h6>
-                        <label for="action-select">Action
-                            <input hidden name="command" value="schedule">
-                            <select name="action" id="action-select" required onclick="selectHelper()">
-                                <option disabled selected value> -- select an action --</option>
-                                <option value="save">save</option>
-                                <option value="delete">delete</option>
-                            </select>
                         </label>
                         <p></p>
                         <div class="form-group">
@@ -63,7 +54,7 @@
             mode: "multiple",
             dateFormat: "d-m-Y",
             enableTime: false,
-            minDate: "today",
+            minDate: new Date().fp_incr(-90),
             maxDate: new Date().fp_incr(90),
             onDayCreate: function (dObj, dStr, fp, dayElem) {
                 let s = "";

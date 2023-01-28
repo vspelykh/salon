@@ -6,10 +6,13 @@ import ua.vspelykh.salon.model.WorkingDay;
 
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 
 public class TimeSlotsUtils {
 
@@ -34,6 +37,7 @@ public class TimeSlotsUtils {
             removeProcess(d, startTime, interval, slots);
         }
     }
+
 
     private static void removeProcess(double d, LocalTime startTime, int interval, List<LocalTime> slots) {
         int countOfSlots = (int) Math.ceil(d);
@@ -71,5 +75,11 @@ public class TimeSlotsUtils {
         Duration duration;
         duration = Duration.between(start.toLocalTime(), end);
         return (int) (duration.getSeconds() / 60);
+    }
+
+    public static void removeSlotsIfDateIsToday(List<LocalTime> slots, LocalDate date) {
+        if (date.equals(LocalDate.now())) {
+            slots.removeIf(slotTime -> LocalTime.now().isAfter(slotTime));
+        }
     }
 }

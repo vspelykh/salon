@@ -38,7 +38,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void save(Appointment appointment) throws ServiceException {
-        if (!validateAppointment(appointment)){
+        if (appointment.isNew()  && !validateAppointment(appointment)){
             throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
         }
         try {
@@ -130,6 +130,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         dto.setPrice(appointment.getPrice());
         dto.setDiscount(appointment.getDiscount());
         dto.setOrderings(orderingDao.getByAppointmentId(appointment.getId()));
+        dto.setStatus(appointment.getStatus());
         return dto;
     }
 }

@@ -9,6 +9,7 @@ import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Appointment;
+import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.vspelykh.salon.dao.mapper.Column.DATE;
+import static ua.vspelykh.salon.dao.mapper.Column.STATUS;
 
 public class AppointmentDaoImpl extends AbstractDao<Appointment> implements AppointmentDao {
 
@@ -110,7 +112,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     @Override
     public void update(Appointment entity) throws DaoException {
         String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
-                ", price = ?, discount = ? WHERE id = ?";
+                ", price = ?, discount = ?, status = ? WHERE id = ?";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
@@ -132,6 +134,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         statement.setTimestamp(++k, Timestamp.valueOf(entity.getDate()));
         statement.setInt(++k, entity.getPrice());
         statement.setInt(++k, entity.getDiscount());
+        statement.setString(++k, entity.getStatus().name());
         return ++k;
     }
 
@@ -153,13 +156,14 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         public String buildQuery() {
-            return dateQuery + AND + columnName + EQUAL + ORDER_BY + DATE;
+            return dateQuery + AND + columnName + EQUAL + AND + STATUS + NOT_EQUAL + ORDER_BY + DATE;
         }
 
         public void setParams(PreparedStatement preparedStatement) throws SQLException {
             int k = 0;
             preparedStatement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
             preparedStatement.setInt(++k, entityId);
+            preparedStatement.setString(++k, AppointmentStatus.CANCELLED.name());
         }
 
         public String buildAppointmentsForEmailQuery() {

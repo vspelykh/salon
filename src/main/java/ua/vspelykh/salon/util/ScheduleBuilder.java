@@ -3,19 +3,17 @@ package ua.vspelykh.salon.util;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
-import java.io.Serializable;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
+import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 
 public class ScheduleBuilder {
 
@@ -25,18 +23,31 @@ public class ScheduleBuilder {
     private final List<AppointmentDto> appointments;
     private final WorkingDay day;
     private String locale;
+    private boolean isWeekend = false;
+    private Map<Integer, List<LocalTime>> freeSlotsForAppointments = new HashMap<>();
 
     private BaseServiceService baseService = ServiceFactory.getBaseServiceService();
+    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
 
     public ScheduleBuilder(List<AppointmentDto> appointments, WorkingDay day, String locale) {
+        if (day == null) {
+            items.add(getWeekend());
+            isWeekend = true;
+        }
         this.appointments = appointments;
         this.day = day;
         this.locale = locale;
     }
 
+    private ScheduleItem getWeekend() {
+        return new ScheduleItem(LocalTime.of(8, 0), LocalTime.of(20, 0), "weekend");
+    }
+
     public List<ScheduleItem> build() {
-        addItemsFromAppointments();
-        addFreeSlots();
+        if (!isWeekend) {
+            addItemsFromAppointments();
+            addFreeSlots();
+        }
         return getItems();
     }
 
@@ -49,7 +60,8 @@ public class ScheduleBuilder {
                 for (Ordering ordering : appointment.getOrderings()) {
                     joiner.add(getServiceName(ordering));
                 }
-                items.add(new ScheduleItem(start, end, joiner.toString()));
+                items.add(new ScheduleItem(appointment, start, end, joiner.toString()));
+                freeSlotsForAppointments.put(appointment.getId(), getPossibleSlotsForAppointment(day, appointment));
             }
         } catch (ServiceException e) {
             //TODO
@@ -57,14 +69,36 @@ public class ScheduleBuilder {
         }
     }
 
-    private void addFreeSlots(){
-        List<LocalTime> slots = TimeSlotsUtils.getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
-        TimeSlotsUtils.removeOccupiedSlotsForDtos(slots, appointments, INTERVAL);
+    private List<LocalTime> getPossibleSlotsForAppointment(WorkingDay day, AppointmentDto appointment) {
+        List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
+        removeOccupiedSlotsForDtos(slots, appointments, INTERVAL);
+        removeSlotsIfDateIsToday(slots, day.getDate());
+        List<LocalTime> possibleSlots = new ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
+            LocalTime current = slots.get(i);
+            int count = 1;
+            for (LocalTime another : slots) {
+                while (current.plusMinutes((long) count * INTERVAL).equals(another)) {
+                    ++count;
+                }
+
+                if (appointment.getContinuance() <= count * INTERVAL) {
+                    possibleSlots.add(current);
+                    break;
+                }
+            }
+        }
+        return possibleSlots;
+    }
+
+    private void addFreeSlots() {
+        List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
+        removeOccupiedSlotsForDtos(slots, appointments, INTERVAL);
         LocalTime start = slots.get(0);
         int count = 0;
-        for (int i = 0; i < slots.size()-1; i++){
+        for (int i = 0; i < slots.size() - 1; i++) {
             LocalTime currentSlot = slots.get(i);
-            if (currentSlot.plusMinutes(INTERVAL).equals(slots.get(i + 1))){
+            if (currentSlot.plusMinutes(INTERVAL).equals(slots.get(i + 1))) {
                 count++;
             } else {
                 addFreeScheduleItem(start, count);
@@ -90,4 +124,7 @@ public class ScheduleBuilder {
         return items.stream().sorted(Comparator.comparing(ScheduleItem::getStart)).collect(Collectors.toList());
     }
 
+    public Map<Integer, List<LocalTime>> getFreeSlotsForAppointments() {
+        return freeSlotsForAppointments;
+    }
 }

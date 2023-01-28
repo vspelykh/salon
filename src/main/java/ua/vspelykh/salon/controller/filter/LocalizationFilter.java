@@ -18,6 +18,10 @@ public class LocalizationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+        if (req.getSession().getAttribute(LANG) == null){
+            req.getSession().setAttribute(LANG, "en");
+        }
+
         if (req.getParameter(LANG) != null) {
             req.getSession().setAttribute(LANG, req.getParameter(LANG));
             String path = req.getContextPath() + HOME_REDIRECT;

@@ -68,7 +68,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
         try {
             return workingDayDao.getDayByUserIdAndDate(userId, date);
         } catch (DaoException e) {
-            throw new ServiceException(e);
+            return null;
         }
     }
 

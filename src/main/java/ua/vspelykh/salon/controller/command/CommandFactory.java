@@ -46,6 +46,9 @@ public class CommandFactory {
         commands.put(CREATE_APPOINTMENT, new CreateAppointmentCommand());
         commands.put(FEEDBACK, new FeedbackCommand());
         commands.put(FEEDBACK_POST, new FeedbackPostCommand());
+        commands.put(GET_SCHEDULE, new GetScheduleCommand());
+        commands.put(LOOK_SCHEDULE, new LookScheduleCommand());
+        commands.put(EDIT_APPOINTMENT, new EditAppointmentCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

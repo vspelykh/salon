@@ -45,52 +45,53 @@
                                             </label>
                                         </div>
                                     </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
-                                                aria-controls="panelsStayOpen-collapseOne">
-                                            <fmt:message key="master.services"/>
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
-                                         aria-labelledby="panelsStayOpen-headingOne">
-                                        <div class="accordion-body">
-                                            <label class="form-check">
-                                                <c:forEach items="${services}" var="item">
-                                                    <label>
-                                                        <input name="services" type="checkbox" value="${item.id}"
-                                                            ${servicesChecked.contains(item.id) ? 'checked="checked"' : ''}>
-                                                        <c:out value="${item.service}"/>
-                                                    </label>
-                                                    <br>
-                                                </c:forEach>
-                                            </label>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
+                                                    aria-controls="panelsStayOpen-collapseOne">
+                                                <fmt:message key="master.services"/>
+                                            </button>
+                                        </h2>
+                                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+                                             aria-labelledby="panelsStayOpen-headingOne">
+                                            <div class="accordion-body">
+                                                <label class="form-check">
+                                                    <c:forEach items="${services}" var="item">
+                                                        <label>
+                                                            <input name="services" type="checkbox" value="${item.id}"
+                                                                ${servicesChecked.contains(item.id) ? 'checked="checked"' : ''}>
+                                                            <c:out value="${item.service}"/>
+                                                        </label>
+                                                        <br>
+                                                    </c:forEach>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                                                aria-controls="panelsStayOpen-collapseTwo">
-                                            <fmt:message key="master.levels"/>
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
-                                         aria-labelledby="panelsStayOpen-headingTwo">
-                                        <div class="accordion-body">
-                                            <label class="form-check">
-                                                <c:forEach items="${levels}" var="item">
-                                                    <label><input name="levels" type="checkbox" value="${item.name}"
-                                                        ${levelsChecked.contains(item) ? 'checked="checked"' : ''}>
-                                                        <c:out value="${item.name}"/>
-                                                    </label>
-                                                    <br>
-                                                </c:forEach>
-                                            </label>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                                    aria-controls="panelsStayOpen-collapseTwo">
+                                                <fmt:message key="master.levels"/>
+                                            </button>
+                                        </h2>
+                                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                                             aria-labelledby="panelsStayOpen-headingTwo">
+                                            <div class="accordion-body">
+                                                <label class="form-check">
+                                                    <c:forEach items="${levels}" var="item">
+                                                        <label><input name="levels" type="checkbox" value="${item.name}"
+                                                            ${levelsChecked.contains(item) ? 'checked="checked"' : ''}>
+                                                            <c:out value="${item.name}"/>
+                                                        </label>
+                                                        <br>
+                                                    </c:forEach>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -110,21 +111,21 @@
                                         key="master.masters"/></b></h2></div>
                                 <%--    params--%>
                                 <label for="size"><fmt:message key="master.size"/></label>
-                                <select name="size" id="size">
+                                <select onchange="this.form.submit()" name="size" id="size">
                                     <c:forEach items="${sizes}" var="item">
                                         <option value="${item}" ${sizeChecked == item ? 'selected="selected"' : ''}>
                                                 ${item}</option>
                                     </c:forEach>
                                 </select>
                                 <label for="sort"><fmt:message key="master.sort"/></label>
-                                <select name="sort" id="sort">
+                                <select onchange="this.form.submit()" name="sort" id="sort">
                                     <c:forEach items="${sorts}" var="item">
                                         <option value="${item.name()}" ${sortChecked == item ? 'selected="selected"' : ''}>
                                                 ${item.text}</option>
                                     </c:forEach>
                                 </select>
                                 <label>
-                                    <input name="search" type="text" style="width: 400px" placeholder="Search..."
+                                    <input onchange="this.form.submit()" name="search" type="text" style="width: 400px" placeholder="Search..."
                                            value="${searchChecked}"
                                            aria-label="Search">
                                 </label>
@@ -160,6 +161,9 @@
                                                         <a href="${pageContext.request.contextPath}/salon?command=schedule&id=${item.id}"
                                                            class="btn btn-primary nav-link px-2 text-white"><fmt:message
                                                                 key="master.manage"/></a>
+                                                        <a href="${pageContext.request.contextPath}/salon?command=look-schedule&id=${item.id}"
+                                                           class="btn btn-success nav-link px-2 text-white"><fmt:message
+                                                                key="master.look"/></a>
                                                     </th>
                                                 </c:when>
                                             </c:choose>

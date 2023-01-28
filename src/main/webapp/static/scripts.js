@@ -19,3 +19,13 @@ function selectHelper() {
         }
     }
 }
+
+function confirmBeforeSubmit(form) {
+    const agree = confirm("Are you sure you wish to continue?");
+    if (agree) {
+        form.submit();
+        return true;
+    } else {
+    }
+    return false;
+}

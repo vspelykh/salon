@@ -6,10 +6,10 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.USER;
-import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
+import static ua.vspelykh.salon.controller.command.CommandNames.LOOK_SCHEDULE;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
 
-public class ScheduleCommand extends AbstractScheduleCommand {
+public class LookScheduleCommand extends AbstractScheduleCommand {
 
     @Override
     public void process() throws ServletException, IOException {
@@ -19,7 +19,8 @@ public class ScheduleCommand extends AbstractScheduleCommand {
         } catch (ServiceException e) {
             //todo
         }
-        forward(SCHEDULE);
+        forward(LOOK_SCHEDULE);
     }
+
 
 }

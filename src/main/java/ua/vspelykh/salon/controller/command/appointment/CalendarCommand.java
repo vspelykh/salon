@@ -6,6 +6,7 @@ import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.service.WorkingDayService;
+import ua.vspelykh.salon.util.TimeSlotsUtils;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.getSlots;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.removeOccupiedSlots;
 
@@ -59,6 +61,7 @@ public class CalendarCommand extends Command {
     private void addTimeSlotsToAttributes(WorkingDay day) throws ServiceException {
         List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
         removeOccupiedSlots(slots, appointmentService.getByDateAndMasterId(day.getDate(), day.getUserId()), INTERVAL);
+        removeSlotsIfDateIsToday(slots, day.getDate());
         request.setAttribute(SLOTS, slots);
     }
 
