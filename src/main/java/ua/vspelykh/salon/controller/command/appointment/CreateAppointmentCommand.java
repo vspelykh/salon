@@ -38,7 +38,7 @@ public class CreateAppointmentCommand extends Command {
             }
             User master = userService.findById(Integer.valueOf(request.getParameter(MASTER_ID)));
             User client = (User) request.getSession().getAttribute(CURRENT_USER);
-            LocalDate date = SalonUtils.getLocaleDate(request.getParameter(DAY));
+            LocalDate date = SalonUtils.getLocalDate(request.getParameter(DAY));
             LocalTime time = LocalTime.parse(request.getParameter(TIME));
             Appointment appointment = new Appointment(null, master.getId(), client.getId(),
                     getTotalContinuance(services), LocalDateTime.of(date, time),

@@ -31,6 +31,7 @@ public class CommandNames {
     public static final String FEEDBACK = "feedback";
     public static final String FEEDBACK_POST = "feedback-post";
     public static final String EDIT_APPOINTMENT = "edit-appointment";
+    public static final String ORDERS = "orders";
 
 
     private CommandNames() {

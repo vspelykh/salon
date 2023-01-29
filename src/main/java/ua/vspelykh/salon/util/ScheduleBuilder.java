@@ -1,6 +1,7 @@
 package ua.vspelykh.salon.util;
 
 import ua.vspelykh.salon.dto.AppointmentDto;
+import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.AppointmentService;
@@ -8,6 +9,7 @@ import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -70,6 +72,10 @@ public class ScheduleBuilder {
     }
 
     private List<LocalTime> getPossibleSlotsForAppointment(WorkingDay day, AppointmentDto appointment) {
+        if (appointment.getDate().toLocalDate().isBefore(LocalDate.now())
+                || appointment.getStatus().equals(AppointmentStatus.SUCCESS)) {
+            return Collections.emptyList();
+        }
         List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
         removeOccupiedSlotsForDtos(slots, appointments, INTERVAL);
         removeSlotsIfDateIsToday(slots, day.getDate());
@@ -81,7 +87,6 @@ public class ScheduleBuilder {
                 while (current.plusMinutes((long) count * INTERVAL).equals(another)) {
                     ++count;
                 }
-
                 if (appointment.getContinuance() <= count * INTERVAL) {
                     possibleSlots.add(current);
                     break;

@@ -7,7 +7,10 @@ import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.OrderingDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dto.AppointmentDto;
+import ua.vspelykh.salon.dto.UserDto;
 import ua.vspelykh.salon.model.Appointment;
+import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -38,7 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void save(Appointment appointment) throws ServiceException {
-        if (appointment.isNew()  && !validateAppointment(appointment)){
+        if (appointment.isNew() && !validateAppointment(appointment)) {
             throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
         }
         try {
@@ -106,15 +109,37 @@ public class AppointmentServiceImpl implements AppointmentService {
         try {
             List<Appointment> appointments = appointmentDao.getAllByDate(date);
             return toDTOs(appointments);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             LOG.error("Error to find appointment by date");
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, int page, int size) throws ServiceException {
+        try {
+            return toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo, status, page, size));
+        } catch (DaoException e) {
+            e.printStackTrace();
+            //TODO
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) throws ServiceException {
+        try {
+            return appointmentDao.getCountOfAppointments(masterId, dateFrom, dateTo, status);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            //TODO
             throw new ServiceException(e);
         }
     }
 
     private List<AppointmentDto> toDTOs(List<Appointment> appointments) throws DaoException {
         List<AppointmentDto> dtos = new ArrayList<>();
-        for (Appointment appointment : appointments){
+        for (Appointment appointment : appointments) {
             dtos.add(toDTO(appointment));
         }
         return dtos;
@@ -123,8 +148,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentDto toDTO(Appointment appointment) throws DaoException {
         AppointmentDto dto = new AppointmentDto();
         dto.setId(appointment.getId());
-        dto.setMaster(userDao.findById(appointment.getMasterId()));
-        dto.setClient(userDao.findById(appointment.getClientId()));
+        dto.setMaster(userToDto(userDao.findById(appointment.getMasterId())));
+        dto.setClient(userToDto(userDao.findById(appointment.getClientId())));
         dto.setContinuance(appointment.getContinuance());
         dto.setDate(appointment.getDate());
         dto.setPrice(appointment.getPrice());
@@ -132,5 +157,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         dto.setOrderings(orderingDao.getByAppointmentId(appointment.getId()));
         dto.setStatus(appointment.getStatus());
         return dto;
+    }
+
+    private UserDto userToDto(User user){
+        UserDto userDto = new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getNumber());
+        userDto.setRoles(user.getRoles());
+        return userDto;
     }
 }

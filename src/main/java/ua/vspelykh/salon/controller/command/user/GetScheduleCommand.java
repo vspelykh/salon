@@ -19,7 +19,7 @@ import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.dao.mapper.Column.STATUS;
-import static ua.vspelykh.salon.util.SalonUtils.getLocaleDate;
+import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 
 public class GetScheduleCommand extends AbstractScheduleCommand {
 
@@ -35,11 +35,11 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
             String locale = (String) request.getSession().getAttribute(LANG);
             for (String date : datesArray) {
                 List<AppointmentDto> appointments =
-                        appointmentService.getDtosByDateAndMasterId(getLocaleDate(date), userId);
-                WorkingDay day = workingDayService.getDayByUserIdAndDate(userId, getLocaleDate(date));
+                        appointmentService.getDtosByDateAndMasterId(getLocalDate(date), userId);
+                WorkingDay day = workingDayService.getDayByUserIdAndDate(userId, getLocalDate(date));
                 ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale);
                 List<ScheduleItem> schedule = builder.build();
-                mapOfSchedules.put(getLocaleDate(date), schedule);
+                mapOfSchedules.put(getLocalDate(date), schedule);
                 freeSlots.putAll(builder.getFreeSlotsForAppointments());
             }
             request.setAttribute(FREE_SLOTS_MAP, freeSlots);

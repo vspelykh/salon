@@ -49,6 +49,7 @@ public class CommandFactory {
         commands.put(GET_SCHEDULE, new GetScheduleCommand());
         commands.put(LOOK_SCHEDULE, new LookScheduleCommand());
         commands.put(EDIT_APPOINTMENT, new EditAppointmentCommand());
+        commands.put(ORDERS, new OrdersCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

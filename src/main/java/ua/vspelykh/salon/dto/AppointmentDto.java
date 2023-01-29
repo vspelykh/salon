@@ -11,8 +11,8 @@ import java.util.List;
 public class AppointmentDto {
 
     private Integer id;
-    private User master;
-    private User client;
+    private UserDto master;
+    private UserDto client;
     private int continuance;
     private LocalDateTime date;
     private int price;
@@ -31,19 +31,19 @@ public class AppointmentDto {
         this.id = id;
     }
 
-    public User getMaster() {
+    public UserDto getMaster() {
         return master;
     }
 
-    public void setMaster(User master) {
+    public void setMaster(UserDto master) {
         this.master = master;
     }
 
-    public User getClient() {
+    public UserDto getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(UserDto client) {
         this.client = client;
     }
 

@@ -5,7 +5,6 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public class SalonUtils {
 
@@ -17,7 +16,11 @@ public class SalonUtils {
         return Time.valueOf(LocalTime.parse(time));
     }
 
-    public static LocalDate getLocaleDate(String date){
+    public static LocalDate getLocalDate(String date){
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    }
+
+    public static LocalDate parseLocalDate(String date){
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
