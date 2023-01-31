@@ -5,7 +5,6 @@ import ua.vspelykh.salon.model.ServiceCategory;
 
 public class DaoFactory {
 
-
     private DaoFactory() {
     }
 
@@ -18,7 +17,8 @@ public class DaoFactory {
     private static final MarkDao markDao = new MarkDaoImpl();
     private static final ConsultationDao consultationDao = new ConsultationDaoImpl();
     private static final WorkingDayDao wdd = new WorkingDayDaoImpl();
-    private static ServiceCategoryDao serviceCategoryDao = new ServiceCategoryDaoImpl();
+    private static final ServiceCategoryDao serviceCategoryDao = new ServiceCategoryDaoImpl();
+    private static final InvitationDao invitationDao = new InvitationDaoImpl();
 
     public static UserDao getUserDao() {
         return userDao;
@@ -58,5 +58,9 @@ public class DaoFactory {
 
     public static ServiceCategoryDao getServiceCategoryDao() {
         return serviceCategoryDao;
+    }
+
+    public static InvitationDao getInvitationDao() {
+        return invitationDao;
     }
 }

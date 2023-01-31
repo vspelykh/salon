@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS working_days;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS consultations;
+DROP TABLE IF EXISTS invitations;
 
 CREATE TABLE users
 (
@@ -118,6 +119,15 @@ CREATE TABLE working_days
     time_end   TIME    NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT user_working_day UNIQUE (user_id, date)
+);
+
+CREATE TABLE invitations
+(
+    id    SERIAL PRIMARY KEY,
+    email VARCHAR   NOT NULL,
+    role  VARCHAR   NOT NULL,
+    key   VARCHAR   NOT NULL,
+    date  TIMESTAMP NOT NULL DEFAULT now()
 );
 
 --POPULATION DB:

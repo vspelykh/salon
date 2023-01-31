@@ -15,6 +15,7 @@ public class RowMapperFactory {
     private static final  ConsultationRowMapper consultationRowMapper = new ConsultationRowMapper();
     private static final  WorkingDayRowMapper workingDayRowMapper = new WorkingDayRowMapper();
     private static final ServiceCategoryRowMapper serviceCategoryRowMapper = new ServiceCategoryRowMapper();
+    private static final InvitationRowMapper invitationRowMapper = new InvitationRowMapper();
 
     private RowMapperFactory() {
 
@@ -58,5 +59,9 @@ public class RowMapperFactory {
 
     public static RowMapper<ServiceCategory> getServiceCategoryRowMapper() {
         return serviceCategoryRowMapper;
+    }
+
+    public static RowMapper<Invitation> getInvitationRowMapper() {
+        return invitationRowMapper;
     }
 }

@@ -2,10 +2,6 @@ package ua.vspelykh.salon.dao;
 
 public final class Table {
 
-    private Table(){
-
-    }
-
     public static final String USER = "users";
     public static final String USER_LEVEL = "user_level";
     public static final String USER_ROLES = "user_roles";
@@ -17,4 +13,8 @@ public final class Table {
     public static final String MARK = "marks";
     public static final String CONSULTATION = "consultations";
     public static final String WORKING_DAY = "working_days";
+    public static final String INVITATION = "invitations";
+
+    private Table() {
+    }
 }
