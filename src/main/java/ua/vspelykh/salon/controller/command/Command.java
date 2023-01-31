@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
 import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 import static ua.vspelykh.salon.util.SalonUtils.parseLocalDate;
 
@@ -30,7 +31,7 @@ public abstract class Command {
     public abstract void process() throws ServletException, IOException;
 
     protected void forward(String target) throws ServletException, IOException {
-        target = String.format("/WEB-INF/jsp/%s.jsp", target);
+        target = String.format(JSP_PATTERN, target);
         RequestDispatcher dispatcher = context.getRequestDispatcher(target);
         dispatcher.forward(request, response);
     }
