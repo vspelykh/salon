@@ -73,4 +73,12 @@ public class Appointment extends AbstractBaseEntity{
     public void setDiscount(int discount) {
         this.discount = discount;
     }
+
+    public AppointmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
+    }
 }

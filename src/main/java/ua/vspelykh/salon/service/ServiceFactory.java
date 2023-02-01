@@ -16,6 +16,7 @@ public class ServiceFactory {
     private static final ServiceService serviceService = new ServiceServiceImpl();
     private static final MarkService markService = new MarkServiceImpl();
     private static final ServiceCategoryService serviceCategoryService = new ServiceCategoryServiceImpl();
+    private static final InvitationService invitationService = new InvitationServiceImpl();
 
     public static UserService getUserService() {
         return userService;
@@ -47,5 +48,9 @@ public class ServiceFactory {
 
     public static ServiceCategoryService getServiceCategoryService() {
         return serviceCategoryService;
+    }
+
+    public static InvitationService getInvitationService() {
+        return invitationService;
     }
 }

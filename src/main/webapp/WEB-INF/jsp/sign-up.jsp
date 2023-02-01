@@ -45,6 +45,13 @@
                                     </div>
 
                                     <div class="form-outline mb-4">
+                                        <input type="tel" id="formKey" name="key"
+                                               class="form-control active form-control-lg"/>
+                                        <label class="form-label" for="formKey">Key (for new masters or
+                                            administrators)</label>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
                                         <input type="password" id="formPassword" name="password"
                                                class="form-control active form-control-lg"/>
                                         <label class="form-label" for="formPassword">Password</label>

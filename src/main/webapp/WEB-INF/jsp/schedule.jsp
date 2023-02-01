@@ -35,9 +35,9 @@
                         </label>
                         <h6 style="color: #ac2bac">Working days</h6>
                         <label for="action-select">Action
+                            <input hidden name="command" value="schedule">
                             <select name="action" id="action-select" required onclick="selectHelper()">
                                 <option disabled selected value> -- select an action --</option>
-                                <option value="schedule">schedule</option>
                                 <option value="save">save</option>
                                 <option value="delete">delete</option>
                             </select>

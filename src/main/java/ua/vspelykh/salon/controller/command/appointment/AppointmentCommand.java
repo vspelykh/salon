@@ -5,7 +5,6 @@ import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.service.*;
-import ua.vspelykh.salon.util.TimeSlotsUtils;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -17,7 +16,7 @@ import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
-import static ua.vspelykh.salon.util.SalonUtils.getLocaleDate;
+import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.countAllowedMinutes;
 
@@ -45,9 +44,9 @@ public class AppointmentCommand extends Command {
             request.setAttribute(SIZE, dtos.size());
             request.setAttribute(USER_LEVEL, userService.getUserLevelByUserId(master.getId()));
             List<Appointment> appointments =
-                    appointmentService.getByDateAndMasterId(getLocaleDate(request.getParameter(DAY)), master.getId());
+                    appointmentService.getByDateAndMasterId(getLocalDate(request.getParameter(DAY)), master.getId());
             request.setAttribute(ALLOWED_TIME, countAllowedMinutes(getTime(request.getParameter(TIME)), appointments,
-                    workingDayService.getDayByUserIdAndDate(master.getId(), getLocaleDate(request.getParameter(DAY)))));
+                    workingDayService.getDayByUserIdAndDate(master.getId(), getLocalDate(request.getParameter(DAY)))));
             forward(APPOINTMENT);
         } catch (ServiceException e) {
             e.printStackTrace();

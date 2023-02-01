@@ -2,7 +2,6 @@ package ua.vspelykh.salon.controller.command;
 
 public class CommandNames {
 
-
     public static final String ABOUT = "about";
     public static final String HOME = "home";
     public static final String PRICING = "pricing";
@@ -22,13 +21,18 @@ public class CommandNames {
     public static final String CONSULTATION_DELETE = "consultation-delete";
     public static final String CALENDAR = "calendar";
     public static final String SCHEDULE = "schedule";
+    public static final String GET_SCHEDULE = "get-schedule";
+    public static final String LOOK_SCHEDULE = "look-schedule";
     public static final String EDIT_SCHEDULE = "edit-schedule";
     public static final String APPOINTMENT = "appointment";
     public static final String APPOINTMENTS = "appointments";
     public static final String CREATE_APPOINTMENT = "create-appointment";
     public static final String FEEDBACK = "feedback";
     public static final String FEEDBACK_POST = "feedback-post";
-
+    public static final String EDIT_APPOINTMENT = "edit-appointment";
+    public static final String ORDERS = "orders";
+    public static final String CREATE_INVITATION = "create-invitation";
+    public static final String INVITATION = "invitation";
 
     private CommandNames() {
     }

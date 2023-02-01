@@ -31,6 +31,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String DELETE = "DELETE FROM ";
     protected static final String WHERE = " WHERE ";
     protected static final String EQUAL = "=?";
+    protected static final String NOT_EQUAL = "!=?";
     protected static final String INNER_JOIN = " INNER JOIN ";
     protected static final String LIMIT = " LIMIT ";
     protected static final String OFFSET = " OFFSET ";

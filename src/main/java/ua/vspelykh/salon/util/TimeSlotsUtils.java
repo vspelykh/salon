@@ -1,14 +1,18 @@
 package ua.vspelykh.salon.util;
 
+import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.WorkingDay;
 
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 
 public class TimeSlotsUtils {
 
@@ -30,15 +34,28 @@ public class TimeSlotsUtils {
         for (Appointment appointment : appointments) {
             LocalTime startTime = appointment.getDate().toLocalTime();
             double d = (double) appointment.getContinuance() / (double) interval;
-            int countOfSlots = (int) Math.ceil(d);
-            List<LocalTime> slotsForRemove = new ArrayList<>();
-            slotsForRemove.add(startTime);
-            LocalTime copy = LocalTime.of(startTime.getHour(), startTime.getMinute());
-            for (int i = 0; i < countOfSlots - 1; i++) {
-                copy = copy.plusMinutes(interval);
-                slotsForRemove.add(copy);
-            }
-            slots.removeAll(slotsForRemove);
+            removeProcess(d, startTime, interval, slots);
+        }
+    }
+
+
+    private static void removeProcess(double d, LocalTime startTime, int interval, List<LocalTime> slots) {
+        int countOfSlots = (int) Math.ceil(d);
+        List<LocalTime> slotsForRemove = new ArrayList<>();
+        slotsForRemove.add(startTime);
+        LocalTime copy = LocalTime.of(startTime.getHour(), startTime.getMinute());
+        for (int i = 0; i < countOfSlots - 1; i++) {
+            copy = copy.plusMinutes(interval);
+            slotsForRemove.add(copy);
+        }
+        slots.removeAll(slotsForRemove);
+    }
+
+    public static void removeOccupiedSlotsForDtos(List<LocalTime> slots, List<AppointmentDto> appointments, int interval) {
+        for (AppointmentDto appointment : appointments) {
+            LocalTime startTime = appointment.getDate().toLocalTime();
+            double d = (double) appointment.getContinuance() / (double) interval;
+            removeProcess(d, startTime, interval, slots);
         }
     }
 
@@ -58,5 +75,11 @@ public class TimeSlotsUtils {
         Duration duration;
         duration = Duration.between(start.toLocalTime(), end);
         return (int) (duration.getSeconds() / 60);
+    }
+
+    public static void removeSlotsIfDateIsToday(List<LocalTime> slots, LocalDate date) {
+        if (date.equals(LocalDate.now())) {
+            slots.removeIf(slotTime -> LocalTime.now().isAfter(slotTime));
+        }
     }
 }

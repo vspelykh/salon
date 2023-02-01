@@ -16,6 +16,10 @@
         <li><a href="${pageContext.request.contextPath}/salon?command=consultations" class="nav-link px-2 text-primary">View
             consultations</a>
         </li>
+        <li><a href="${pageContext.request.contextPath}/salon?command=invitation"
+               class="nav-link px-2 text-primary">Create
+            invitation</a>
+        </li>
     </ul>
 
 </div>

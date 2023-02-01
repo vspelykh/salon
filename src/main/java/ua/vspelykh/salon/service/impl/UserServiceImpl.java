@@ -103,12 +103,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) throws ServiceException {
+    public void update(User user) throws ServiceException {
         try {
             checkUser(user);
-            if (user.isNew()) {
-                userDao.create(user);
-            } else userDao.update(user);
+            userDao.update(user);
         } catch (DaoException e) {
             LOG.error("Error to save user");
             throw new ServiceException(e);
@@ -132,6 +130,20 @@ public class UserServiceImpl implements UserService {
         } catch (DaoException e) {
             LOG.error("Unable to get users by user level");
             throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void registration(User user, Invitation invitation) throws ServiceException {
+
+    }
+
+    @Override
+    public void registration(User user) throws ServiceException {
+        try {
+            userDao.create(user);
+        } catch (DaoException e) {
+            e.printStackTrace();
         }
     }
 

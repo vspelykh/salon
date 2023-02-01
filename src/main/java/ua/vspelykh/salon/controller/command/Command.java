@@ -6,9 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.ControllerConstants.PATH_STR;
+import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
+import static ua.vspelykh.salon.util.SalonUtils.parseLocalDate;
 
 public abstract class Command {
 
@@ -28,10 +30,11 @@ public abstract class Command {
     public abstract void process() throws ServletException, IOException;
 
     protected void forward(String target) throws ServletException, IOException {
-        target = String.format("/WEB-INF/jsp/%s.jsp", target);
+        target = String.format(JSP_PATTERN, target);
         RequestDispatcher dispatcher = context.getRequestDispatcher(target);
         dispatcher.forward(request, response);
     }
+
     protected void redirect(String target) throws ServletException, IOException {
         response.sendRedirect(target);
     }
@@ -50,5 +53,15 @@ public abstract class Command {
         request.setAttribute(NUMBER_OF_PAGES, Math.ceil(countOfItems * 1.0 / size));
         String path = "?" + request.getQueryString().replaceAll("&page=[0-9]*", "");
         request.setAttribute(PATH_STR, path);
+    }
+
+    protected Integer checkAndGetIntegerParam(String param) {
+        return request.getParameter(param) == null || request.getParameter(param).isEmpty()
+                ? null : Integer.parseInt(request.getParameter(param));
+    }
+
+    protected LocalDate checkAndGetLocalDateParam(String param) {
+        return request.getParameter(param) == null || request.getParameter(param).isEmpty()
+                ? null : parseLocalDate(String.valueOf(request.getParameter(param)));
     }
 }

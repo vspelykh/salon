@@ -1,7 +1,5 @@
 package ua.vspelykh.salon.service;
 
-import org.jasypt.util.password.BasicPasswordEncryptor;
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
