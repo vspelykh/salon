@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static ua.vspelykh.salon.dao.mapper.Column.EMAIL;
-import static ua.vspelykh.salon.dao.mapper.Column.KEY;
 
 public class InvitationDaoImpl extends AbstractDao<Invitation> implements InvitationDao {
 
@@ -28,7 +27,7 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
 
     @Override
     public int create(Invitation entity) throws DaoException {
-        String query = INSERT + tableName + " (email, role, key, date)" + VALUES + "(?,?,?,?)";
+        String query = INSERT + tableName + " (email, role, key)" + VALUES + "(?,?,?)";
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setInvitationStatement(entity, statement);
@@ -50,16 +49,10 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
         statement.setString(++k, entity.getEmail());
         statement.setString(++k, entity.getRole().name());
         statement.setString(++k, entity.getKey());
-        statement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(entity.getDate(), LocalTime.MIN)));
     }
 
     @Override
     public void update(Invitation entity) throws DaoException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void removeById(int id) throws DaoException {
         throw new UnsupportedOperationException();
     }
 
@@ -71,6 +64,22 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
             e.printStackTrace();
             //TODO
             throw new DaoException();
+        }
+    }
+
+    @Override
+    public void removeByEmailIfExists(String email) throws DaoException {
+        String query = DELETE + tableName + WHERE + EMAIL + EQUAL;
+        try (Connection connection = DBCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            int i = statement.executeUpdate();
+            if (i != 1) {
+                LOG.info("Item for delete didn't find in {}", tableName);
+            }
+        } catch (SQLException e) {
+            LOG.error("Fail to delete item.", e);
+            throw new DaoException("Fail to delete item, e");
         }
     }
 }

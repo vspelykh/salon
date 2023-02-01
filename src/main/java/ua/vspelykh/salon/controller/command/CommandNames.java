@@ -2,7 +2,6 @@ package ua.vspelykh.salon.controller.command;
 
 public class CommandNames {
 
-
     public static final String ABOUT = "about";
     public static final String HOME = "home";
     public static final String PRICING = "pricing";
@@ -32,7 +31,8 @@ public class CommandNames {
     public static final String FEEDBACK_POST = "feedback-post";
     public static final String EDIT_APPOINTMENT = "edit-appointment";
     public static final String ORDERS = "orders";
-
+    public static final String CREATE_INVITATION = "create-invitation";
+    public static final String INVITATION = "invitation";
 
     private CommandNames() {
     }

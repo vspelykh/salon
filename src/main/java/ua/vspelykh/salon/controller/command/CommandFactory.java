@@ -50,6 +50,8 @@ public class CommandFactory {
         commands.put(LOOK_SCHEDULE, new LookScheduleCommand());
         commands.put(EDIT_APPOINTMENT, new EditAppointmentCommand());
         commands.put(ORDERS, new OrdersCommand());
+        commands.put(INVITATION, new InvitationFormCommand());
+        commands.put(CREATE_INVITATION, new CreateInvitationCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

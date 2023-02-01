@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
-import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 import static ua.vspelykh.salon.util.SalonUtils.parseLocalDate;
 
 public abstract class Command {

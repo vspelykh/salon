@@ -70,14 +70,15 @@ CREATE TABLE services
 
 CREATE TABLE appointments
 (
-    id          SERIAL PRIMARY KEY,
-    master_id   INTEGER             NOT NULL,
-    client_id   INTEGER             NOT NULL,
-    continuance INTEGER             NOT NULL,
-    date        TIMESTAMP           NOT NULL,
-    price       INTEGER             NOT NULL,
-    discount    INTEGER DEFAULT '1' NOT NULL,
-    status      VARCHAR             NOT NULL,
+    id             SERIAL PRIMARY KEY,
+    master_id      INTEGER             NOT NULL,
+    client_id      INTEGER             NOT NULL,
+    continuance    INTEGER             NOT NULL,
+    date           TIMESTAMP           NOT NULL,
+    price          INTEGER             NOT NULL,
+    discount       INTEGER DEFAULT '1' NOT NULL,
+    status         VARCHAR             NOT NULL,
+    payment_status VARCHAR             NOT NULL,
     FOREIGN KEY (master_id) REFERENCES users (id),
     FOREIGN KEY (client_id) REFERENCES users (id)
 );
@@ -124,7 +125,7 @@ CREATE TABLE working_days
 CREATE TABLE invitations
 (
     id    SERIAL PRIMARY KEY,
-    email VARCHAR   NOT NULL,
+    email VARCHAR   NOT NULL UNIQUE,
     role  VARCHAR   NOT NULL,
     key   VARCHAR   NOT NULL,
     date  TIMESTAMP NOT NULL DEFAULT now()
@@ -261,25 +262,25 @@ VALUES (2, 1, 20),
        (6, 5, 10),
        (6, 6, 60);
 
-INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status)
-VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS'),
-       (2, 13, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (2, 14, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS'),
-       (2, 15, 180, '2.11.2022 8:00:00', '650', '-1', 'SUCCESS'),
-       (2, 16, 180, '2.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (2, 17, 180, '2.11.2022 16:00:00', '650', '-1', 'SUCCESS'),
-       (2, 18, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS'),
-       (2, 12, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (2, 13, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS'),
-       (4, 19, 180, '1.11.2022 8:00:00', '650', '-1', 'SUCCESS'),
-       (4, 20, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (4, 21, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS'),
-       (4, 12, 180, '4.11.2022 8:00:00', '650', '-1', 'SUCCESS'),
-       (4, 13, 180, '4.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (4, 14, 180, '4.11.2022 16:00:00', '650', '-1', 'SUCCESS'),
-       (4, 15, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS'),
-       (4, 16, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS'),
-       (4, 17, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS');
+INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status, payment_status)
+VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 13, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 14, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 15, 180, '2.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 16, 180, '2.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 17, 180, '2.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 18, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 12, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (2, 13, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 19, 180, '1.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 20, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 21, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 12, 180, '4.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 13, 180, '4.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 14, 180, '4.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 15, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 16, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
+       (4, 17, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID');
 
 INSERT INTO orderings (appointment_id, service_id)
 VALUES (1, 4),

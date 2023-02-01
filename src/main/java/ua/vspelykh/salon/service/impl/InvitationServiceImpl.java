@@ -5,9 +5,12 @@ import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.InvitationDao;
 import ua.vspelykh.salon.model.Invitation;
 import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.InvitationService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+
+import java.time.LocalDate;
 
 import static ua.vspelykh.salon.util.SalonUtils.generateKeyString;
 
@@ -22,6 +25,8 @@ public class InvitationServiceImpl implements InvitationService {
             BasicPasswordEncryptor keyEncryptor = new BasicPasswordEncryptor();
             if (keyEncryptor.checkPassword(key, invitation.getKey())) {
                 return invitation;
+            } else if (invitation.getDate().plusDays(7).isBefore(LocalDate.now())) {
+                throw new ServiceException("Too late, need to get new invitation");
             } else throw new ServiceException("Incorrect key or invitation doesn't exist");
 
         } catch (DaoException e) {
@@ -33,8 +38,10 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public void create(String email, Role role) throws ServiceException {
         try {
+            invitationDao.removeByEmailIfExists(email);
             String key = generateKeyString();
             invitationDao.create(new Invitation(email, role, encryptKey(key)));
+            EmailService.sendEmail(email, "Invitation to reg", "Your key: '" + key + "'");
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e);
