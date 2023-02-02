@@ -3,7 +3,10 @@ package ua.vspelykh.salon.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.*;
+import ua.vspelykh.salon.dao.AbstractDao;
+import ua.vspelykh.salon.dao.Table;
+import ua.vspelykh.salon.dao.UserDao;
+import ua.vspelykh.salon.dao.UserLevelDao;
 import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
@@ -11,6 +14,7 @@ import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
+import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -187,25 +191,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
              PreparedStatement statement = connection.prepareStatement(query)) {
             setUserRoleStatement(statement, userId, role);
             statement.executeUpdate();
-            if (isNewHairdresser(action, role)) {
-                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
-                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", " ", true));
-            } else if (isMasterRemoved(action, role)) {
-                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
-                userLevelDao.removeById(userId);
-            }
         } catch (SQLException e) {
             //TODO
             throw new DaoException();
         }
-    }
-
-    private boolean isMasterRemoved(String action, Role role) {
-        return action.equals(REMOVE) && role == Role.HAIRDRESSER;
-    }
-
-    private boolean isNewHairdresser(String action, Role role) {
-        return action.equals(ADD) && role == Role.HAIRDRESSER;
     }
 
     private void setUserRoleStatement(PreparedStatement statement, int userId, Role role) throws SQLException {

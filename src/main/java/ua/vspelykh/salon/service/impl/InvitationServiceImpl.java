@@ -1,7 +1,6 @@
 package ua.vspelykh.salon.service.impl;
 
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.InvitationDao;
 import ua.vspelykh.salon.model.Invitation;
 import ua.vspelykh.salon.model.Role;
@@ -16,7 +15,7 @@ import static ua.vspelykh.salon.util.SalonUtils.generateKeyString;
 
 public class InvitationServiceImpl implements InvitationService {
 
-    private InvitationDao invitationDao = DaoFactory.getInvitationDao();
+    private InvitationDao invitationDao;
 
     @Override
     public Invitation findByEmailAndKey(String email, String key) throws ServiceException {
@@ -51,5 +50,9 @@ public class InvitationServiceImpl implements InvitationService {
     private String encryptKey(String key) {
         BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
         return encryptor.encryptPassword(key);
+    }
+
+    public void setInvitationDao(InvitationDao invitationDao) {
+        this.invitationDao = invitationDao;
     }
 }

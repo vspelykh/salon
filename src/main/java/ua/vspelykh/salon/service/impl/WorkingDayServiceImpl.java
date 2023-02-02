@@ -2,7 +2,6 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.WorkingDayDao;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.WorkingDayService;
@@ -17,11 +16,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
 
     private static final Logger LOG = LogManager.getLogger(WorkingDayServiceImpl.class);
 
-    private final WorkingDayDao workingDayDao;
-
-    public WorkingDayServiceImpl() {
-        workingDayDao = DaoFactory.getWorkingDayDao();
-    }
+    private WorkingDayDao workingDayDao;
 
     @Override
     public List<WorkingDay> findDaysByUserId(Integer userId) throws ServiceException {
@@ -79,5 +74,9 @@ public class WorkingDayServiceImpl implements WorkingDayService {
         } catch (DaoException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setWorkingDayDao(WorkingDayDao workingDayDao) {
+        this.workingDayDao = workingDayDao;
     }
 }

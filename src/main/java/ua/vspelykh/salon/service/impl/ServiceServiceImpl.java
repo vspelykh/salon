@@ -2,7 +2,6 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.MasterServiceDao;
 import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Service;
@@ -16,11 +15,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     private static final Logger LOG = LogManager.getLogger(ServiceServiceImpl.class);
 
-    private final MasterServiceDao msDao;
-
-    public ServiceServiceImpl() {
-        this.msDao = DaoFactory.getMasterServiceDao();
-    }
+    private MasterServiceDao msDao;
 
     @Override
     public Service findById(Integer id) throws ServiceException {
@@ -93,5 +88,9 @@ public class ServiceServiceImpl implements ServiceService {
             e.printStackTrace();
             throw new ServiceException(e);
         }
+    }
+
+    public void setMsDao(MasterServiceDao msDao) {
+        this.msDao = msDao;
     }
 }

@@ -3,8 +3,6 @@ package ua.vspelykh.salon.controller.command.appointment;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -19,15 +17,13 @@ import static ua.vspelykh.salon.dao.mapper.Column.*;
 
 public class EditAppointmentCommand extends Command {
 
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-
     @Override
     public void process() throws ServletException, IOException {
         try {
-            Appointment appointment = appointmentService.findById(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
+            Appointment appointment = getServiceFactory().getAppointmentService().findById(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
             setStatus(appointment);
             setNewTimeSlot(appointment);
-            appointmentService.save(appointment);
+            getServiceFactory().getAppointmentService().save(appointment);
             String masterId = request.getParameter(ID);
             if (request.getParameter("redirect") != null) {
                 redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);

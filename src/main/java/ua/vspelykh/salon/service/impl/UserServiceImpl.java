@@ -3,7 +3,6 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.MarkDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
@@ -17,21 +16,17 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
+import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 
 public class UserServiceImpl implements UserService {
 
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
 
-    private final UserDao userDao;
-    private final UserLevelDao userLevelDao;
-    private final MarkDao markDao;
-
-    public UserServiceImpl() {
-        userDao = DaoFactory.getUserDao();
-        userLevelDao = DaoFactory.getUserLevelDao();
-        markDao = DaoFactory.getMarkDao();
-    }
+    private UserDao userDao;
+    private UserLevelDao userLevelDao;
+    private MarkDao markDao;
 
     @Override
     public User findById(Integer id) throws ServiceException {
@@ -103,10 +98,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) throws ServiceException {
+    public void save(User user) throws ServiceException {
         try {
             checkUser(user);
-            userDao.update(user);
+            if (user.isNew()) {
+                userDao.create(user);
+            } else {
+                userDao.update(user);
+            }
         } catch (DaoException e) {
             LOG.error("Error to save user");
             throw new ServiceException(e);
@@ -133,19 +132,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public void registration(User user, Invitation invitation) throws ServiceException {
-
-    }
-
-    @Override
-    public void registration(User user) throws ServiceException {
-        try {
-            userDao.create(user);
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public UserLevel getUserLevelByUserId(Integer userId) throws ServiceException {
@@ -225,10 +211,34 @@ public class UserServiceImpl implements UserService {
     public void updateRole(int userId, String action, Role role) throws ServiceException {
         try {
             userDao.updateRole(userId, action, role);
+            if (isNewHairdresser(action, role)) {
+                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", " ", true));
+            } else if (isMasterRemoved(action, role)) {
+                userLevelDao.removeById(userId);
+            }
         } catch (DaoException e) {
             //TODO
             throw new ServiceException(e);
         }
     }
 
+    private boolean isMasterRemoved(String action, Role role) {
+        return action.equals(REMOVE) && role == Role.HAIRDRESSER;
+    }
+
+    private boolean isNewHairdresser(String action, Role role) {
+        return action.equals(ADD) && role == Role.HAIRDRESSER;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setUserLevelDao(UserLevelDao userLevelDao) {
+        this.userLevelDao = userLevelDao;
+    }
+
+    public void setMarkDao(MarkDao markDao) {
+        this.markDao = markDao;
+    }
 }

@@ -2,8 +2,6 @@ package ua.vspelykh.salon.controller.command.login;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -21,15 +19,13 @@ public class RegistrationCommand extends Command {
     private static final String PASSWORD = "password";
     private static final String PASSWORD_REPEAT = "passwordRepeat";
 
-    private UserService userService = ServiceFactory.getUserService();
-
     @Override
     public void process() throws ServletException, IOException {
 
         User user = checkFieldsAndBuildUser();
         if (user != null) {
             try {
-                userService.save(user);
+                getServiceFactory().getUserService().save(user);
                 redirect(context.getContextPath() + SUCCESS_REDIRECT);
             } catch (ServiceException e) {
                 request.setAttribute(MESSAGE, "Failed");

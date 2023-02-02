@@ -4,7 +4,6 @@ import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.service.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -25,28 +24,25 @@ public class AppointmentCommand extends Command {
     private static final String MASTER = "master";
     private static final String ALLOWED_TIME = "allowedTime";
 
-    private UserService userService = ServiceFactory.getUserService();
-    private ServiceService serviceService = ServiceFactory.getServiceService();
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-    private WorkingDayService workingDayService = ServiceFactory.getWorkingDayService();
-
     @Override
     public void process() throws ServletException, IOException {
         try {
-            User master = userService.findById(Integer.valueOf(request.getParameter(ID)));
+            User master = getServiceFactory().getUserService().findById(Integer.valueOf(request.getParameter(ID)));
             request.setAttribute(MASTER, master);
             request.setAttribute(ID, request.getParameter(ID));
             request.setAttribute(DAY, request.getParameter(DAY));
             request.setAttribute(TIME, request.getParameter(TIME));
-            List<MasterServiceDto> dtos = serviceService.getDTOsByMasterId(master.getId());
+            List<MasterServiceDto> dtos = getServiceFactory().getServiceService().getDTOsByMasterId(master.getId());
             request.setAttribute(SERVICES, dtos);
             request.setAttribute(FIRST, dtos.get(0).getId());
             request.setAttribute(SIZE, dtos.size());
-            request.setAttribute(USER_LEVEL, userService.getUserLevelByUserId(master.getId()));
+            request.setAttribute(USER_LEVEL, getServiceFactory().getUserService().getUserLevelByUserId(master.getId()));
             List<Appointment> appointments =
-                    appointmentService.getByDateAndMasterId(getLocalDate(request.getParameter(DAY)), master.getId());
+                    getServiceFactory().getAppointmentService().getByDateAndMasterId(getLocalDate(request.getParameter(DAY)),
+                            master.getId());
             request.setAttribute(ALLOWED_TIME, countAllowedMinutes(getTime(request.getParameter(TIME)), appointments,
-                    workingDayService.getDayByUserIdAndDate(master.getId(), getLocalDate(request.getParameter(DAY)))));
+                    getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(master.getId(),
+                            getLocalDate(request.getParameter(DAY)))));
             forward(APPOINTMENT);
         } catch (ServiceException e) {
             e.printStackTrace();

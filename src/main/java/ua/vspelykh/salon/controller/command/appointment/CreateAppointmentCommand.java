@@ -2,7 +2,6 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.*;
-import ua.vspelykh.salon.service.*;
 import ua.vspelykh.salon.util.SalonUtils;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -21,11 +20,6 @@ import static ua.vspelykh.salon.dao.mapper.Column.MASTER_ID;
 
 public class CreateAppointmentCommand extends Command {
 
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-    private UserService userService = ServiceFactory.getUserService();
-    private ServiceService serviceService = ServiceFactory.getServiceService();
-    private BaseServiceService bss = ServiceFactory.getBaseServiceService();
-
     @Override
     public void process() throws ServletException, IOException {
         try {
@@ -33,17 +27,18 @@ public class CreateAppointmentCommand extends Command {
             if (checkNullParam(SERVICES)) {
                 for (String service : request.getParameterValues(SERVICES)) {
                     int serviceId = Integer.parseInt(service.split("[|]")[3]);
-                    services.add(serviceService.findById(serviceId));
+                    services.add(getServiceFactory().getServiceService().findById(serviceId));
                 }
             }
-            User master = userService.findById(Integer.valueOf(request.getParameter(MASTER_ID)));
+            User master = getServiceFactory().getUserService().findById(Integer.valueOf(request.getParameter(MASTER_ID)));
             User client = (User) request.getSession().getAttribute(CURRENT_USER);
             LocalDate date = SalonUtils.getLocalDate(request.getParameter(DAY));
             LocalTime time = LocalTime.parse(request.getParameter(TIME));
             Appointment appointment = new Appointment(null, master.getId(), client.getId(),
                     getTotalContinuance(services), LocalDateTime.of(date, time),
-                    getTotalPrice(services, userService.getUserLevelByUserId(master.getId())), 1, AppointmentStatus.RESERVED);
-            appointmentService.save(appointment);
+                    getTotalPrice(services, getServiceFactory().getUserService().getUserLevelByUserId(master.getId())), 1, AppointmentStatus.RESERVED);
+
+            getServiceFactory().getAppointmentService().save(appointment);
             forward(HOME_PAGE);
         } catch (ServiceException e) {
             redirect(request.getContextPath() + HOME_REDIRECT + "?command=calendar&day=" + request.getParameter(DAY)
@@ -55,7 +50,7 @@ public class CreateAppointmentCommand extends Command {
         double totalPrice = 0;
 
         for (Service service : services) {
-            BaseService baseService = bss.findById(service.getBaseServiceId());
+            BaseService baseService = getServiceFactory().getBaseServiceService().findById(service.getBaseServiceId());
             totalPrice += baseService.getPrice() * userLevel.getLevel().getIndex();
         }
         return (int) totalPrice;

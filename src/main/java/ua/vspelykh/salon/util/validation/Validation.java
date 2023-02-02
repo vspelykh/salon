@@ -1,27 +1,8 @@
 package ua.vspelykh.salon.util.validation;
 
-import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.model.WorkingDay;
-import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.WorkingDayService;
-import ua.vspelykh.salon.util.TimeSlotsUtils;
-import ua.vspelykh.salon.util.exception.ServiceException;
-
-import java.time.LocalTime;
-import java.util.List;
-
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
-import static ua.vspelykh.salon.util.SalonUtils.getTime;
-import static ua.vspelykh.salon.util.TimeSlotsUtils.countAllowedMinutes;
-import static ua.vspelykh.salon.util.TimeSlotsUtils.removeOccupiedSlots;
 
 public class Validation {
-
-    private static WorkingDayService workingDayService = ServiceFactory.getWorkingDayService();
-    private static AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-
 
     private Validation() {
     }
@@ -55,15 +36,5 @@ public class Validation {
         checkEmail(user.getEmail());
         checkNumber(user.getNumber());
         checkNameAndSurname(user.getName(), user.getSurname());
-    }
-
-    public static boolean validateAppointment(Appointment appointment) throws ServiceException /*throws ValidationException*/ {
-        WorkingDay day = workingDayService.getDayByUserIdAndDate(appointment.getMasterId(), appointment.getDate().toLocalDate());
-        List<LocalTime> slots = TimeSlotsUtils.getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
-        List<Appointment> appointments = appointmentService.getByDateAndMasterId(day.getDate(), day.getUserId());
-        removeOccupiedSlots(slots, appointments, INTERVAL);
-        return countAllowedMinutes(getTime(String.valueOf(appointment.getDate().toLocalTime())), appointments, day)
-                >= appointment.getContinuance() && slots.contains(appointment.getDate().toLocalTime());
-
     }
 }

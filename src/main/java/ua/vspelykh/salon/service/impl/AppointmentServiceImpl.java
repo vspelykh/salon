@@ -3,7 +3,6 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AppointmentDao;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.OrderingDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dto.AppointmentDto;
@@ -19,15 +18,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.util.validation.Validation.validateAppointment;
-
 public class AppointmentServiceImpl implements AppointmentService {
 
     private static final Logger LOG = LogManager.getLogger(AppointmentServiceImpl.class);
 
-    private final AppointmentDao appointmentDao = DaoFactory.getAppointmentDao();
-    private final UserDao userDao = DaoFactory.getUserDao();
-    private final OrderingDao orderingDao = DaoFactory.getOrderingDao();
+    private AppointmentDao appointmentDao;
+    private UserDao userDao;
+    private OrderingDao orderingDao;
 
     @Override
     public Appointment findById(Integer id) throws ServiceException {
@@ -41,7 +38,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void save(Appointment appointment) throws ServiceException {
-        if (appointment.isNew() && !validateAppointment(appointment)) {
+        if (appointment.isNew() /*&& !validateAppointment(appointment)*/) {
             throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
         }
         try {
@@ -159,9 +156,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         return dto;
     }
 
-    private UserDto userToDto(User user){
+    private UserDto userToDto(User user) {
         UserDto userDto = new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getNumber());
         userDto.setRoles(user.getRoles());
         return userDto;
+    }
+
+    public void setAppointmentDao(AppointmentDao appointmentDao) {
+        this.appointmentDao = appointmentDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setOrderingDao(OrderingDao orderingDao) {
+        this.orderingDao = orderingDao;
     }
 }

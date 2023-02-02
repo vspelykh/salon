@@ -2,13 +2,17 @@ package ua.vspelykh.salon.dao.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.*;
+import ua.vspelykh.salon.dao.AbstractDao;
+import ua.vspelykh.salon.dao.BaseServiceDao;
+import ua.vspelykh.salon.dao.MasterServiceDao;
+import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
+import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
@@ -17,7 +21,7 @@ import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<Service> implements MasterServiceDao {
 
-    private BaseServiceDao baseServiceDao = DaoFactory.getBaseServiceDao();
+    private BaseServiceDao baseServiceDao;
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
 
@@ -198,5 +202,9 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         private boolean isAllParamsAreNull() {
             return userIds == null && serviceIds == null && continuanceFrom == null && continuanceTo == null;
         }
+    }
+
+    public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
+        this.baseServiceDao = baseServiceDao;
     }
 }

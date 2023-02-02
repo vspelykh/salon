@@ -1,9 +1,5 @@
 package ua.vspelykh.salon.controller.command;
 
-import ua.vspelykh.salon.service.BaseServiceService;
-import ua.vspelykh.salon.service.ServiceCategoryService;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -18,21 +14,17 @@ import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
 public class PricingCommand extends Command {
 
-    private BaseServiceService service = ServiceFactory.getBaseServiceService();
-    private ServiceCategoryService categoryService = ServiceFactory.getServiceCategoryService();
-
-
     @Override
     public void process() throws ServletException, IOException {
         try {
             String locale = String.valueOf(request.getSession().getAttribute(LANG));
-            request.setAttribute(CATEGORIES, categoryService.findAll(locale));
+            request.setAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(locale));
             List<Integer> categoriesIds = setCategoriesIds();
             int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
             int size = request.getParameter(SIZE) == null ? 5 : Integer.parseInt(request.getParameter(SIZE));
 
-            request.setAttribute(SERVICES, service.findByFilter(categoriesIds, page, size, locale));
-            int countOfItems = service.getCountOfCategories(categoriesIds, page, size);
+            request.setAttribute(SERVICES, getServiceFactory().getBaseServiceService().findByFilter(categoriesIds, page, size, locale));
+            int countOfItems = getServiceFactory().getBaseServiceService().getCountOfCategories(categoriesIds, page, size);
             setPaginationParams(page, size, countOfItems);
             setCheckedList(categoriesIds);
             forward(PRICING);

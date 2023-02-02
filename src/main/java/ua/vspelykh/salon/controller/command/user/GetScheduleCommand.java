@@ -35,9 +35,9 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
             String locale = (String) request.getSession().getAttribute(LANG);
             for (String date : datesArray) {
                 List<AppointmentDto> appointments =
-                        appointmentService.getDtosByDateAndMasterId(getLocalDate(date), userId);
-                WorkingDay day = workingDayService.getDayByUserIdAndDate(userId, getLocalDate(date));
-                ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale);
+                        getServiceFactory().getAppointmentService().getDtosByDateAndMasterId(getLocalDate(date), userId);
+                WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(userId, getLocalDate(date));
+                ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale, serviceFactory);
                 List<ScheduleItem> schedule = builder.build();
                 mapOfSchedules.put(getLocalDate(date), schedule);
                 freeSlots.putAll(builder.getFreeSlotsForAppointments());

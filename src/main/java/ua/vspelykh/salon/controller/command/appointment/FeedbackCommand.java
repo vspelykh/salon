@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
 
 public class FeedbackCommand extends Command {
 

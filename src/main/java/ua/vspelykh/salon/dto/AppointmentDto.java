@@ -1,9 +1,7 @@
 package ua.vspelykh.salon.dto;
 
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Ordering;
-import ua.vspelykh.salon.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

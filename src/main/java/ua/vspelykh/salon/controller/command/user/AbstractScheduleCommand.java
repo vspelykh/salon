@@ -2,10 +2,6 @@ package ua.vspelykh.salon.controller.command.user;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.WorkingDay;
-import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.UserService;
-import ua.vspelykh.salon.service.WorkingDayService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.time.format.DateTimeFormatter;
@@ -16,10 +12,6 @@ import static ua.vspelykh.salon.dao.mapper.Column.ID;
 
 public abstract class AbstractScheduleCommand extends Command {
 
-    protected UserService userService = ServiceFactory.getUserService();
-    protected WorkingDayService workingDayService = ServiceFactory.getWorkingDayService();
-    protected AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-
     protected static final String ACTION = "action";
     protected static final String SAVE = "save";
     protected static final String DELETE = "delete";
@@ -28,7 +20,8 @@ public abstract class AbstractScheduleCommand extends Command {
 
 
     protected void setCurrentWorkingDays() throws ServiceException {
-        List<WorkingDay> workingDays = workingDayService.findDaysByUserId(Integer.valueOf(request.getParameter(ID)));
+        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().
+                findDaysByUserId(Integer.valueOf(request.getParameter(ID)));
         if (workingDays.isEmpty()) {
             request.setAttribute(DAYS, "");
         } else {

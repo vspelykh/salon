@@ -11,8 +11,6 @@ import ua.vspelykh.salon.model.Invitation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static ua.vspelykh.salon.dao.mapper.Column.EMAIL;
 

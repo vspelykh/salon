@@ -3,12 +3,6 @@ package ua.vspelykh.salon.controller.command.appointment;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.UserService;
-import ua.vspelykh.salon.service.WorkingDayService;
-import ua.vspelykh.salon.util.ScheduleBuilder;
-import ua.vspelykh.salon.util.ScheduleItem;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -19,14 +13,9 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENTS;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
-import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.dao.mapper.Column.*;
 
 public class OrdersCommand extends Command {
-
-    private WorkingDayService workingDayService = ServiceFactory.getWorkingDayService();
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
-    private UserService userService = ServiceFactory.getUserService();
 
     @Override
     public void process() throws ServletException, IOException {
@@ -39,10 +28,12 @@ public class OrdersCommand extends Command {
                     AppointmentStatus.valueOf(request.getParameter(STATUS)) : null;
             int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
             int size = request.getParameter(SIZE) == null ? 5 : Integer.parseInt(request.getParameter(SIZE));
-            List<AppointmentDto> appointments = appointmentService.getFiltered(masterId, dateFrom, dateTo, status, page, size);
+            List<AppointmentDto> appointments = getServiceFactory().getAppointmentService().
+                    getFiltered(masterId, dateFrom, dateTo, status, page, size);
             request.setAttribute(APPOINTMENTS, appointments);
             setCheckedAttrs(masterId, dateFrom, dateTo, status);
-            setPaginationParams(page, size, appointmentService.getCountOfAppointments(masterId, dateFrom, dateTo, status));
+            setPaginationParams(page, size, getServiceFactory().getAppointmentService().
+                    getCountOfAppointments(masterId, dateFrom, dateTo, status));
             forward(ORDERS);
         } catch (ServiceException e) {
 
@@ -65,7 +56,7 @@ public class OrdersCommand extends Command {
 
     private void setFilterAttributes() throws ServiceException {
         request.setAttribute(SIZES, SIZE_ARRAY);
-        request.setAttribute(MASTERS, userService.findMasters(true));
+        request.setAttribute(MASTERS, getServiceFactory().getUserService().findMasters(true));
         request.setAttribute("statuses", AppointmentStatus.values());
     }
 }

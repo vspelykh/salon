@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
-
 public class TimeSlotsUtils {
 
     private TimeSlotsUtils() {

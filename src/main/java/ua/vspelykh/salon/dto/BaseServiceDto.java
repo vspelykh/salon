@@ -1,7 +1,5 @@
 package ua.vspelykh.salon.dto;
 
-import ua.vspelykh.salon.model.ServiceCategory;
-
 public class BaseServiceDto {
 
     private int id;

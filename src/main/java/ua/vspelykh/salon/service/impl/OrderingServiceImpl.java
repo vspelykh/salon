@@ -2,7 +2,6 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.OrderingDao;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.service.OrderingService;
@@ -15,11 +14,7 @@ public class OrderingServiceImpl implements OrderingService {
 
     private static final Logger LOG = LogManager.getLogger(OrderingServiceImpl.class);
 
-    private final OrderingDao  orderingDao;
-
-    public OrderingServiceImpl() {
-        orderingDao = DaoFactory.getOrderingDao();
-    }
+    private OrderingDao orderingDao;
 
     @Override
     public void save(Ordering ordering) throws ServiceException {
@@ -39,5 +34,9 @@ public class OrderingServiceImpl implements OrderingService {
             LOG.error("Error to find orderings by appointment id");
             throw new ServiceException(e);
         }
+    }
+
+    public void setOrderingDao(OrderingDao orderingDao) {
+        this.orderingDao = orderingDao;
     }
 }

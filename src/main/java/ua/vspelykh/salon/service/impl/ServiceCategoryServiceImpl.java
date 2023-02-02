@@ -1,6 +1,5 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.ServiceCategoryDao;
 import ua.vspelykh.salon.dto.ServiceCategoryDto;
 import ua.vspelykh.salon.model.ServiceCategory;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class ServiceCategoryServiceImpl implements ServiceCategoryService {
 
-    private ServiceCategoryDao serviceCategoryDao = DaoFactory.getServiceCategoryDao();
+    private ServiceCategoryDao serviceCategoryDao;
 
     @Override
     public ServiceCategory findById(int id) throws ServiceException {
@@ -41,5 +40,9 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
 
     private ServiceCategoryDto toDto(ServiceCategory category, String locale) {
         return new ServiceCategoryDto(category.getId(), "ua".equals(locale) ? category.getNameUa() : category.getName());
+    }
+
+    public void setServiceCategoryDao(ServiceCategoryDao serviceCategoryDao) {
+        this.serviceCategoryDao = serviceCategoryDao;
     }
 }

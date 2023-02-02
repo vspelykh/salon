@@ -7,8 +7,6 @@ import java.util.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.COMMAND_PARAM;
 import static ua.vspelykh.salon.controller.ControllerConstants.HOME_REDIRECT;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
-import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
-import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 
 public class PageConstants {
 

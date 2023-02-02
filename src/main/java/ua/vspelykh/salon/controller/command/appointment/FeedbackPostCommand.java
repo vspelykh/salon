@@ -2,8 +2,6 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Mark;
-import ua.vspelykh.salon.service.MarkService;
-import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,7 +13,6 @@ import static ua.vspelykh.salon.dao.mapper.Column.*;
 
 public class FeedbackPostCommand extends Command {
 
-    private MarkService markService = ServiceFactory.gerMarkService();
     @Override
     public void process() throws ServletException, IOException {
         Mark mark = new Mark();
@@ -24,7 +21,7 @@ public class FeedbackPostCommand extends Command {
         mark.setAppointmentId(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
         mark.setDate(LocalDateTime.now());
         try {
-            markService.save(mark);
+            getServiceFactory().getMarkService().save(mark);
         } catch (ServiceException e) {
             e.printStackTrace();
         }

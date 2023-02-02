@@ -2,7 +2,6 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.MarkDao;
 import ua.vspelykh.salon.model.Mark;
 import ua.vspelykh.salon.service.MarkService;
@@ -15,11 +14,7 @@ public class MarkServiceImpl implements MarkService {
 
     private static final Logger LOG = LogManager.getLogger(MarkServiceImpl.class);
 
-    private final MarkDao markDao;
-
-    public MarkServiceImpl() {
-        markDao = DaoFactory.getMarkDao();
-    }
+    private MarkDao markDao;
 
     @Override
     public void save(Mark mark) throws ServiceException {
@@ -49,5 +44,9 @@ public class MarkServiceImpl implements MarkService {
             LOG.error("Error to delete mark");
             throw new ServiceException(e);
         }
+    }
+
+    public void setMarkDao(MarkDao markDao) {
+        this.markDao = markDao;
     }
 }

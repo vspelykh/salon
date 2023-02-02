@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.controller.command.CommandFactory;
+import ua.vspelykh.salon.service.ServiceFactory;
+import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,8 +22,7 @@ public class Controller extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         process(request, response);
-        }
-
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,8 +31,16 @@ public class Controller extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = CommandFactory.getCommand(request);
-        command.init(getServletContext(), request, response);
-        command.process();
+        try(ServiceFactory serviceFactory = getServiceFactory()){
+            command.init(getServletContext(), request, response, serviceFactory);
+            command.process();
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
+    public ServiceFactory getServiceFactory() {
+        return new ServiceFactoryImpl();
     }
 }
 

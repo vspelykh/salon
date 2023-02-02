@@ -4,8 +4,6 @@ import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.model.Ordering;
 import ua.vspelykh.salon.model.WorkingDay;
-import ua.vspelykh.salon.service.AppointmentService;
-import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -28,10 +26,9 @@ public class ScheduleBuilder {
     private boolean isWeekend = false;
     private Map<Integer, List<LocalTime>> freeSlotsForAppointments = new HashMap<>();
 
-    private BaseServiceService baseService = ServiceFactory.getBaseServiceService();
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
+    private ServiceFactory serviceFactory;
 
-    public ScheduleBuilder(List<AppointmentDto> appointments, WorkingDay day, String locale) {
+    public ScheduleBuilder(List<AppointmentDto> appointments, WorkingDay day, String locale, ServiceFactory serviceFactory) {
         if (day == null) {
             items.add(getWeekend());
             isWeekend = true;
@@ -39,6 +36,7 @@ public class ScheduleBuilder {
         this.appointments = appointments;
         this.day = day;
         this.locale = locale;
+        this.serviceFactory = serviceFactory;
     }
 
     private ScheduleItem getWeekend() {
@@ -121,8 +119,8 @@ public class ScheduleBuilder {
     }
 
     private String getServiceName(Ordering ordering) throws ServiceException {
-        return "ua".equals(locale) ? baseService.findById(ordering.getServiceId()).getServiceUa()
-                : baseService.findById(ordering.getServiceId()).getService();
+        return "ua".equals(locale) ? serviceFactory.getBaseServiceService().findById(ordering.getServiceId()).getServiceUa()
+                : serviceFactory.getBaseServiceService().findById(ordering.getServiceId()).getService();
     }
 
     public List<ScheduleItem> getItems() {

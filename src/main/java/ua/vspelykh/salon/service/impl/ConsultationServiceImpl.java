@@ -1,7 +1,6 @@
 package ua.vspelykh.salon.service.impl;
 
 import ua.vspelykh.salon.dao.ConsultationDao;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.model.Consultation;
 import ua.vspelykh.salon.service.ConsultationService;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class ConsultationServiceImpl implements ConsultationService {
 
-    private ConsultationDao dao = DaoFactory.getConsultationDao();
+    private ConsultationDao dao;
 
     @Override
     public List<Consultation> findAll() throws ServiceException {
@@ -41,5 +40,9 @@ public class ConsultationServiceImpl implements ConsultationService {
             //TODO
             throw new ServiceException(e);
         }
+    }
+
+    public void setDao(ConsultationDao dao) {
+        this.dao = dao;
     }
 }
