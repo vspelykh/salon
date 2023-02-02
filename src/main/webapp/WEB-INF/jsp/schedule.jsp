@@ -3,9 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>Schedule</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="schedule.schedule"/></title>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
     <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
@@ -35,7 +35,7 @@
                             <input hidden name="id" value="${user.id}">
                         </label>
                         <h6 style="color: #ac2bac"><fmt:message key="schedule.days"/></h6>
-                        <label for="action-select">Action
+                        <label for="action-select"><fmt:message key="schedule.action"/>
                             <input hidden name="command" value="schedule">
                             <select name="action" id="action-select" required onclick="selectHelper()">
                                 <option disabled selected value><fmt:message key="schedule.select"/></option>
@@ -46,7 +46,7 @@
                         <p></p>
                         <div class="form-group">
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
-                                                              class="form-control" placeholder="Select days">
+                                                              class="form-control" placeholder="<fmt:message key="select.days"/>">
                             </label>
                             <button onclick="document.getElementById('form-id').submit();"><fmt:message
                                     key="main.submit"/></button>

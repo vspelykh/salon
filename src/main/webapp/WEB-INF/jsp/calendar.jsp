@@ -13,11 +13,12 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
-    <title>Calendar ${name.name} ${name.surname}</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="calendar.for"/> ${name.name} ${name.surname}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -26,11 +27,12 @@
         <br>
         <div class="container text-left">
             <div class="row justify-content-center">
-                <h2 class="mb-5 text-center">Calendar for ${user.name} ${user.surname}. Choose the day</h2>
+                <h2 class="mb-5 text-center"><fmt:message key="calendar.for"/> ${user.name} ${user.surname}.
+                    <fmt:message key="calendar.choose"/></h2>
                 <div class="col-lg-3">
                     <c:choose>
                         <c:when test="${param.exc == 'y'}">
-                            <h6 style="color: red">Time slot have already occupied or duration not allowed anymore</h6>
+                            <h6 style="color: red"><fmt:message key="calendar.occupied"/></h6>
                         </c:when>
                     </c:choose>
                     <form onsubmit="return validateForm()" id="calendar"
@@ -43,9 +45,11 @@
                         </label>
                         <div class="form-group">
                             <label><input name="day" type="datetime-local" class="form-control"
+                                          onchange="this.form.submit()"
                                           placeholder="${placeholder}">
                             </label>
-                            <button onclick="document.getElementById('form-id').submit();">Submit</button>
+<%--                            <button onclick="document.getElementById('form-id').submit();"><fmt:message--%>
+<%--                                    key="main.submit"/></button>--%>
                         </div>
                     </form>
                     <form action="${pageContext.request.contextPath}/salon">
@@ -59,14 +63,10 @@
                         <br>
                         <c:forEach items="${slots}" var="item">
                             <input type="radio" class="btn-check" required name="time" id="${item}"
+                                   onchange="this.form.submit()"
                                    value="${item}" autocomplete="off"/>
                             <label class="btn btn-secondary" for="${item}">${item}</label>
                         </c:forEach>
-                        <c:choose>
-                            <c:when test="${slots != null}">
-                                <button type="submit">Create an appointment</button>
-                            </c:when>
-                        </c:choose>
                     </form>
                 </div>
             </div>
@@ -74,7 +74,8 @@
     </div>
 </div>
 <script>
-    flatpickr("#calendar, input[type=datetime-local]", {
+    flatpickr("input[type=datetime-local]", {
+        locale: "${sessionScope.lang == "en" ? "en" : "uk"}",
         dateFormat: "d-m-Y",
         enableTime: false,
         minDate: "today",
@@ -96,7 +97,7 @@
     function validateForm() {
         var x = document.forms["calendar"]["day"].value;
         if (x == "") {
-            alert("Day must be filled out");
+            alert("<fmt:message key="schedule.validate"/>");
             return false;
         }
     }

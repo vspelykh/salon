@@ -13,6 +13,7 @@ import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 
@@ -42,7 +43,8 @@ public class CalendarCommand extends Command {
                 request.setAttribute(PLACEHOLDER, day.getDate().format(DateTimeFormatter.ofPattern(datePattern)));
                 addTimeSlotsToAttributes(day);
             } else {
-                request.setAttribute(PLACEHOLDER, "Pick A Date");
+                String placeholder = request.getSession().getAttribute(LANG) == "en" ? "Pick A Date" : "Виберіть дату";
+                request.setAttribute(PLACEHOLDER, placeholder);
             }
         } catch (ServiceException e) {
             e.printStackTrace();
