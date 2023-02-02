@@ -30,7 +30,7 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
                                                 aria-controls="panelsStayOpen-collapseTwo">
-                                            Categories
+                                            <fmt:message key="master.categories"/>
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
@@ -81,7 +81,7 @@
                                 <%--                                       value="${searchChecked}"--%>
                                 <%--                                       aria-label="Search">--%>
                                 <%--                            </label>--%>
-                                <input type="submit" value="Filter">
+                                <input type="submit" value="<fmt:message key="main.filter"/>">
                                 <table id="mastersTable" class="table table-striped table-hover table-bordered">
                                     <thead>
                                     <tr>

@@ -27,7 +27,7 @@ public class RegistrationCommand extends Command {
         User user = checkFieldsAndBuildUser();
         if (user != null) {
             try {
-                if (request.getParameter(KEY) != null) {
+                if (request.getParameter(KEY) != null && !request.getParameter(KEY).isEmpty()) {
                     getServiceFactory().getUserService().save(user, request.getParameter(KEY));
                 } else {
                     getServiceFactory().getUserService().save(user);

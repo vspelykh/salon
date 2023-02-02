@@ -5,9 +5,9 @@
 
 <html>
 <head>
-    <title>Our masters</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="master.our"/> <fmt:message key="master.masters"/></title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -30,7 +30,7 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#panelsStayOpen-collapseCat" aria-expanded="false"
                                                 aria-controls="panelsStayOpen-collapseCat">
-                                            Categories
+                                            <fmt:message key="master.categories"/>
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseCat" class="accordion-collapse collapse"
@@ -121,17 +121,29 @@
                                 </select>
                                 <label for="sort"><fmt:message key="master.sort"/></label>
                                 <select onchange="this.form.submit()" name="sort" id="sort">
-                                    <c:forEach items="${sorts}" var="item">
-                                        <option value="${item.name()}" ${sortChecked == item ? 'selected="selected"' : ''}>
-                                                ${item.text}</option>
-                                    </c:forEach>
+                                    <option value="NAME_ASC" ${sortChecked == 'NAME_ASC' ? 'selected="selected"' : ''}>
+                                        A-Z
+                                    </option>
+                                    <option value="NAME_DESC" ${sortChecked == 'NAME_DESC' ? 'selected="selected"' : ''}>
+                                        Z-A
+                                    </option>
+                                    <option value="RATING_DESC" ${sortChecked == 'RATING_DESC' ? 'selected="selected"' : ''}>
+                                        <fmt:message key="sort.rating"/></option>
+                                    <option value="RATING_ASC" ${sortChecked == 'RATING_ASC' ? 'selected="selected"' : ''}>
+                                        <fmt:message key="sort.ratingdown"/></option>
+                                    <option value="FIRST_PRO" ${sortChecked == 'FIRST_PRO' ? 'selected="selected"' : ''}>
+                                        <fmt:message key="sort.pro"/></option>
+                                    <option value="FIRST_YOUNG" ${sortChecked == 'FIRST_YOUNG' ? 'selected="selected"' : ''}>
+                                        <fmt:message key="sort.young"/></option>
                                 </select>
                                 <label>
-                                    <input onchange="this.form.submit()" name="search" type="text" style="width: 400px" placeholder="Search..."
-                                           value="${searchChecked}"
+                                    <input onchange="this.form.submit()" name="search" type="text" style="width: 400px"
+                                           placeholder=
+                                           <fmt:message key="main.search"/>
+                                                   value="${searchChecked}"
                                            aria-label="Search">
                                 </label>
-                                <input type="submit" value="Filter">
+                                <input type="submit" value=<fmt:message key="main.filter"/>>
                                 <table id="mastersTable" class="table table-striped table-hover table-bordered">
                                     <thead>
                                     <tr>
@@ -139,7 +151,7 @@
                                         <th><fmt:message key="master.name"/><i></i></th>
                                         <th><fmt:message key="master.about"/><i></i></th>
                                         <th><fmt:message key="master.level"/><i></i></th>
-                                        <th>Rating</th>
+                                        <th><fmt:message key="main.rating"/></th>
                                         <c:choose>
                                             <c:when test="${isAdmin}">
                                                 <th></th>

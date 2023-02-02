@@ -3,11 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>Manage schedule of masters</title>
+    <title>Schedule</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
     <script src="static/scripts.js"></script>
     <style>
         .cool-date {
@@ -23,7 +24,7 @@
         <br>
         <div class="container text-left">
             <div class="row justify-content-center">
-                <h2 class="mb-5 text-center">Schedule for ${user.name} ${user.surname}.</h2>
+                <h2 class="mb-5 text-center"><fmt:message key="schedule.for"/> ${user.name} ${user.surname}.</h2>
                 <div class="col-lg-3">
                     <form onsubmit="return validateForm()" id="schedule" method="post"
                           name="schedule-form" action="${pageContext.request.contextPath}/salon">
@@ -33,13 +34,13 @@
                         <label>
                             <input hidden name="id" value="${user.id}">
                         </label>
-                        <h6 style="color: #ac2bac">Working days</h6>
+                        <h6 style="color: #ac2bac"><fmt:message key="schedule.days"/></h6>
                         <label for="action-select">Action
                             <input hidden name="command" value="schedule">
                             <select name="action" id="action-select" required onclick="selectHelper()">
-                                <option disabled selected value> -- select an action --</option>
-                                <option value="save">save</option>
-                                <option value="delete">delete</option>
+                                <option disabled selected value><fmt:message key="schedule.select"/></option>
+                                <option value="save"><fmt:message key="schedule.save"/></option>
+                                <option value="delete"><fmt:message key="schedule.delete"/></option>
                             </select>
                         </label>
                         <p></p>
@@ -47,7 +48,8 @@
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
                                                               class="form-control" placeholder="Select days">
                             </label>
-                            <button onclick="document.getElementById('form-id').submit();">Submit</button>
+                            <button onclick="document.getElementById('form-id').submit();"><fmt:message
+                                    key="main.submit"/></button>
                         </div>
                     </form>
                 </div>
@@ -59,6 +61,7 @@
         var coolDates = [${days}]
 
         flatpickr("input[type=datetime-local]", {
+            locale: "${sessionScope.lang == "en" ? "en" : "uk"}",
             inline: true,
             mode: "multiple",
             dateFormat: "d-m-Y",
@@ -86,7 +89,7 @@
         function validateForm() {
             var days = document.forms["schedule"]["days"].value;
             if (days === "") {
-                alert("Day must be filled out");
+                alert("<fmt:message key="schedule.validate"/>");
                 return false;
             }
         }

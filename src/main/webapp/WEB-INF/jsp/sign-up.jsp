@@ -20,9 +20,11 @@
                                 <h2 class="text-uppercase text-center mb-5"><fmt:message key="sign.create"/></h2>
 
                                 <form action="${pageContext.request.contextPath}/salon?command=reg" method="post">
-                                    <c:if test="${message != null}">
-                                        <p5 class="text-danger"><fmt:message key="error.${message}"/></p5>
-                                    </c:if>
+                                    <c:choose>
+                                        <c:when test="${message != null}">
+                                            <p5 class="text-danger"><fmt:message key="error.${message}"/></p5>
+                                        </c:when>
+                                    </c:choose>
                                     <div class="form-outline mb-4">
                                         <input type="text" id="formName" name="name" value="${name}"
                                                class="form-control active form-control-lg"/>

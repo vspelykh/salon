@@ -1,7 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %><html>
 <head>
     <title>Consultation</title>
+    <fmt:setLocale value="${sessionScope.lang}"/>
+    <fmt:setBundle basename="localization.messages"/>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -21,23 +25,22 @@
             <div class="card-body py-5 px-md-5">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-8">
-                        <h2 class="fw-bold mb-5">Send us your name and number, and we will call you at the nearest
-                            time</h2>
+                        <h2 class="fw-bold mb-5"><fmt:message key="cons.send"/></h2>
                         <form method="post" action="${pageContext.request.contextPath}/salon">
                             <label>
                                 <input hidden name="command" value="consultation-post">
                             </label>
                             <div class="form-outline mb-4">
                                 <input type="text" name="name" id="name" class="form-control active"/>
-                                <label class="form-label" for="name">Name</label>
+                                <label class="form-label" for="name"><fmt:message key="cons.name"/></label>
                             </div>
 
                             <div class="form-outline mb-4">
                                 <input type="tel" name="number" id="number" class="form-control active"/>
-                                <label class="form-label" for="number">Number</label>
+                                <label class="form-label" for="number"><fmt:message key="cons.num"/></label>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block mb-4">
-                                Submit
+                                <fmt:message key="main.submit"/>
                             </button>
                         </form>
                     </div>
