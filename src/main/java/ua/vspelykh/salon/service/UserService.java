@@ -30,6 +30,8 @@ public interface UserService {
 
     void save(User user) throws ServiceException;
 
+    void save(User user, String parameter) throws ServiceException;
+
     void delete(Integer id) throws ServiceException;
 
     UserLevel getUserLevelByUserId(Integer userId) throws ServiceException;
@@ -46,4 +48,5 @@ public interface UserService {
     List<User> findBySearch(String search) throws ServiceException;
 
     void updateRole(int userId, String action, Role role) throws ServiceException;
+
 }

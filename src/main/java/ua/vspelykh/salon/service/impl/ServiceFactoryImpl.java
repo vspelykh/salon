@@ -19,6 +19,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
         userService.setUserDao(getUserDao());
         userService.setMarkDao(getMarkDao());
         userService.setUserLevelDao(getUserLevelDao());
+        userService.setInvitationDao(getInvitationDao());
+        userService.setTransaction(getTransaction());
         return userService;
     }
 

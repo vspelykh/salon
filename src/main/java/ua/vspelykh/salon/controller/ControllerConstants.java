@@ -45,4 +45,6 @@ public class ControllerConstants {
     public static final String DAYS = "days";
     public static final String SCHEDULE_REDIRECT = "/salon?command=schedule&id=";
     public static final String FIRST = "first";
+    public static final String ERROR = "error";
+    public static final String EMPTY_STRING = "";
 }
