@@ -42,4 +42,16 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>ratingTag</name>
+        <tag-class>ua.vspelykh.salon.tags.RatingTag</tag-class>
+        <body-content>empty</body-content>
+
+        <attribute>
+            <name>mark</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
 </taglib>

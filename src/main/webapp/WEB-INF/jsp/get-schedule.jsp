@@ -5,9 +5,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <html>
 <head>
-    <title>Appointments</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="schedule.schedule"/></title>
     <link rel="stylesheet" href="/static/styles.css">
     <script type="text/javascript" src="/static/scripts.js"></script>
 </head>
@@ -15,9 +15,9 @@
 <jsp:include page="fragments/header.jsp"/>
 <div class="container py-7">
     <h2 class="text-uppercase text-letter-spacing-xs my-0 text-primary font-weight-bold">
-        Schedule
+        <fmt:message key="schedule.schedule"/>
     </h2>
-    <p class="text-sm text-dark mt-0 mb-5">There's time and place for everything.</p>
+    <p class="text-sm text-dark mt-0 mb-5">${user.name} ${user.surname}.</p>
     <!-- Days -->
     <div class="row">
         <c:forEach var="list" items="${schedule}">
@@ -32,7 +32,17 @@
                             <li class="list-timeline-item p-0 pb-3 pb-lg-4 d-flex flex-wrap flex-column">
                                 <p class="my-0 text-dark flex-fw text-sm ">
                                     <span class="text-inverse op-8">${scheduleItem.start} - ${scheduleItem.end}</span>
-                                    : ${scheduleItem.info}</p>
+                                    : <c:choose>
+                                    <c:when test="${scheduleItem.info == 'Free slot'}">
+                                        <fmt:message key="schedule.free"/>
+                                    </c:when>
+                                    <c:when test="${scheduleItem.info == 'weekend'}">
+                                        <fmt:message key="schedule.weekend"/>
+                                    </c:when>
+                                    <c:when test="${scheduleItem.info != 'Free slot'}">
+                                        ${scheduleItem.info}
+                                    </c:when>
+                                </c:choose></p>
                             </li>
                             <c:choose>
                                 <c:when test="${scheduleItem.appointment != null}">
@@ -50,7 +60,7 @@
                                         </select>
                                         <select name="new_slot" onchange="confirmBeforeSubmit(this.form)"
                                                 class="form-select">
-                                            <option selected disabled>Possible slots to change time today</option>
+                                            <option selected disabled><fmt:message key="schedule.possible"/></option>
                                             <c:forEach items="${free_slots_map.get(scheduleItem.appointment.id)}"
                                                        var="slot">
                                                 <option value="${slot}">${slot}</option>

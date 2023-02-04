@@ -80,8 +80,8 @@
                     <div class="col-md-12 col-lg-10">
                         <div class="card text-dark">
                             <div class="card-body p-4">
-                                <h4 class="mb-0">Feedbacks</h4>
-                                <p class="fw-light mb-4 pb-2">Latest Comments about this master</p>
+                                <h4 class="mb-0"><fmt:message key="feedback.title"/></h4>
+                                <p class="fw-light mb-4 pb-2"><fmt:message key="feedback.info"/></p>
                             </div>
                             <hr class="my-0"/>
                             <c:forEach items="${feedbacks}" var="feedback">
@@ -94,6 +94,7 @@
                                                 <p class="mb-0">
                                                     <df:dateTimeParser locale="${sessionScope.lang}"
                                                                        date="${feedback.date}"/>
+                                                    <df:ratingTag mark="${feedback.mark}"/>
                                                 </p>
                                             </div>
                                             <p class="mb-0">
