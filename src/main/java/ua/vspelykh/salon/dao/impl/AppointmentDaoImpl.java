@@ -128,8 +128,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public int create(Appointment entity) throws DaoException {
-        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount)"
-                + VALUES + "(?,?,?,?,?,?)";
+        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount, status," +
+                " payment_status)" + VALUES + "(?,?,?,?,?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setAppointmentStatement(entity, statement);
             statement.executeUpdate();
@@ -148,7 +148,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     @Override
     public void update(Appointment entity) throws DaoException {
         String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
-                ", price = ?, discount = ?, status = ? WHERE id = ?";
+                ", price = ?, discount = ?, status = ?, payment_status = ? WHERE id = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
             int key = statement.executeUpdate();
@@ -170,6 +170,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         statement.setInt(++k, entity.getPrice());
         statement.setInt(++k, entity.getDiscount());
         statement.setString(++k, entity.getStatus().name());
+        statement.setString(++k, entity.getPaymentStatus().name());
         return ++k;
     }
 

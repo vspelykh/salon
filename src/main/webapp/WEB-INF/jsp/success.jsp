@@ -1,6 +1,9 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <fmt:setLocale value="${sessionScope.lang}"/>
+    <fmt:setBundle basename="localization.messages"/>
     <title>Success</title>
     <style>
         body {
@@ -46,7 +49,8 @@
             line-height: 200px;
             margin-left:-15px;" class="checkmark">✓</i>
         </div>
-        <h1>Success</h1>
+        <h1><fmt:message key="${sessionScope.message}"/></h1>
+        ${sessionScope.message = null}
     </div>
     </body>
     </html>

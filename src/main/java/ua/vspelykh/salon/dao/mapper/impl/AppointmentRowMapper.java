@@ -3,6 +3,7 @@ package ua.vspelykh.salon.dao.mapper.impl;
 import ua.vspelykh.salon.dao.mapper.RowMapper;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.PaymentStatus;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,6 +23,7 @@ public class AppointmentRowMapper implements RowMapper<Appointment> {
         appointment.setPrice(rs.getInt(PRICE));
         appointment.setDiscount(rs.getInt(DISCOUNT));
         appointment.setStatus(AppointmentStatus.valueOf(rs.getString(STATUS)));
+        appointment.setPaymentStatus(PaymentStatus.valueOf(rs.getString(PAYMENT_STATUS)));
         return appointment;
     }
 }

@@ -24,7 +24,8 @@
                         <br>
                         <c:choose>
                             <c:when test="${allowedTime != -1}">
-                                <span><fmt:message key="appointment.allowed"/> <b>${allowedTime} <fmt:message key="appointment.min"/></b></span>
+                                <span><fmt:message key="appointment.allowed"/> <b>${allowedTime} <fmt:message
+                                        key="appointment.min"/></b></span>
                             </c:when>
                         </c:choose>
                         <span><fmt:message key="appointment.please"/></span>
@@ -108,8 +109,10 @@
         res += '<b><fmt:message key="appointment.total"/> ' + time + ' <fmt:message key="appointment.min"/>';
         res += ' <fmt:message key="appointment.price"/> ' + Math.floor(price) + " <fmt:message key="appointment.grn"/></b>";
         if (time <= ${allowedTime} && time !== 0) {
-            para2.innerHTML = '<button type="submit" class="btn btn-dark d-block mx-auto btn-submit">' +
-                '<fmt:message key="main.submit"/>' + '</button>'
+            para2.innerHTML = '<button type="submit" name="payment" value="PAID_BY_CARD" class="btn btn-info d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.pay"/>' + '</button>' +
+                '<button type="submit" name="payment" value="NOT_PAID" class="btn btn-dark d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.order"/>' + '</button>'
         } else {
             para2.innerHTML = '<button disabled type="submit" class="btn btn-dark d-block mx-auto btn-submit">' +
                 '<fmt:message key="master.services"/>' + '</button>'

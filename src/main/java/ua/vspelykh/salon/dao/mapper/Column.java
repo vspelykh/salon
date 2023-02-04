@@ -26,6 +26,7 @@ public final class Column {
     public static final String BASE_SERVICE_ID = "base_service_id";
     public static final String CONTINUANCE = "continuance";
     public static final String STATUS = "status";
+    public static final String PAYMENT_STATUS = "payment_status";
 
     public static final String CLIENT_ID = "client_id";
     public static final String DATE = "date";

@@ -15,8 +15,12 @@ import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
+import static ua.vspelykh.salon.util.TimeSlotsUtils.removeSlotsIfDateIsToday;
 
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -38,9 +42,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void save(Appointment appointment) throws ServiceException {
-        if (appointment.isNew() /*&& !validateAppointment(appointment)*/) {
-            throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
-        }
         try {
             if (appointment.isNew()) {
                 appointmentDao.create(appointment);
