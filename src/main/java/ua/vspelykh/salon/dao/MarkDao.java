@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface MarkDao extends Dao<Mark>{
 
-    List<Mark> getMarksByMasterId(Integer masterId) throws DaoException;
+    List<Mark> getMarksByMasterId(Integer masterId, int page) throws DaoException;
+
+    int countMarksByMasterId(Integer masterId) throws DaoException;
+
 }

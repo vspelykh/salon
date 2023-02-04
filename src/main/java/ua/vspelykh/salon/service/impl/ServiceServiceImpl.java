@@ -2,26 +2,35 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ua.vspelykh.salon.dao.BaseServiceDao;
 import ua.vspelykh.salon.dao.MasterServiceDao;
+import ua.vspelykh.salon.dao.ServiceCategoryDao;
+import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.dto.MasterServiceDto;
+import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
+import ua.vspelykh.salon.model.ServiceCategory;
+import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.ServiceService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceServiceImpl implements ServiceService {
 
     private static final Logger LOG = LogManager.getLogger(ServiceServiceImpl.class);
 
+    private ServiceCategoryDao serviceCategoryDao;
     private MasterServiceDao msDao;
+    private BaseServiceDao baseServiceDao;
 
     @Override
     public Service findById(Integer id) throws ServiceException {
         try {
             return msDao.findById(id);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException(e);
         }
     }
@@ -42,7 +51,7 @@ public class ServiceServiceImpl implements ServiceService {
             if (service.isNew()) {
                 msDao.create(service);
             } else msDao.update(service);
-        } catch (DaoException e){
+        } catch (DaoException e) {
             LOG.error("Error to save service");
             throw new ServiceException(e);
         }
@@ -80,9 +89,18 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public List<MasterServiceDto> getDTOsByMasterId(int masterId) throws ServiceException {
+    public List<MasterServiceDto> getDTOsByMasterId(int masterId, String locale) throws ServiceException {
         try {
-            return msDao.getDTOsByMasterId(masterId);
+            List<Service> services = msDao.getAllByUserId(masterId);
+            List<MasterServiceDto> dtos = new ArrayList<>();
+            for (Service service : services) {
+                BaseService baseService = baseServiceDao.findById(service.getBaseServiceId());
+                ServiceCategory category = serviceCategoryDao.findById(baseService.getCategoryId());
+                BaseServiceDto baseServiceDto = new BaseServiceDto.BaseServiceDtoBuilder(baseService, category, locale).build();
+                MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseServiceDto, service.getContinuance());
+                dtos.add(dto);
+            }
+            return dtos;
         } catch (DaoException e) {
             //TODO
             e.printStackTrace();
@@ -92,5 +110,13 @@ public class ServiceServiceImpl implements ServiceService {
 
     public void setMsDao(MasterServiceDao msDao) {
         this.msDao = msDao;
+    }
+
+    public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
+        this.baseServiceDao = baseServiceDao;
+    }
+
+    public void setServiceCategoryDao(ServiceCategoryDao serviceCategoryDao) {
+        this.serviceCategoryDao = serviceCategoryDao;
     }
 }

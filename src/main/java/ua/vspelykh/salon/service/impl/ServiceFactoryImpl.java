@@ -59,6 +59,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public MarkService getMarkService() throws ServiceException {
         MarkServiceImpl markService = new MarkServiceImpl();
         markService.setMarkDao(getMarkDao());
+        markService.setAppointmentDao(getAppointmentDao());
+        markService.setUserDao(getUserDao());
         return markService;
     }
 
@@ -80,6 +82,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public ServiceService getServiceService() throws ServiceException {
         ServiceServiceImpl serviceService = new ServiceServiceImpl();
         serviceService.setMsDao(getMasterServiceDao());
+        serviceService.setBaseServiceDao(getBaseServiceDao());
+        serviceService.setServiceCategoryDao(getServiceCategoryDao());
         return serviceService;
     }
 

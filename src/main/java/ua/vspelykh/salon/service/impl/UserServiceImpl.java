@@ -19,7 +19,6 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.ERROR;
 import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
 import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
 import static ua.vspelykh.salon.dao.mapper.Column.KEY;
@@ -281,7 +280,7 @@ public class UserServiceImpl implements UserService {
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, categoriesIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
-                List<Mark> marks = markDao.getMarksByMasterId(currentMaster.getId());
+                List<Mark> marks = markDao.getMarksByMasterId(currentMaster.getId(), page);
                 UserLevel userLevel = userLevelDao.getUserLevelByUserId(currentMaster.getId());
                 dtos.add(UserMasterDTO.build(currentMaster, userLevel, countRating(marks), locale));
             }

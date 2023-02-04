@@ -7,8 +7,26 @@
     <uri>/WEB-INF/tld/customTag.tld</uri>
 
     <tag>
-        <name>path</name>
+        <name>dateParser</name>
         <tag-class>ua.vspelykh.salon.tags.LocalDateParserTag</tag-class>
+        <body-content>empty</body-content>
+
+        <attribute>
+            <name>locale</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+            <name>date</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>dateTimeParser</name>
+        <tag-class>ua.vspelykh.salon.tags.LocalDateTimeParserTag</tag-class>
         <body-content>empty</body-content>
 
         <attribute>

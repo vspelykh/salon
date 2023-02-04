@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="df" uri="/WEB-INF/tld/customTag.tld" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -48,8 +50,8 @@
                                           onchange="this.form.submit()"
                                           placeholder="${placeholder}">
                             </label>
-<%--                            <button onclick="document.getElementById('form-id').submit();"><fmt:message--%>
-<%--                                    key="main.submit"/></button>--%>
+                            <%--                            <button onclick="document.getElementById('form-id').submit();"><fmt:message--%>
+                            <%--                                    key="main.submit"/></button>--%>
                         </div>
                     </form>
                     <form action="${pageContext.request.contextPath}/salon">
@@ -71,6 +73,45 @@
                 </div>
             </div>
         </div>
+        <%--        Feedbacks--%>
+        <section style="background-color: #ebeef8; border-radius: 10px 10px;">
+            <div class="container my-5 py-5">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12 col-lg-10">
+                        <div class="card text-dark">
+                            <div class="card-body p-4">
+                                <h4 class="mb-0">Feedbacks</h4>
+                                <p class="fw-light mb-4 pb-2">Latest Comments about this master</p>
+                            </div>
+                            <hr class="my-0"/>
+                            <c:forEach items="${feedbacks}" var="feedback">
+                                <div class="card-body p-4">
+                                    <div class="d-flex flex-start">
+
+                                        <div>
+                                            <h6 class="fw-bold mb-1">Lara Stewart</h6>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <p class="mb-0">
+                                                    <df:dateTimeParser locale="${sessionScope.lang}"
+                                                                       date="${feedback.date}"/>
+                                                </p>
+                                            </div>
+                                            <p class="mb-0">
+                                                    ${feedback.comment}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-0"/>
+                            </c:forEach>
+                            <tags:pagination pageChecked="${pageChecked}" pathStr="${pathStr}"
+                                             pagesArray="${pagesArray}" lastPage="${lastPage}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 <script>

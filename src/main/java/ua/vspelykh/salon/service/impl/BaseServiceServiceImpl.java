@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+
 public class BaseServiceServiceImpl implements BaseServiceService {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceServiceImpl.class);
@@ -95,7 +97,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         BaseServiceDto dto = new BaseServiceDto();
         ServiceCategory category = serviceCategoryService.findById(baseService.getCategoryId());
         dto.setId(baseService.getId());
-        if (Objects.equals(locale, "ua")) {
+        if (Objects.equals(locale, UA_LOCALE)) {
             dto.setService(baseService.getServiceUa());
             dto.setCategory(category.getNameUa());
         } else {

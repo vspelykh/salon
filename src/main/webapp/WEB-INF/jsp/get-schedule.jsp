@@ -3,8 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="df" uri="/WEB-INF/tld/customTag.tld" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-
-
 <html>
 <head>
     <title>Appointments</title>
@@ -26,7 +24,7 @@
             <div class="col-lg-4 mb-3">
                 <div class="card border-primary mb-3" style="max-width: 18rem;">
                     <h4 class="mt-0 mb-3 text-dark op-8 font-weight-bold">
-                        <df:path locale="${sessionScope.lang}" date="${list.key}"/>
+                        <df:dateParser locale="${sessionScope.lang}" date="${list.key}"/>
                     </h4>
                     <c:forEach var="scheduleItem" items="${list.value}">
                         <ul ${scheduleItem.info == 'Free slot' ? 'class="list-timeline list-timeline-blue"' :

@@ -1,15 +1,13 @@
 package ua.vspelykh.salon.dto;
 
-import ua.vspelykh.salon.model.BaseService;
-
 public class MasterServiceDto {
 
     private int id;
     private int masterId;
-    private BaseService service;
+    private BaseServiceDto service;
     private int continuance;
 
-    public MasterServiceDto(int id, int masterId, BaseService baseService, int continuance) {
+    public MasterServiceDto(int id, int masterId, BaseServiceDto baseService, int continuance) {
         this.id = id;
         this.masterId = masterId;
         this.service = baseService;
@@ -32,11 +30,11 @@ public class MasterServiceDto {
         this.masterId = masterId;
     }
 
-    public BaseService getService() {
+    public BaseServiceDto getService() {
         return service;
     }
 
-    public void setService(BaseService service) {
+    public void setService(BaseServiceDto service) {
         this.service = service;
     }
 

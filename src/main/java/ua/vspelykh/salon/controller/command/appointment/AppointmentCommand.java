@@ -14,6 +14,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
@@ -32,7 +33,8 @@ public class AppointmentCommand extends Command {
             request.setAttribute(ID, request.getParameter(ID));
             request.setAttribute(DAY, request.getParameter(DAY));
             request.setAttribute(TIME, request.getParameter(TIME));
-            List<MasterServiceDto> dtos = getServiceFactory().getServiceService().getDTOsByMasterId(master.getId());
+            String locale = String.valueOf(request.getSession().getAttribute(LANG));
+            List<MasterServiceDto> dtos = getServiceFactory().getServiceService().getDTOsByMasterId(master.getId(), locale);
             request.setAttribute(SERVICES, dtos);
             request.setAttribute(FIRST, dtos.get(0).getId());
             request.setAttribute(SIZE, dtos.size());

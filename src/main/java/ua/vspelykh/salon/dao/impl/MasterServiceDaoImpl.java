@@ -99,17 +99,6 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         }
     }
 
-    public List<MasterServiceDto> getDTOsByMasterId(int masterId) throws DaoException{
-        List<Service> services = getAllByUserId(masterId);
-        List<MasterServiceDto> dtos = new ArrayList<>();
-        for (Service service : services){
-            BaseService baseService = baseServiceDao.findById(service.getBaseServiceId());
-            MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseService, service.getContinuance());
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
     private class MasterServiceFilteredQueryBuilder {
 
         private final List<Integer> userIds;

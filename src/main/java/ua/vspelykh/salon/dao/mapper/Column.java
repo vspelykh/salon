@@ -42,6 +42,7 @@ public final class Column {
     public static final String TIME_END = "time_end";
     public static final String KEY = "key";
 
+    public static final String UA_LOCALE = "ua";
     public static final String UA = "_ua";
 
     private Column(){

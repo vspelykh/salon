@@ -14,6 +14,4 @@ public interface MasterServiceDao extends Dao<Service> {
 
     List<Service> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
                                Integer continuanceFrom, Integer continuanceTo) throws DaoException;
-
-    List<MasterServiceDto> getDTOsByMasterId(int masterId) throws DaoException;
 }

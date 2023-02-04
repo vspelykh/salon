@@ -13,6 +13,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.dao.mapper.Column.APPOINTMENT_ID;
+
 public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
 
     private static final Logger LOG = LogManager.getLogger(MarkDaoImpl.class);
@@ -53,8 +55,8 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     }
 
     @Override
-    public List<Mark> getMarksByMasterId(Integer masterId) throws DaoException {
-        String query = SELECT + tableName + " WHERE appointment_id IN(SELECT id FROM appointments WHERE master_id=?)";
+    public List<Mark> getMarksByMasterId(Integer masterId, int page) throws DaoException {
+        String query = new MarkQueryBuilder(page).buildQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -67,6 +69,59 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
         } catch (SQLException e) {
             LOG.error(e);
             throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public int countMarksByMasterId(Integer masterId) throws DaoException {
+        String query = new MarkQueryBuilder().buildCountQuery();
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, masterId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                //TODO
+                throw new DaoException("TODO");
+            }
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
+    }
+
+    private class MarkQueryBuilder {
+        private int page;
+
+        public MarkQueryBuilder(int page) {
+            this.page = page;
+        }
+
+        public MarkQueryBuilder() {
+
+        }
+
+        public String buildQuery() {
+            StringBuilder query = new StringBuilder(SELECT).append(tableName).append(WHERE).append(APPOINTMENT_ID);
+            query.append(" IN(SELECT id FROM appointments WHERE master_id=?)");
+            return setPagingParamsAndGetQuery(query);
+        }
+
+        private String setPagingParamsAndGetQuery(StringBuilder query) {
+            int offset;
+            if (page == 1) {
+                offset = 0;
+            } else {
+                offset = (page - 1) * 5;
+            }
+            query.append(LIMIT).append(5);
+            query.append(OFFSET).append(offset);
+            return query.toString();
+        }
+
+        public String buildCountQuery() {
+            return "SELECT COUNT(1) FROM " + tableName + WHERE + APPOINTMENT_ID +
+                    " IN(SELECT id FROM appointments WHERE master_id=?)";
         }
     }
 }
