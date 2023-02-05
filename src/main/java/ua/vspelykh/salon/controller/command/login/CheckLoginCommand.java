@@ -37,10 +37,10 @@ public class CheckLoginCommand extends Command {
                     }
                 }
             } catch (ServiceException e) {
-                request.setAttribute(MESSAGE, MESSAGE_INCORRECT_LOGIN_PASSWORD);
+                request.getSession().setAttribute(MESSAGE, MESSAGE_INCORRECT_LOGIN_PASSWORD);
                 request.setAttribute(INS_LOGIN, login);
                 request.setAttribute(INS_PASSWORD, password);
-                forward(LOGIN);
+                redirect(HOME_REDIRECT + COMMAND_PARAM + LOGIN);
             }
         }
     }

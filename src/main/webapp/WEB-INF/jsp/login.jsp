@@ -60,9 +60,12 @@
                                 <label class="form-label" for="loginFormEmailPass"><fmt:message
                                         key="sign.pass"/></label>
                             </div>
-                            <c:if test="${message != null}">
-                                <p5 class="text-danger">${message}</p5>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${sessionScope.message != null}">
+                                <p5 class="text-danger"><fmt:message key="login.fail"/></p5>
+                                ${sessionScope.message = null}
+                                </c:when>
+                            </c:choose>
 
                             <div class="pt-1 mb-4">
                                 <button class="btn btn-info btn-lg btn-block" type="submit"><fmt:message

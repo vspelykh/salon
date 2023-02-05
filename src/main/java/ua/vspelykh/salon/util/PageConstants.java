@@ -4,9 +4,12 @@ import ua.vspelykh.salon.model.Role;
 
 import java.util.*;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.COMMAND_PARAM;
-import static ua.vspelykh.salon.controller.ControllerConstants.HOME_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
+import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
+import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
+import static ua.vspelykh.salon.controller.command.CommandNames.PROFILE;
+import static ua.vspelykh.salon.controller.command.CommandNames.SUCCESS;
 
 public class PageConstants {
 
@@ -52,6 +55,7 @@ public class PageConstants {
         put(ORDERS, admin);
         put(CREATE_INVITATION, admin);
         put(INVITATION, admin);
+        put(ROLES, admin);
     }
 
     public static Set<Role> getPermittedRoles(String command){

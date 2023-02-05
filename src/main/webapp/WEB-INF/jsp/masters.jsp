@@ -151,12 +151,12 @@
                                         <th><fmt:message key="master.name"/><i></i></th>
                                         <th><fmt:message key="master.about"/><i></i></th>
                                         <th><fmt:message key="master.level"/><i></i></th>
-                                        <th><fmt:message key="main.rating"/></th>
                                         <c:choose>
                                             <c:when test="${isAdmin}">
                                                 <th></th>
                                             </c:when>
                                         </c:choose>
+                                        <th><fmt:message key="main.rating"/></th>
                                     </tr>
                                     </thead>
                                     <tbody>

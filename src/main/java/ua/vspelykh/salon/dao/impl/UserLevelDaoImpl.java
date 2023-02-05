@@ -30,7 +30,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public int create(UserLevel entity) throws DaoException {
-        String query = INSERT + tableName + " (id, level, active, about)" + VALUES + "(?,?,?,?)";
+        String query = INSERT + tableName + " (id, level, active, about, about_ua)" + VALUES + "(?,?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(statement, entity);
             statement.executeUpdate();
@@ -85,6 +85,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
         statement.setString(++k, userLevel.getLevel().name());
         statement.setBoolean(++k, userLevel.isActive());
         statement.setString(++k, userLevel.getAbout());
+        statement.setString(++k, userLevel.getAboutUa());
     }
 
 

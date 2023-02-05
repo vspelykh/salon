@@ -8,8 +8,7 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.ACTION;
-import static ua.vspelykh.salon.controller.ControllerConstants.HOME_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.dao.mapper.Column.USER_ID;
 
@@ -25,6 +24,7 @@ public class ChangeRoleCommand extends Command {
         try {
             getServiceFactory().getUserService().updateRole(userId, action, role);
             User user = getServiceFactory().getUserService().findById(userId);
+            request.getSession().setAttribute(MESSAGE, SUCCESS);
             redirect(context.getContextPath() + HOME_REDIRECT +
                     "?command=roles&message=success&search=" + user.getEmail());
         } catch (ServiceException e) {
