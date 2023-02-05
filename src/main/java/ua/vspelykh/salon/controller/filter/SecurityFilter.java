@@ -43,6 +43,8 @@ public class SecurityFilter implements Filter {
             return;
         }
         if (userIsGuest) {
+            String path = HOME_REDIRECT + "?" + req.getQueryString();
+            req.getSession().setAttribute(LAST_PAGE, path);
             res.sendRedirect(String.format(PAGE_COMMAND_PATTERN, LOGIN));
         } else if (command.equals(LOGIN) || command.equals(SIGN_UP)) {
             res.sendRedirect(HOME_REDIRECT);

@@ -114,8 +114,10 @@
                 '<button type="submit" name="payment" value="NOT_PAID" class="btn btn-dark d-block mx-auto btn-submit">' +
                 '<fmt:message key="appointment.order"/>' + '</button>'
         } else {
-            para2.innerHTML = '<button disabled type="submit" class="btn btn-dark d-block mx-auto btn-submit">' +
-                '<fmt:message key="master.services"/>' + '</button>'
+            para2.innerHTML = '<button disabled type="submit" name="payment" value="PAID_BY_CARD" class="btn btn-info d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.pay"/>' + '</button>' +
+                '<button disabled type="submit" name="payment" value="NOT_PAID" class="btn btn-dark d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.order"/>' + '</button>'
         }
         return para.innerHTML = res;
     }

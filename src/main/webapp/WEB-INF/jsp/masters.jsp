@@ -164,8 +164,17 @@
                                         <tr>
                                             <td></td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/salon?command=calendar&id=${item.id}"
-                                                   class="nav-link px-2 text-decoration-underline">${item.name} ${item.surname}</a>
+                                                <c:choose>
+                                                    <c:when test="${sessionScope.currentUser.id != item.id}">
+                                                        <a href="${pageContext.request.contextPath}/salon?command=calendar&id=${item.id}"
+                                                           class="nav-link px-2 text-decoration-underline">${item.name} ${item.surname}</a>
+                                                    </c:when>
+                                                </c:choose>
+                                                <c:choose>
+                                                    <c:when test="${sessionScope.currentUser.id == item.id}">
+                                                        ${item.name} ${item.surname}
+                                                    </c:when>
+                                                </c:choose>
                                             </td>
                                             <td>${item.about}</td>
                                             <td>${item.level}</td>

@@ -90,7 +90,7 @@
                                     <div class="d-flex flex-start">
 
                                         <div>
-                                            <h6 class="fw-bold mb-1">Lara Stewart</h6>
+                                            <h6 class="fw-bold mb-1">${feedback.client}</h6>
                                             <div class="d-flex align-items-center mb-3">
                                                 <p class="mb-0">
                                                     <df:dateTimeParser locale="${sessionScope.lang}"

@@ -43,6 +43,7 @@ public class ControllerConstants {
     public static final String PATH_STR = "pathStr";
     public static final String ACTION = "action";
     public static final String DAYS = "days";
+    public static final String MASTERS_REDIRECT = "/salon?command=masters";
     public static final String SCHEDULE_REDIRECT = "/salon?command=schedule&id=";
     public static final String FIRST = "first";
     public static final String ERROR = "error";

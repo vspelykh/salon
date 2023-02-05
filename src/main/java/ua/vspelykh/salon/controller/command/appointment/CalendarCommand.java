@@ -2,6 +2,7 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.dto.MarkDto;
+import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -32,6 +33,11 @@ public class CalendarCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         try {
+            User user = (User) request.getSession().getAttribute(CURRENT_USER);
+            if (user.getId().equals(Integer.valueOf(request.getParameter(ID)))){
+                redirect(MASTERS_REDIRECT);
+                return;
+            }
             setMasterInfoAttrs();
             setFeedbacksAttrs();
             setTimeSlotsForChosenDayElseSetEmptyPlaceholder();

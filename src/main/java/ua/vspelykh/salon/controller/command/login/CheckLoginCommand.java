@@ -28,7 +28,13 @@ public class CheckLoginCommand extends Command {
                     session.setAttribute(CURRENT_USER, user);
                     session.setAttribute(ROLES, user.getRoles());
                     session.setAttribute(IS_LOGGED, true);
-                    response.sendRedirect(context.getContextPath() + HOME_REDIRECT);
+                    if (session.getAttribute(LAST_PAGE) != null) {
+                        String path = (String) session.getAttribute(LAST_PAGE);
+                        session.removeAttribute(LAST_PAGE);
+                        redirect(path);
+                    } else {
+                        redirect(context.getContextPath() + HOME_REDIRECT);
+                    }
                 }
             } catch (ServiceException e) {
                 request.setAttribute(MESSAGE, MESSAGE_INCORRECT_LOGIN_PASSWORD);
