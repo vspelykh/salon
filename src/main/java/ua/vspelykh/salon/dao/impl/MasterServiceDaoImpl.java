@@ -8,12 +8,13 @@ import ua.vspelykh.salon.dao.MasterServiceDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
-import ua.vspelykh.salon.dto.MasterServiceDto;
-import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -63,7 +63,7 @@ public class MarkServiceImpl implements MarkService {
 
     private List<MarkDto> toDTOs(List<Mark> marks) throws DaoException {
         List<MarkDto> dtos = new ArrayList<>();
-        for (Mark mark : marks){
+        for (Mark mark : marks) {
             dtos.add(toDTO(mark));
         }
         return dtos;
@@ -98,6 +98,15 @@ public class MarkServiceImpl implements MarkService {
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public Mark getMarkByAppointmentId(Integer appointmentId) {
+        try {
+            return markDao.findByAppointmentId(appointmentId);
+        } catch (DaoException e) {
+            return null;
         }
     }
 

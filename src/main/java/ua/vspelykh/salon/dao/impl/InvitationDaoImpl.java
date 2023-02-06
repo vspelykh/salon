@@ -9,7 +9,10 @@ import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Invitation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static ua.vspelykh.salon.dao.mapper.Column.EMAIL;
 

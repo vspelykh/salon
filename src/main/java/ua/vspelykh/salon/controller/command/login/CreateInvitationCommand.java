@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.command.CommandNames.ADMIN;
 import static ua.vspelykh.salon.controller.command.CommandNames.INVITATION;
 import static ua.vspelykh.salon.dao.mapper.Column.EMAIL;
 import static ua.vspelykh.salon.dao.mapper.Column.ROLE;

@@ -11,4 +11,5 @@ public interface MarkDao extends Dao<Mark>{
 
     int countMarksByMasterId(Integer masterId) throws DaoException;
 
+    Mark findByAppointmentId(Integer appointmentId) throws DaoException;
 }

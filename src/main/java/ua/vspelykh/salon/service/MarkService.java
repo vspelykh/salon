@@ -15,4 +15,6 @@ public interface MarkService {
     void delete(Integer id) throws ServiceException;
 
     int countMarksByMasterId(Integer masterID) throws ServiceException;
+
+    Mark getMarkByAppointmentId(Integer appointmentId);
 }

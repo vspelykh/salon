@@ -90,6 +90,11 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
         }
     }
 
+    @Override
+    public Mark findByAppointmentId(Integer appointmentId) throws DaoException {
+        return findByParam(appointmentId, APPOINTMENT_ID);
+    }
+
     private class MarkQueryBuilder {
         private int page;
 

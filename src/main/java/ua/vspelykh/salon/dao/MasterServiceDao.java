@@ -1,6 +1,5 @@
 package ua.vspelykh.salon.dao;
 
-import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.DaoException;
 

@@ -103,6 +103,8 @@ CREATE TABLE marks
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
+CREATE UNIQUE INDEX mark_unique_appointment_idx ON marks (appointment_id);
+
 CREATE TABLE consultations
 (
     id     SERIAL PRIMARY KEY,

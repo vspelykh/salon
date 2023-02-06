@@ -5,11 +5,11 @@ import ua.vspelykh.salon.model.Role;
 import java.util.*;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.command.CommandNames.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 import static ua.vspelykh.salon.controller.command.CommandNames.PROFILE;
 import static ua.vspelykh.salon.controller.command.CommandNames.SUCCESS;
+import static ua.vspelykh.salon.controller.command.CommandNames.*;
 
 public class PageConstants {
 
