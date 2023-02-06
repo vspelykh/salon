@@ -11,8 +11,10 @@ import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.service.AppointmentService;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,6 +31,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentDao appointmentDao;
     private UserDao userDao;
     private OrderingDao orderingDao;
+    private Transaction transaction;
 
     @Override
     public Appointment findById(Integer id) throws ServiceException {
@@ -43,10 +46,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void save(Appointment appointment) throws ServiceException {
         try {
+            transaction.start();
             if (appointment.isNew()) {
                 appointmentDao.create(appointment);
-            } else appointmentDao.update(appointment);
-        } catch (DaoException e) {
+            } else {
+                appointmentDao.update(appointment);
+            }
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save an appointment");
             throw new ServiceException(e);
         }
@@ -55,8 +67,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
+            transaction.start();
             appointmentDao.removeById(id);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete an appointment");
             throw new ServiceException(e);
         }
@@ -95,8 +114,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDto> getDtosByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
         try {
-            return toDTOs(getByDateAndMasterId(date, masterId));
-        } catch (DaoException e) {
+            transaction.start();
+            List<AppointmentDto> appointmentDtos = toDTOs(getByDateAndMasterId(date, masterId));
+            transaction.commit();
+            return appointmentDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to find appointment by date and master id");
             throw new ServiceException(e);
         }
@@ -116,9 +143,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, int page, int size) throws ServiceException {
         try {
-            return toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo, status, page, size));
-        } catch (DaoException e) {
-            e.printStackTrace();
+            transaction.start();
+            List<AppointmentDto> appointmentDtos = toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo,
+                    status, page, size));
+            transaction.commit();
+            return appointmentDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             //TODO
             throw new ServiceException(e);
         }
@@ -173,5 +208,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     public void setOrderingDao(OrderingDao orderingDao) {
         this.orderingDao = orderingDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

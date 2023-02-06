@@ -192,7 +192,7 @@ public class UserServiceImpl implements UserService {
             user = userDao.findByEmail(user.getEmail());
             Invitation invitation = invitationDao.findByEmail(user.getEmail());
             BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
-            if (encryptor.checkPassword(key, invitation.getKey())){
+            if (encryptor.checkPassword(key, invitation.getKey())) {
                 userDao.updateRole(user.getId(), ADD, Role.CLIENT);
                 userDao.updateRole(user.getId(), ADD, invitation.getRole());
             } else {
@@ -337,9 +337,7 @@ public class UserServiceImpl implements UserService {
             transaction.start();
             userDao.updateRole(userId, action, role);
             if (isNewHairdresser(action, role)) {
-                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", " ", true));
-            } else if (isMasterRemoved(action, role)) {
-                userLevelDao.removeById(userId);
+                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, "New master", "Новий майстер", true));
             }
             transaction.commit();
         } catch (DaoException | TransactionException e) {
@@ -350,10 +348,6 @@ public class UserServiceImpl implements UserService {
             }
             throw new ServiceException(e);
         }
-    }
-
-    private boolean isMasterRemoved(String action, Role role) {
-        return action.equals(REMOVE) && role == Role.HAIRDRESSER;
     }
 
     private boolean isNewHairdresser(String action, Role role) {

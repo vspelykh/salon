@@ -9,8 +9,10 @@ import ua.vspelykh.salon.dto.MarkDto;
 import ua.vspelykh.salon.model.Mark;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.service.MarkService;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +24,20 @@ public class MarkServiceImpl implements MarkService {
     private MarkDao markDao;
     private AppointmentDao appointmentDao;
     private UserDao userDao;
+    private Transaction transaction;
 
     @Override
     public void save(Mark mark) throws ServiceException {
         try {
+            transaction.start();
             markDao.create(mark);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save mark");
             throw new ServiceException(e);
         }
@@ -36,9 +46,16 @@ public class MarkServiceImpl implements MarkService {
     @Override
     public List<MarkDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException {
         try {
+            transaction.start();
             List<Mark> marks = markDao.getMarksByMasterId(masterId, page);
+            transaction.commit();
             return toDTOs(marks);
-        } catch (DaoException e) {
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to get marks for master");
             throw new ServiceException(e);
         }
@@ -60,8 +77,15 @@ public class MarkServiceImpl implements MarkService {
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
+            transaction.start();
             markDao.removeById(id);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete mark");
             throw new ServiceException(e);
         }
@@ -87,5 +111,9 @@ public class MarkServiceImpl implements MarkService {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

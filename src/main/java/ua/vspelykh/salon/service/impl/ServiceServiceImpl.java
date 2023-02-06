@@ -10,10 +10,11 @@ import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.model.ServiceCategory;
-import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.ServiceService;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ServiceServiceImpl implements ServiceService {
     private ServiceCategoryDao serviceCategoryDao;
     private MasterServiceDao msDao;
     private BaseServiceDao baseServiceDao;
+    private Transaction transaction;
 
     @Override
     public Service findById(Integer id) throws ServiceException {
@@ -48,10 +50,19 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void save(Service service) throws ServiceException {
         try {
+            transaction.start();
             if (service.isNew()) {
                 msDao.create(service);
-            } else msDao.update(service);
-        } catch (DaoException e) {
+            } else {
+                msDao.update(service);
+            }
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save service");
             throw new ServiceException(e);
         }
@@ -81,8 +92,15 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
+            transaction.start();
             msDao.removeById(id);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete service of master");
             throw new ServiceException(e);
         }
@@ -91,6 +109,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public List<MasterServiceDto> getDTOsByMasterId(int masterId, String locale) throws ServiceException {
         try {
+            transaction.start();
             List<Service> services = msDao.getAllByUserId(masterId);
             List<MasterServiceDto> dtos = new ArrayList<>();
             for (Service service : services) {
@@ -100,8 +119,14 @@ public class ServiceServiceImpl implements ServiceService {
                 MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseServiceDto, service.getContinuance());
                 dtos.add(dto);
             }
+            transaction.commit();
             return dtos;
-        } catch (DaoException e) {
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             //TODO
             e.printStackTrace();
             throw new ServiceException(e);
@@ -118,5 +143,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     public void setServiceCategoryDao(ServiceCategoryDao serviceCategoryDao) {
         this.serviceCategoryDao = serviceCategoryDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

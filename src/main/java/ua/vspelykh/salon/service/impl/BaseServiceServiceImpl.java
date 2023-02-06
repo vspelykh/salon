@@ -8,8 +8,10 @@ import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.ServiceCategory;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceCategoryService;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
 
     private ServiceCategoryService serviceCategoryService;
     private BaseServiceDao baseServiceDao;
+    private Transaction transaction;
 
     @Override
     public BaseService findById(Integer id) throws ServiceException {
@@ -36,8 +39,16 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public List<BaseServiceDto> findAll(String locale) throws ServiceException {
         try {
-            return toDtos(baseServiceDao.findAll(), locale);
-        } catch (DaoException e) {
+            transaction.start();
+            List<BaseServiceDto> baseServiceDtos = toDtos(baseServiceDao.findAll(), locale);
+            transaction.commit();
+            return baseServiceDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to get all base services");
             throw new ServiceException(e);
         }
@@ -46,10 +57,19 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public void save(BaseService baseService) throws ServiceException {
         try {
+            transaction.start();
             if (baseService.isNew()) {
                 baseServiceDao.create(baseService);
-            } else baseServiceDao.update(baseService);
-        } catch (DaoException e) {
+            } else {
+                baseServiceDao.update(baseService);
+            }
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save base service");
             throw new ServiceException(e);
         }
@@ -58,8 +78,15 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public void delete(Integer baseServiceId) throws ServiceException {
         try {
+            transaction.start();
             baseServiceDao.removeById(baseServiceId);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete base service by id");
             throw new ServiceException(e);
         }
@@ -68,8 +95,17 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public List<BaseServiceDto> findByFilter(List<Integer> categoriesIds, int page, int size, String locale) throws ServiceException {
         try {
-            return toDtos(baseServiceDao.findByFilter(categoriesIds, page, size), locale);
-        } catch (DaoException e) {
+            transaction.start();
+            List<BaseServiceDto> baseServiceDtos = toDtos(baseServiceDao.findByFilter(categoriesIds, page, size), locale);
+            transaction.commit();
+            return baseServiceDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
+            //TODO
             e.printStackTrace();
             throw new ServiceException(e);
         }
@@ -114,5 +150,9 @@ public class BaseServiceServiceImpl implements BaseServiceService {
 
     public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
         this.baseServiceDao = baseServiceDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

@@ -30,6 +30,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         appointmentService.setAppointmentDao(getAppointmentDao());
         appointmentService.setOrderingDao(getOrderingDao());
         appointmentService.setUserDao(getUserDao());
+        appointmentService.setTransaction(getTransaction());
         return appointmentService;
     }
 
@@ -38,6 +39,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         BaseServiceServiceImpl baseServiceService = new BaseServiceServiceImpl();
         baseServiceService.setBaseServiceDao(getBaseServiceDao());
         baseServiceService.setServiceCategoryService(getServiceCategoryService());
+        baseServiceService.setTransaction(getTransaction());
         return baseServiceService;
     }
 
@@ -45,6 +47,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public ConsultationService getConsultationService() throws ServiceException {
         ConsultationServiceImpl consultationService = new ConsultationServiceImpl();
         consultationService.setDao(getConsultationDao());
+        consultationService.setTransaction(getTransaction());
         return consultationService;
     }
 
@@ -52,6 +55,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public InvitationService getInvitationService() throws ServiceException {
         InvitationServiceImpl invitationService = new InvitationServiceImpl();
         invitationService.setInvitationDao(getInvitationDao());
+        invitationService.setTransaction(getTransaction());
         return invitationService;
     }
 
@@ -61,6 +65,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         markService.setMarkDao(getMarkDao());
         markService.setAppointmentDao(getAppointmentDao());
         markService.setUserDao(getUserDao());
+        markService.setTransaction(getTransaction());
         return markService;
     }
 
@@ -68,6 +73,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public OrderingService getOrderingService() throws ServiceException {
         OrderingServiceImpl orderingService = new OrderingServiceImpl();
         orderingService.setOrderingDao(getOrderingDao());
+        orderingService.setTransaction(getTransaction());
         return orderingService;
     }
 
@@ -75,6 +81,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public ServiceCategoryService getServiceCategoryService() throws ServiceException {
         ServiceCategoryServiceImpl serviceCategoryService = new ServiceCategoryServiceImpl();
         serviceCategoryService.setServiceCategoryDao(getServiceCategoryDao());
+        serviceCategoryService.setTransaction(getTransaction());
         return serviceCategoryService;
     }
 
@@ -84,6 +91,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         serviceService.setMsDao(getMasterServiceDao());
         serviceService.setBaseServiceDao(getBaseServiceDao());
         serviceService.setServiceCategoryDao(getServiceCategoryDao());
+        serviceService.setTransaction(getTransaction());
         return serviceService;
     }
 
@@ -91,6 +99,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public WorkingDayService getWorkingDayService() throws ServiceException {
         WorkingDayServiceImpl workingDayService = new WorkingDayServiceImpl();
         workingDayService.setWorkingDayDao(getWorkingDayDao());
+        workingDayService.setTransaction(getTransaction());
         return workingDayService;
     }
 
