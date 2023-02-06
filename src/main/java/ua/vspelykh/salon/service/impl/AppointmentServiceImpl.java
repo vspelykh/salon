@@ -7,9 +7,7 @@ import ua.vspelykh.salon.dao.OrderingDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.dto.UserDto;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.*;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -17,12 +15,8 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
-import static ua.vspelykh.salon.util.TimeSlotsUtils.removeSlotsIfDateIsToday;
 
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -51,6 +45,31 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentDao.create(appointment);
             } else {
                 appointmentDao.update(appointment);
+            }
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
+            LOG.error("Error to save an appointment");
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void save(Appointment appointment, List<Service> services) throws ServiceException {
+        try {
+            transaction.start();
+            if (appointment.isNew()) {
+                int id = appointmentDao.create(appointment);
+                appointment.setId(id);
+            } else {
+                appointmentDao.update(appointment);
+            }
+            for (Service service : services) {
+                orderingDao.create(new Ordering(appointment.getId(), service.getId()));
             }
             transaction.commit();
         } catch (DaoException | TransactionException e) {

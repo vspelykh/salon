@@ -8,6 +8,11 @@ public class Ordering extends AbstractBaseEntity {
     public Ordering() {
     }
 
+    public Ordering(Integer appointmentId, Integer serviceId) {
+        this.appointmentId = appointmentId;
+        this.serviceId = serviceId;
+    }
+
     public Ordering(Integer id, Integer appointmentId, Integer serviceId) {
         super(id);
         this.appointmentId = appointmentId;

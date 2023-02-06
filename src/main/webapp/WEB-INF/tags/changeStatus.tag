@@ -5,7 +5,7 @@
 
 <%@ attribute name="id" required="true" %>
 <%@ attribute name="days" required="true" %>
-<%@ attribute name="appointment_id" required="true" %>
+<%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.dto.AppointmentDto" %>
 <%@ attribute name="status" required="true" %>
 <%@ attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
 
@@ -29,7 +29,7 @@
             <input hidden name="command" value="edit-appointment">
             <input hidden name="id" value="${id}">
             <input hidden name="days" value="${days}">
-            <input hidden name="appointment_id" value="${appointment_id}">
+            <input hidden name="appointment_id" value="${appointment.id}">
             <button type="submit" name="status" value="SUCCESS" class="btn btn-success">
                 <fmt:message key="change.success"/>
             </button>

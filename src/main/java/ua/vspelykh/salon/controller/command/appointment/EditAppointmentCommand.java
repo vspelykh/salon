@@ -60,6 +60,9 @@ public class EditAppointmentCommand extends Command {
                 return;
             }
             appointment.setStatus(AppointmentStatus.valueOf(status));
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID){
+                appointment.setPaymentStatus(PaymentStatus.RETURNED);
+            }
         }
     }
     @SuppressWarnings("unchecked")

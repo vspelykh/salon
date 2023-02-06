@@ -65,7 +65,7 @@ public class CreateAppointmentCommand extends Command {
             throw new ServiceException("Time slot have already occupied or duration not allowed anymore.");
         }
 
-        getServiceFactory().getAppointmentService().save(appointment);
+        getServiceFactory().getAppointmentService().save(appointment, services);
     }
 
     private int getTotalPrice(List<Service> services, UserLevel userLevel) throws ServiceException {

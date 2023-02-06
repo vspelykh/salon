@@ -42,14 +42,14 @@
                                     <c:when test="${scheduleItem.info != 'Free slot'}">
                                         ${scheduleItem.info}
                                         <button type="button" style="width: 40px; height: 40px " data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal">&#x270D;
+                                                data-bs-target="#modal${scheduleItem.appointment.id}">&#x270D;
                                         </button>
                                     </c:when>
                                 </c:choose></p>
                             </li>
                             <c:choose>
                                 <c:when test="${scheduleItem.appointment != null}">
-                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                    <div class="modal fade" id="modal${scheduleItem.appointment.id}" tabindex="-1"
                                          aria-labelledby="exampleModalLabel"
                                          aria-hidden="true">
                                         <div class="modal-dialog">
@@ -62,7 +62,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <tags:changeStatus id="${param.id}" days="${param.days}"
-                                                                       appointment_id="${scheduleItem.appointment.id}"
+                                                                       appointment="${scheduleItem.appointment}"
                                                                        isAdmin="${isAdmin}"
                                                                        status="${scheduleItem.appointment.status}"/>
                                                     <c:choose>
@@ -95,10 +95,8 @@
                                                                     </c:forEach>
                                                                 </select>
                                                             </form>
-
                                                         </c:when>
                                                     </c:choose>
-
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
