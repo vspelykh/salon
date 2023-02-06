@@ -5,14 +5,14 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.InvitationDao;
 import ua.vspelykh.salon.dao.Table;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Invitation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static ua.vspelykh.salon.dao.mapper.Column.EMAIL;
 
@@ -28,8 +28,7 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
     @Override
     public int create(Invitation entity) throws DaoException {
         String query = INSERT + tableName + " (email, role, key)" + VALUES + "(?,?,?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setInvitationStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -70,8 +69,7 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
     @Override
     public void removeByEmailIfExists(String email) throws DaoException {
         String query = DELETE + tableName + WHERE + EMAIL + EQUAL;
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setString(1, email);
             int i = statement.executeUpdate();
             if (i != 1) {

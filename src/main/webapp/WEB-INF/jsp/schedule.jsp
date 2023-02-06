@@ -3,11 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>Manage schedule of masters</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="schedule.schedule"/></title>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
     <script src="static/scripts.js"></script>
     <style>
         .cool-date {
@@ -19,12 +20,85 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <div class="container">
+
     <div class="content">
         <br>
         <div class="container text-left">
             <div class="row justify-content-center">
-                <h2 class="mb-5 text-center">Schedule for ${user.name} ${user.surname}.</h2>
+                <h2 class="mb-5 text-center"><fmt:message key="schedule.for"/> ${user.name} ${user.surname}.</h2>
                 <div class="col-lg-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <fmt:message key="master.edit"/>
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel"><fmt:message
+                                            key="master.about"/></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="modal" method="post" action="${pageContext.request.contextPath}/salon">
+                                        <input hidden name="command" value="edit-master">
+                                        <input hidden name="id" value="${user.id}">
+                                        <div class="mb-3">
+                                            <label>
+                                                <fmt:message key="master.level"/>
+                                                <select required name="level">
+                                                    <option ${userLevel.level == 'TOP' ? 'selected' : ''}
+                                                            value="TOP">TOP
+                                                    </option>
+                                                    <option ${userLevel.level == 'PRO' ? 'selected' : ''}
+                                                            value="PRO">PRO
+                                                    </option>
+                                                    <option ${userLevel.level == 'YOUNG' ? 'selected' : ''}
+                                                            value="YOUNG">YOUNG
+                                                    </option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <fmt:message key="master.about"/>
+                                        <div class="mb-3">
+                                            <label>
+                                            <textarea required rows="4" cols="55" name="about">${userLevel.about}
+                                            </textarea>
+                                            </label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>
+                                            <textarea required rows="4" cols="55" name="about_ua">${userLevel.aboutUa}
+                                            </textarea>
+                                            </label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>
+                                                <select required name="active">
+                                                    <option ${userLevel.active == 'true' ? 'selected' : ''}
+                                                            value="true"><fmt:message key="master.active"/>
+                                                    </option>
+                                                    <option ${userLevel.active == 'false' ? 'selected' : ''}
+                                                            value="false"><fmt:message key="master.fired"/>
+                                                    </option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><fmt:message
+                                            key="main.cancel"/></button>
+                                    <button form="modal" type="submit" class="btn btn-primary">
+                                        <fmt:message key="main.submit"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <form onsubmit="return validateForm()" id="schedule" method="post"
                           name="schedule-form" action="${pageContext.request.contextPath}/salon">
                         <label>
@@ -33,21 +107,23 @@
                         <label>
                             <input hidden name="id" value="${user.id}">
                         </label>
-                        <h6 style="color: #ac2bac">Working days</h6>
-                        <label for="action-select">Action
+                        <h6 style="color: #ac2bac"><fmt:message key="schedule.days"/></h6>
+                        <label for="action-select"><fmt:message key="schedule.action"/>
                             <input hidden name="command" value="schedule">
                             <select name="action" id="action-select" required onclick="selectHelper()">
-                                <option disabled selected value> -- select an action --</option>
-                                <option value="save">save</option>
-                                <option value="delete">delete</option>
+                                <option disabled selected value><fmt:message key="schedule.select"/></option>
+                                <option value="save"><fmt:message key="schedule.save"/></option>
+                                <option value="delete"><fmt:message key="schedule.delete"/></option>
                             </select>
                         </label>
                         <p></p>
                         <div class="form-group">
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
-                                                              class="form-control" placeholder="Select days">
+                                                              class="form-control"
+                                                              placeholder="<fmt:message key="select.days"/>">
                             </label>
-                            <button onclick="document.getElementById('form-id').submit();">Submit</button>
+                            <button onclick="document.getElementById('form-id').submit();"><fmt:message
+                                    key="main.submit"/></button>
                         </div>
                     </form>
                 </div>
@@ -59,6 +135,7 @@
         var coolDates = [${days}]
 
         flatpickr("input[type=datetime-local]", {
+            locale: "${sessionScope.lang == "en" ? "en" : "uk"}",
             inline: true,
             mode: "multiple",
             dateFormat: "d-m-Y",
@@ -86,7 +163,7 @@
         function validateForm() {
             var days = document.forms["schedule"]["days"].value;
             if (days === "") {
-                alert("Day must be filled out");
+                alert("<fmt:message key="schedule.validate"/>");
                 return false;
             }
         }

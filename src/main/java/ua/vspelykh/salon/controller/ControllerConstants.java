@@ -38,11 +38,17 @@ public class ControllerConstants {
     public static final String PAGE = "page";
     public static final String CHECKED = "Checked";
     public static final String LAST_PAGE = "lastPage";
-    public static final String PAGES_ARRAY =  "pagesArray";
+    public static final String PAGES_ARRAY = "pagesArray";
     public static final String NUMBER_OF_PAGES = "numOfPages";
-    public static final String PATH_STR =  "pathStr";
+    public static final String PATH_STR = "pathStr";
     public static final String ACTION = "action";
     public static final String DAYS = "days";
+    public static final String MASTERS_REDIRECT = "/salon?command=masters";
     public static final String SCHEDULE_REDIRECT = "/salon?command=schedule&id=";
     public static final String FIRST = "first";
+    public static final String ERROR = "error";
+    public static final String HAS_ERROR = "y";
+    public static final String EMPTY_STRING = "";
+    public static final String DOT = ".";
+    public static final String PAYMENT = "payment";
 }

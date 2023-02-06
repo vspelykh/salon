@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.AppointmentDao;
 import ua.vspelykh.salon.dao.Table;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Appointment;
@@ -48,8 +47,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     public List<Appointment> getAllByDate(LocalDate date) throws DaoException {
         AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(date);
         String query = queryBuilder.buildAppointmentsForEmailQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParamsForEmailQuery(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Appointment> appointments = new ArrayList<>();
@@ -69,8 +67,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
                                          AppointmentStatus status, int page, int size) throws DaoException {
         AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status, page, size);
         String query = queryBuilder.buildFilteredQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setFilteredParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Appointment> appointments = new ArrayList<>();
@@ -90,8 +87,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         int count;
         AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status);
         String query = queryBuilder.buildCountQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setFilteredParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -115,8 +111,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     private List<Appointment> getByDateAndEntityId(LocalDate date, int entityId, String column) throws DaoException {
         AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(date, entityId, column);
         String query = queryBuilder.buildQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Appointment> appointments = new ArrayList<>();
@@ -133,10 +128,9 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public int create(Appointment entity) throws DaoException {
-        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount)"
-                + VALUES + "(?,?,?,?,?,?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount, status," +
+                " payment_status)" + VALUES + "(?,?,?,?,?,?,?,?)";
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setAppointmentStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -154,9 +148,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     @Override
     public void update(Appointment entity) throws DaoException {
         String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
-                ", price = ?, discount = ?, status = ? WHERE id = ?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                ", price = ?, discount = ?, status = ?, payment_status = ? WHERE id = ?";
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
             int key = statement.executeUpdate();
             if (key != 1) {
@@ -177,6 +170,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         statement.setInt(++k, entity.getPrice());
         statement.setInt(++k, entity.getDiscount());
         statement.setString(++k, entity.getStatus().name());
+        statement.setString(++k, entity.getPaymentStatus().name());
         return ++k;
     }
 
@@ -268,7 +262,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         private String appendingFilteredParams(StringBuilder query) {
-            if (isOneFilteredParamNotNull()){
+            if (isOneFilteredParamNotNull()) {
                 query.append(WHERE);
             }
             int count = 0;
@@ -320,13 +314,14 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
                 query.append("DATE(date) >= ?").append(AND).append("DATE(date) <= ?");
             } else if (dateFrom != null) {
                 query.append("DATE(date) >= ?");
-            } else if (dateTo != null){
+            } else if (dateTo != null) {
                 appendAnd(query, count);
                 query.append("DATE(date) <= ?");
             }
         }
-        private void appendAnd(StringBuilder q, int count){
-            if (count > 0){
+
+        private void appendAnd(StringBuilder q, int count) {
+            if (count > 0) {
                 q.append(AND);
             }
         }

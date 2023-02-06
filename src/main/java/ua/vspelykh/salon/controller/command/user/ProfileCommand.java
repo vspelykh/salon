@@ -4,8 +4,6 @@ import ua.vspelykh.salon.controller.ControllerConstants;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,8 +13,6 @@ import java.util.Set;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 
 public class ProfileCommand extends Command {
-
-    private UserService userService = ServiceFactory.getUserService();
 
     @Override
     public void process() throws ServletException, IOException {
@@ -29,7 +25,7 @@ public class ProfileCommand extends Command {
         request.setAttribute(IS_CLIENT, roles.contains(Role.CLIENT));
         if (roles.contains(Role.HAIRDRESSER)){
             try {
-                request.setAttribute(USER_LEVEL, userService.getUserLevelByUserId(user.getId()));
+                request.setAttribute(USER_LEVEL, getServiceFactory().getUserService().getUserLevelByUserId(user.getId()));
             } catch (ServiceException e) {
                 //TODO
             }

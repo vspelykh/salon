@@ -1,8 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <html>
 <head>
     <title>Login</title>
-
+    <fmt:setLocale value="${sessionScope.lang}"/>
+    <fmt:setBundle basename="localization.messages"/>
     <style>
         .bg-image-vertical {
             position: relative;
@@ -29,7 +33,7 @@
 
                     <div class="px-5 ms-xl-4">
                         <em class="fas fa-scissors fa-2x me-3 pt-5 mt-xl-4" style="color: #709085;"></em>
-                        <span class="h1 fw-bold mb-0">Lilith</span>
+                        <span class="h1 fw-bold mb-0"><fmt:message key="salon.name"/></span>
                     </div>
 
                     <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
@@ -37,14 +41,15 @@
                         <form action="${pageContext.request.contextPath}/salon?command=checkLogin" method="post"
                               style="width: 23rem;">
 
-                            <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Log in</h3>
+                            <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"><fmt:message
+                                    key="log.log"/></h3>
 
                             <div class="form-outline mb-4">
                                 <input name="login" type="email" id="loginFormEmail"
                                        class="form-control form-control-lg active"
                                        placeholder="Email address"
                                        value="${insLogin}"/>
-                                <label class="form-label" for="loginFormEmail">Email</label>
+                                <label class="form-label" for="loginFormEmail"><fmt:message key="sign.email"/></label>
                             </div>
 
                             <div class="form-outline mb-4">
@@ -52,18 +57,26 @@
                                        class="form-control active form-control-lg"
                                        placeholder="Password"
                                        value="${insPassword}"/>
-                                <label class="form-label" for="loginFormEmailPass">Password</label>
+                                <label class="form-label" for="loginFormEmailPass"><fmt:message
+                                        key="sign.pass"/></label>
                             </div>
-                            <c:if test="${message != null}">
-                                <p5 class="text-danger">${message}</p5>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${sessionScope.message != null}">
+                                <p5 class="text-danger"><fmt:message key="login.fail"/></p5>
+                                ${sessionScope.message = null}
+                                </c:when>
+                            </c:choose>
 
                             <div class="pt-1 mb-4">
-                                <button class="btn btn-info btn-lg btn-block" type="submit">Login</button>
+                                <button class="btn btn-info btn-lg btn-block" type="submit"><fmt:message
+                                        key="main.login"/></button>
                             </div>
 
-                            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!">Forgot password?</a></p>
-                            <p>Don't have an account? <a href="#!" class="link-info">Register here</a></p>
+                            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!"><fmt:message
+                                    key="log.forgot"/></a></p>
+                            <p><fmt:message key="log.acc"/> <a
+                                    href="${pageContext.request.contextPath}/salon?command=sign-up"
+                                    class="link-info"><fmt:message key="log.reg"/></a></p>
 
                         </form>
 

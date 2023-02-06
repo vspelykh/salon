@@ -21,5 +21,5 @@ public interface ServiceService {
 
     void delete(Integer id) throws ServiceException;
 
-    List<MasterServiceDto> getDTOsByMasterId(int masterId) throws ServiceException;
+    List<MasterServiceDto> getDTOsByMasterId(int masterId, String locale) throws ServiceException;
 }

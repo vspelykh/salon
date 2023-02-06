@@ -3,11 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>Manage schedule of masters</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="schedule.schedule"/></title>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
     <script src="static/scripts.js"></script>
     <style>
         .cool-date {
@@ -23,7 +24,7 @@
         <br>
         <div class="container text-left">
             <div class="row justify-content-center">
-                <h2 class="mb-5 text-center">Schedule for ${user.name} ${user.surname}.</h2>
+                <h2 class="mb-5 text-center"><fmt:message key="schedule.for"/> ${user.name} ${user.surname}.</h2>
                 <div class="col-lg-3">
                     <form onsubmit="return validateForm()" id="get-schedule" method="get"
                           name="schedule-form" action="${pageContext.request.contextPath}/salon">
@@ -36,9 +37,10 @@
                         <p></p>
                         <div class="form-group">
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
-                                                              class="form-control" placeholder="Select days">
+                                                              class="form-control" placeholder="<fmt:message key="select.days"/>">
                             </label>
-                            <button onclick="document.getElementById('form-id').submit();">Submit</button>
+                            <button onclick="document.getElementById('form-id').submit();"><fmt:message
+                                    key="main.submit"/></button>
                         </div>
                     </form>
                 </div>
@@ -50,6 +52,7 @@
         var coolDates = [${days}]
 
         flatpickr("input[type=datetime-local]", {
+            locale: "${sessionScope.lang == "en" ? "en" : "uk"}",
             inline: true,
             mode: "multiple",
             dateFormat: "d-m-Y",
@@ -77,7 +80,7 @@
         function validateForm() {
             var days = document.forms["schedule"]["days"].value;
             if (days === "") {
-                alert("Day must be filled out");
+                alert("<fmt:message key="schedule.validate"/>");
                 return false;
             }
         }

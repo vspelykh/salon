@@ -5,12 +5,14 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.BaseServiceDao;
 import ua.vspelykh.salon.dao.Table;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +30,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     public List<BaseService> findByFilter(List<Integer> categoriesIds, int page, int size) throws DaoException {
         BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds, page, size);
         String query = queryBuilder.buildQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BaseService> baseServices = new ArrayList<>();
@@ -49,8 +50,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
         int count;
         BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds, page, size);
         String query = queryBuilder.buildCountQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -69,8 +69,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     @Override
     public int create(BaseService entity) throws DaoException {
         String query = INSERT + tableName + " (service, service_ua, price)" + VALUES + "(?,?,?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(statement, entity);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -95,8 +94,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     @Override
     public void update(BaseService entity) throws DaoException {
         String query = "UPDATE base_services SET service = ?, price = ? WHERE id = ?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setString(1, entity.getService());
             statement.setInt(2, entity.getPrice());
             statement.setInt(3, entity.getId());

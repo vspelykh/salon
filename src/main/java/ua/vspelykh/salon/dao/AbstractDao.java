@@ -2,7 +2,6 @@ package ua.vspelykh.salon.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapper;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -58,6 +57,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
     protected static final String UPDATE_ROLE_QUERY = DELETE + USER_ROLES + WHERE + USER_ID + EQUAL + AND + ROLE + EQUAL;
 
+    private Connection connection;
     protected RowMapper<T> rowMapper;
     protected final String tableName;
 
@@ -74,8 +74,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public List<T> findAll() throws DaoException {
         String query = SELECT + tableName;
-        try (Connection connection = DBCPDataSource.getConnection();
-             Statement statement = connection.createStatement();
+        try (Statement statement = getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             List<T> entities = new ArrayList<>();
             while (resultSet.next()) {
@@ -92,8 +91,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public void removeById(int id) throws DaoException {
         String query = DELETE + tableName + WHERE + Column.ID + EQUAL;
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, id);
             int i = statement.executeUpdate();
             if (i != 1) {
@@ -109,8 +107,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected T findByParam(Object value, String param) throws DaoException {
         T entity;
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -129,8 +126,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected List<T> findAllByParam(Object value, String param) throws DaoException {
         List<T> entities = new ArrayList<>();
         String query = SELECT + tableName + WHERE + param + EQUAL;
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setObject(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -141,5 +137,13 @@ public abstract class AbstractDao<T> implements Dao<T> {
             LOG.error(e);
             throw new DaoException(FAIL_FIND_LIST + tableName + " by " + param + " with value " + value, e);
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

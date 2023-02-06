@@ -103,6 +103,8 @@ CREATE TABLE marks
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
+CREATE UNIQUE INDEX mark_unique_appointment_idx ON marks (appointment_id);
+
 CREATE TABLE consultations
 (
     id     SERIAL PRIMARY KEY,
@@ -136,7 +138,7 @@ CREATE TABLE invitations
 INSERT INTO users (name, surname, email, number, password)
 VALUES ('Marina', 'Alkova', 'admin@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Anastasia', 'Semenova', 'master@gmail.com', '+380971239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
-       ('Alina', 'Ivanova', 'ivanovaa@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Alina', 'Ivanova', 'client@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Galina', 'Shevchenko', 'random1@gmail.com', '+380970239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Valentina', 'Glushko', 'random12@gmail.com', '+380972239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Tatiana', 'Dubina', 'random13@gmail.com', '+380971235050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
@@ -161,6 +163,7 @@ INSERT INTO user_roles
 VALUES (1, 'ADMINISTRATOR'),
        (1, 'CLIENT'),
        (2, 'HAIRDRESSER'),
+       (2, 'CLIENT'),
        (3, 'CLIENT'),
        (4, 'HAIRDRESSER'),
        (5, 'HAIRDRESSER'),
@@ -263,24 +266,24 @@ VALUES (2, 1, 20),
        (6, 6, 60);
 
 INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status, payment_status)
-VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 13, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 14, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 15, 180, '2.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 16, 180, '2.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 17, 180, '2.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 18, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 12, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (2, 13, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 19, 180, '1.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 20, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 21, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 12, 180, '4.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 13, 180, '4.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 14, 180, '4.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 15, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 16, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID'),
-       (4, 17, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID');
+VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 13, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 14, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 15, 180, '2.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 16, 180, '2.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 17, 180, '2.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 18, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 12, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (2, 13, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 19, 180, '1.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 20, 180, '1.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 21, 180, '1.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 12, 180, '4.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 13, 180, '4.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 14, 180, '4.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 15, 180, '5.11.2022 8:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 16, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
+       (4, 17, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON');
 
 INSERT INTO orderings (appointment_id, service_id)
 VALUES (1, 4),

@@ -3,18 +3,22 @@ package ua.vspelykh.salon.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.*;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
+import ua.vspelykh.salon.dao.AbstractDao;
+import ua.vspelykh.salon.dao.Table;
+import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
+import ua.vspelykh.salon.util.exception.ServiceException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +46,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public int create(User entity) throws DaoException {
         String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.executeUpdate();
@@ -55,15 +58,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
         } catch (SQLException e) {
             LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            throw new DaoException(e);
         }
     }
 
     @Override
     public void update(User entity) throws DaoException {
         String query = "UPDATE users SET name = ?, surname = ?, email = ?, number = ?, password = ? WHERE id = ?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
             statement.setInt(6, entity.getId());
@@ -80,7 +82,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     private void encryptPassword(User user) throws DaoException {
         if (user.isNew() || !findById(user.getId()).getPassword().equals(user.getPassword())) {
             BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
-            checkPassword(user.getPassword());
+            try {
+                checkPassword(user.getPassword());
+            } catch (ServiceException e) {
+                throw new DaoException(PASSWORD);
+            }
             user.setPassword(encryptor.encryptPassword(user.getPassword()));
         }
     }
@@ -89,8 +95,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public User findByEmailAndPassword(String email, String password) throws DaoException {
         User user;
         String query = SELECT + tableName + " WHERE email=? AND password=?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -151,8 +156,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         int count;
         MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, categoriesIds, search);
         String query = queryBuilder.buildCountQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -183,30 +187,15 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         } else if (REMOVE.equals(action)) {
             query = UPDATE_ROLE_QUERY;
         } else throw new DaoException();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             setUserRoleStatement(statement, userId, role);
             statement.executeUpdate();
-            if (isNewHairdresser(action, role)) {
-                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
-                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, " ", " ", true));
-            } else if (isMasterRemoved(action, role)) {
-                UserLevelDao userLevelDao = DaoFactory.getUserLevelDao();
-                userLevelDao.removeById(userId);
-            }
         } catch (SQLException e) {
             //TODO
             throw new DaoException();
         }
     }
 
-    private boolean isMasterRemoved(String action, Role role) {
-        return action.equals(REMOVE) && role == Role.HAIRDRESSER;
-    }
-
-    private boolean isNewHairdresser(String action, Role role) {
-        return action.equals(ADD) && role == Role.HAIRDRESSER;
-    }
 
     private void setUserRoleStatement(PreparedStatement statement, int userId, Role role) throws SQLException {
         int k = 0;
@@ -215,8 +204,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     private List<User> getUsersFromDB(MasterFilteredQueryBuilder queryBuilder, String query) throws DaoException {
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();
@@ -233,8 +221,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private List<User> findByRole(Role role) throws DaoException {
         String query = SELECT + "users u INNER JOIN user_roles ur ON u.id = ur.user_id AND ur.role=?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, role.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();
@@ -261,8 +248,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private User setUserRoles(User user) throws DaoException {
         String query = "SELECT role FROM user_roles WHERE user_id=?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<Role> roles = user.getRoles();
@@ -455,7 +441,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private int setCategories(PreparedStatement preparedStatement, int paramNum) throws SQLException {
-            if (!categoriesIds.isEmpty()) {
+            if (categoriesIds != null && !categoriesIds.isEmpty()) {
                 for (Integer id : categoriesIds) {
                     preparedStatement.setInt(paramNum++, id);
                 }
@@ -464,7 +450,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private int setLevels(PreparedStatement preparedStatement, int paramNum) throws SQLException {
-            if (!levels.isEmpty()) {
+            if (levels != null && !levels.isEmpty()) {
                 for (MastersLevel level : levels) {
                     preparedStatement.setString(paramNum++, level.name());
                 }
@@ -473,7 +459,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private int setServices(PreparedStatement preparedStatement, int paramNum) throws SQLException {
-            if (!serviceIds.isEmpty()) {
+            if (serviceIds != null && !serviceIds.isEmpty()) {
                 for (Integer serviceId : serviceIds) {
                     preparedStatement.setInt(paramNum++, serviceId);
                 }

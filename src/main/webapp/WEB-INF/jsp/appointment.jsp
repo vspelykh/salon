@@ -3,9 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>Appointment</title>
     <fmt:setLocale value="${sessionScope.lang}"/>
     <fmt:setBundle basename="localization.messages"/>
+    <title><fmt:message key="appointment.name"/></title>
     <script src="static/scripts.js"></script>
 
 </head>
@@ -17,15 +17,18 @@
             <div class="left-column">
                 <div class="row">
                     <div class="col-12">
-                        <h1>Appointment creating</h1>
-                        <span><b>Date:</b> ${day}, <b>time</b> : ${time}, master: ${master.name} ${master.surname}.</span>
+                        <h1><fmt:message key="appointment.create"/></h1>
+                        <span><b><fmt:message key="appointment.date"/></b> ${day}, <b><fmt:message
+                                key="appointment.time"/></b> ${time}, <fmt:message
+                                key="appointment.master"/> ${master.name} ${master.surname}.</span>
                         <br>
                         <c:choose>
                             <c:when test="${allowedTime != -1}">
-                                <span>For this time slot is allowed <b>${allowedTime} minutes.</b></span>
+                                <span><fmt:message key="appointment.allowed"/> <b>${allowedTime} <fmt:message
+                                        key="appointment.min"/></b></span>
                             </c:when>
                         </c:choose>
-                        <span>Please, choose another slot or date, if you need more time.</span>
+                        <span><fmt:message key="appointment.please"/></span>
                         <hr class="mt-1">
                     </div>
 
@@ -103,14 +106,18 @@
             }
         }
         price *= ${userLevel.level.index};
-        res += '<b>Total time: ' + time + ' min.';
-        res += ' Price: ' + Math.floor(price) + " grn</b>";
+        res += '<b><fmt:message key="appointment.total"/> ' + time + ' <fmt:message key="appointment.min"/>';
+        res += ' <fmt:message key="appointment.price"/> ' + Math.floor(price) + " <fmt:message key="appointment.grn"/></b>";
         if (time <= ${allowedTime} && time !== 0) {
-            para2.innerHTML = '<button type="submit" class="btn btn-dark d-block mx-auto btn-submit">' +
-                'Submit' + '</button>'
+            para2.innerHTML = '<button type="submit" name="payment" value="PAID_BY_CARD" class="btn btn-info d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.pay"/>' + '</button>' +
+                '<button type="submit" name="payment" value="NOT_PAID" class="btn btn-dark d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.order"/>' + '</button>'
         } else {
-            para2.innerHTML = '<button disabled type="submit" class="btn btn-dark d-block mx-auto btn-submit">' +
-                'Submit' + '</button>'
+            para2.innerHTML = '<button disabled type="submit" name="payment" value="PAID_BY_CARD" class="btn btn-info d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.pay"/>' + '</button>' +
+                '<button disabled type="submit" name="payment" value="NOT_PAID" class="btn btn-dark d-block mx-auto btn-submit">' +
+                '<fmt:message key="appointment.order"/>' + '</button>'
         }
         return para.innerHTML = res;
     }

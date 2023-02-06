@@ -1,6 +1,9 @@
 package ua.vspelykh.salon.dto;
 
+import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.ServiceCategory;
+
+import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
 
 public class BaseServiceDto {
 
@@ -50,5 +53,32 @@ public class BaseServiceDto {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public static class BaseServiceDtoBuilder{
+
+        private BaseService baseService;
+        private ServiceCategory category;
+        private String locale;
+
+        public BaseServiceDtoBuilder(BaseService baseService, ServiceCategory category, String locale) {
+            this.baseService = baseService;
+            this.category = category;
+            this.locale = locale;
+        }
+
+        public BaseServiceDto build(){
+            BaseServiceDto dto = new BaseServiceDto();
+            dto.setId(baseService.getId());
+            dto.setService(baseService.getService());
+            if (UA_LOCALE.equals(locale)){
+                dto.setService(baseService.getServiceUa());
+                dto.setCategory(category.getNameUa());
+            } else {
+                dto.setService(baseService.getService());
+                dto.setCategory(category.getName());
+            }
+            return dto;
+        }
     }
 }

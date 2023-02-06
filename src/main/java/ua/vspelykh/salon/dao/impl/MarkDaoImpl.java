@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.MarkDao;
 import ua.vspelykh.salon.dao.Table;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Mark;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -13,6 +12,8 @@ import ua.vspelykh.salon.util.exception.DaoException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ua.vspelykh.salon.dao.mapper.Column.APPOINTMENT_ID;
 
 public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
 
@@ -25,8 +26,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     @Override
     public int create(Mark entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, mark, comment, date)" + VALUES + "(?,?,?,?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setMarkStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -55,10 +55,9 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     }
 
     @Override
-    public List<Mark> getMarksByMasterId(Integer masterId) throws DaoException {
-        String query = SELECT + tableName + " WHERE appointment_id IN(SELECT id FROM appointments WHERE master_id=?)";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    public List<Mark> getMarksByMasterId(Integer masterId, int page) throws DaoException {
+        String query = new MarkQueryBuilder(page).buildQuery();
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Mark> marks = new ArrayList<>();
@@ -70,6 +69,64 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
         } catch (SQLException e) {
             LOG.error(e);
             throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public int countMarksByMasterId(Integer masterId) throws DaoException {
+        String query = new MarkQueryBuilder().buildCountQuery();
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, masterId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                //TODO
+                throw new DaoException("TODO");
+            }
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public Mark findByAppointmentId(Integer appointmentId) throws DaoException {
+        return findByParam(appointmentId, APPOINTMENT_ID);
+    }
+
+    private class MarkQueryBuilder {
+        private int page;
+
+        public MarkQueryBuilder(int page) {
+            this.page = page;
+        }
+
+        public MarkQueryBuilder() {
+
+        }
+
+        public String buildQuery() {
+            StringBuilder query = new StringBuilder(SELECT).append(tableName).append(WHERE).append(APPOINTMENT_ID);
+            query.append(" IN(SELECT id FROM appointments WHERE master_id=?)");
+            return setPagingParamsAndGetQuery(query);
+        }
+
+        private String setPagingParamsAndGetQuery(StringBuilder query) {
+            int offset;
+            if (page == 1) {
+                offset = 0;
+            } else {
+                offset = (page - 1) * 5;
+            }
+            query.append(LIMIT).append(5);
+            query.append(OFFSET).append(offset);
+            return query.toString();
+        }
+
+        public String buildCountQuery() {
+            return "SELECT COUNT(1) FROM " + tableName + WHERE + APPOINTMENT_ID +
+                    " IN(SELECT id FROM appointments WHERE master_id=?)";
         }
     }
 }

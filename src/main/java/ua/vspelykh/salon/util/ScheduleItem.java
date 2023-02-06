@@ -1,8 +1,8 @@
 package ua.vspelykh.salon.util;
-import java.io.Serializable;
 
 import ua.vspelykh.salon.dto.AppointmentDto;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 public class ScheduleItem implements Serializable {

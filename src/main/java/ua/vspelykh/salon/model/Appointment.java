@@ -11,11 +11,12 @@ public class Appointment extends AbstractBaseEntity{
     private int price;
     private int discount;
     private AppointmentStatus status;
+    private PaymentStatus paymentStatus;
 
     public Appointment() {
     }
 
-    public Appointment(Integer id, Integer masterId, Integer clientId, int continuance, LocalDateTime date, int price, int discount, AppointmentStatus status) {
+    private Appointment(Integer id, Integer masterId, Integer clientId, int continuance, LocalDateTime date, int price, int discount, AppointmentStatus status, PaymentStatus paymentStatus) {
         super(id);
         this.masterId = masterId;
         this.clientId = clientId;
@@ -24,6 +25,11 @@ public class Appointment extends AbstractBaseEntity{
         this.price = price;
         this.discount = discount;
         this.status = status;
+        this.paymentStatus = paymentStatus;
+    }
+
+    public static Appointment createAppointment(Integer masterId, Integer clientId, int continuance, LocalDateTime date, int price, int discount, PaymentStatus paymentStatus) {
+        return new Appointment(null, masterId, clientId, continuance, date, price, discount, AppointmentStatus.RESERVED, paymentStatus);
     }
 
     public Integer getMasterId() {
@@ -80,5 +86,13 @@ public class Appointment extends AbstractBaseEntity{
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

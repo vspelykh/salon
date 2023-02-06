@@ -1,56 +1,39 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.service.impl.*;
+import ua.vspelykh.salon.dao.*;
+import ua.vspelykh.salon.util.exception.ServiceException;
 
-public class ServiceFactory {
+import java.sql.Connection;
 
+public interface ServiceFactory extends AutoCloseable {
 
-    private ServiceFactory() {
-    }
+    UserService getUserService() throws ServiceException;
 
-    private static final UserService userService = new UserServiceImpl();
-    private static final BaseServiceService bss = new BaseServiceServiceImpl();
-    private static final ConsultationService consultationService = new ConsultationServiceImpl();
-    private static final WorkingDayService workingDayService = new WorkingDayServiceImpl();
-    private static final AppointmentService appointmentService = new AppointmentServiceImpl();
-    private static final ServiceService serviceService = new ServiceServiceImpl();
-    private static final MarkService markService = new MarkServiceImpl();
-    private static final ServiceCategoryService serviceCategoryService = new ServiceCategoryServiceImpl();
-    private static final InvitationService invitationService = new InvitationServiceImpl();
+    AppointmentService getAppointmentService() throws ServiceException;
 
-    public static UserService getUserService() {
-        return userService;
-    }
+    BaseServiceService getBaseServiceService() throws ServiceException;
+    ConsultationService getConsultationService() throws ServiceException;
+    InvitationService getInvitationService() throws ServiceException;
+    MarkService getMarkService() throws ServiceException;
+    OrderingService getOrderingService() throws ServiceException;
+    ServiceCategoryService getServiceCategoryService() throws ServiceException;
+    ServiceService getServiceService() throws ServiceException;
+    WorkingDayService getWorkingDayService() throws ServiceException;
 
-    public static BaseServiceService getBaseServiceService() {
-        return bss;
-    }
+    Transaction getTransaction() throws ServiceException;
 
-    public static ConsultationService getConsultationService() {
-        return consultationService;
-    }
+    UserDao getUserDao() throws ServiceException;
+    UserLevelDao getUserLevelDao() throws ServiceException;
+    BaseServiceDao getBaseServiceDao() throws ServiceException;
+    MasterServiceDao getMasterServiceDao() throws ServiceException;
+    AppointmentDao getAppointmentDao() throws ServiceException;
+    OrderingDao getOrderingDao() throws ServiceException;
+    MarkDao getMarkDao() throws ServiceException;
+    ConsultationDao getConsultationDao() throws ServiceException;
+    WorkingDayDao getWorkingDayDao() throws ServiceException;
 
-    public static WorkingDayService getWorkingDayService() {
-        return workingDayService;
-    }
+    ServiceCategoryDao getServiceCategoryDao() throws ServiceException;
 
-    public static AppointmentService getAppointmentService() {
-        return appointmentService;
-    }
-
-    public static ServiceService getServiceService() {
-        return serviceService;
-    }
-
-    public static MarkService gerMarkService() {
-        return markService;
-    }
-
-    public static ServiceCategoryService getServiceCategoryService() {
-        return serviceCategoryService;
-    }
-
-    public static InvitationService getInvitationService() {
-        return invitationService;
-    }
+    InvitationDao getInvitationDao() throws ServiceException;
+    Connection getConnection() throws ServiceException;
 }

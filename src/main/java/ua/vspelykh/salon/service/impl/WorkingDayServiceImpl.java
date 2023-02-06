@@ -2,12 +2,13 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dao.WorkingDayDao;
 import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.service.WorkingDayService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -17,11 +18,8 @@ public class WorkingDayServiceImpl implements WorkingDayService {
 
     private static final Logger LOG = LogManager.getLogger(WorkingDayServiceImpl.class);
 
-    private final WorkingDayDao workingDayDao;
-
-    public WorkingDayServiceImpl() {
-        workingDayDao = DaoFactory.getWorkingDayDao();
-    }
+    private WorkingDayDao workingDayDao;
+    private Transaction transaction;
 
     @Override
     public List<WorkingDay> findDaysByUserId(Integer userId) throws ServiceException {
@@ -36,8 +34,15 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     @Override
     public void save(WorkingDay workingDay) throws ServiceException {
         try {
+            transaction.start();
             workingDayDao.create(workingDay);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save");
             throw new ServiceException(e);
         }
@@ -46,8 +51,15 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     @Override
     public void save(int userId, String[] datesArray, Time timeStart, Time timeEnd) throws ServiceException {
         try {
+            transaction.start();
             workingDayDao.save(userId, datesArray, timeStart, timeEnd);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             //TODO
             e.printStackTrace();
         }
@@ -56,8 +68,15 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
+            transaction.start();
             workingDayDao.removeById(id);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete mark");
             throw new ServiceException(e);
         }
@@ -75,9 +94,24 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     @Override
     public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) {
         try {
+            transaction.start();
             workingDayDao.deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
-        } catch (DaoException e) {
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             e.printStackTrace();
         }
+    }
+
+    public void setWorkingDayDao(WorkingDayDao workingDayDao) {
+        this.workingDayDao = workingDayDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

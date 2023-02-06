@@ -4,9 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.ServiceFactory;
+import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletContextEvent;
@@ -26,8 +26,6 @@ import static ua.vspelykh.salon.listener.ListenerConstants.*;
 public class ScheduledEmailExecutorListener implements ServletContextListener {
 
     private static final Logger LOG = LogManager.getLogger(ScheduledEmailExecutorListener.class);
-
-    private AppointmentService appointmentService = ServiceFactory.getAppointmentService();
 
     public void contextInitialized(ServletContextEvent sce) {
         executeTask();
@@ -57,7 +55,8 @@ public class ScheduledEmailExecutorListener implements ServletContextListener {
 
     private Runnable getTask() {
         try {
-            List<AppointmentDto> appointments = appointmentService.getAllByDate(LocalDate.now().minusDays(1));
+            ServiceFactory serviceFactory = ServiceFactoryImpl.getServiceFactory();
+            List<AppointmentDto> appointments = serviceFactory.getAppointmentService().getAllByDate(LocalDate.now().minusDays(1));
             if (!appointments.isEmpty()) {
                 return () -> {
                     for (AppointmentDto appointment : appointments) {

@@ -5,7 +5,6 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.sql.Time;
-import java.time.LocalTime;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
@@ -24,9 +23,9 @@ public class EditScheduleCommand extends AbstractScheduleCommand {
             if (SAVE.equals(request.getParameter(ACTION))) {
                 Time timeStart = getTime(request.getParameter(TIME_START));
                 Time timeEnd = getTime(request.getParameter(TIME_END));
-                workingDayService.save(userId, datesArray, timeStart, timeEnd);
+                getServiceFactory().getWorkingDayService().save(userId, datesArray, timeStart, timeEnd);
             } else if (DELETE.equals(request.getParameter(ACTION))) {
-                workingDayService.deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
+                getServiceFactory().getWorkingDayService().deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
             }
         } catch (ServiceException e) {
             e.printStackTrace();

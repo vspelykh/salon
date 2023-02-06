@@ -2,8 +2,6 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Consultation;
-import ua.vspelykh.salon.service.ConsultationService;
-import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,13 +13,11 @@ import static ua.vspelykh.salon.dao.mapper.Column.NUMBER;
 
 public class ConsultationPostCommand extends Command {
 
-    private ConsultationService consultationService = ServiceFactory.getConsultationService();
-
     @Override
     public void process() throws ServletException, IOException {
         Consultation consultation = new Consultation(null, request.getParameter(NAME), request.getParameter(NUMBER));
         try {
-            consultationService.save(consultation);
+            getServiceFactory().getConsultationService().save(consultation);
         } catch (ServiceException e) {
             //TODO
         }

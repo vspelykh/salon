@@ -1,9 +1,8 @@
 package ua.vspelykh.salon.dto;
 
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Ordering;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +18,7 @@ public class AppointmentDto {
     private int discount;
     private List<Ordering> orderings;
     private AppointmentStatus status;
+    private PaymentStatus paymentStatus;
 
     public AppointmentDto() {
     }
@@ -93,5 +93,13 @@ public class AppointmentDto {
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

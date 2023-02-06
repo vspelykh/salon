@@ -3,34 +3,34 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.BaseServiceDao;
-import ua.vspelykh.salon.dao.Dao;
-import ua.vspelykh.salon.dao.DaoFactory;
 import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.ServiceCategory;
 import ua.vspelykh.salon.service.BaseServiceService;
+import ua.vspelykh.salon.service.ServiceCategoryService;
+import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
+import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+
 public class BaseServiceServiceImpl implements BaseServiceService {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceServiceImpl.class);
 
-    private static final Dao<ServiceCategory> scs = DaoFactory.getServiceCategoryDao();
-    private final BaseServiceDao bsDao;
-
-    public BaseServiceServiceImpl() {
-        this.bsDao = DaoFactory.getBaseServiceDao();
-    }
+    private ServiceCategoryService serviceCategoryService;
+    private BaseServiceDao baseServiceDao;
+    private Transaction transaction;
 
     @Override
     public BaseService findById(Integer id) throws ServiceException {
         try {
-            return bsDao.findById(id);
+            return baseServiceDao.findById(id);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
@@ -39,8 +39,16 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public List<BaseServiceDto> findAll(String locale) throws ServiceException {
         try {
-            return toDtos(bsDao.findAll(), locale);
-        } catch (DaoException e) {
+            transaction.start();
+            List<BaseServiceDto> baseServiceDtos = toDtos(baseServiceDao.findAll(), locale);
+            transaction.commit();
+            return baseServiceDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to get all base services");
             throw new ServiceException(e);
         }
@@ -49,10 +57,19 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public void save(BaseService baseService) throws ServiceException {
         try {
+            transaction.start();
             if (baseService.isNew()) {
-                bsDao.create(baseService);
-            } else bsDao.update(baseService);
-        } catch (DaoException e) {
+                baseServiceDao.create(baseService);
+            } else {
+                baseServiceDao.update(baseService);
+            }
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to save base service");
             throw new ServiceException(e);
         }
@@ -61,8 +78,15 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public void delete(Integer baseServiceId) throws ServiceException {
         try {
-            bsDao.removeById(baseServiceId);
-        } catch (DaoException e) {
+            transaction.start();
+            baseServiceDao.removeById(baseServiceId);
+            transaction.commit();
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
             LOG.error("Error to delete base service by id");
             throw new ServiceException(e);
         }
@@ -71,8 +95,17 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public List<BaseServiceDto> findByFilter(List<Integer> categoriesIds, int page, int size, String locale) throws ServiceException {
         try {
-            return toDtos(bsDao.findByFilter(categoriesIds, page, size), locale);
-        } catch (DaoException e) {
+            transaction.start();
+            List<BaseServiceDto> baseServiceDtos = toDtos(baseServiceDao.findByFilter(categoriesIds, page, size), locale);
+            transaction.commit();
+            return baseServiceDtos;
+        } catch (DaoException | TransactionException e) {
+            try {
+                transaction.rollback();
+            } catch (TransactionException ex) {
+                /*ignore*/
+            }
+            //TODO
             e.printStackTrace();
             throw new ServiceException(e);
         }
@@ -81,14 +114,14 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException {
         try {
-            return bsDao.getCountOfCategories(categoriesIds, page, size);
+            return baseServiceDao.getCountOfCategories(categoriesIds, page, size);
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e);
         }
     }
 
-    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws DaoException {
+    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws ServiceException {
         List<BaseServiceDto> dtos = new ArrayList<>();
         for (BaseService baseService : baseServices) {
             dtos.add(toDto(baseService, locale));
@@ -96,11 +129,11 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         return dtos;
     }
 
-    private BaseServiceDto toDto(BaseService baseService, String locale) throws DaoException {
+    private BaseServiceDto toDto(BaseService baseService, String locale) throws ServiceException {
         BaseServiceDto dto = new BaseServiceDto();
-        ServiceCategory category = scs.findById(baseService.getCategoryId());
+        ServiceCategory category = serviceCategoryService.findById(baseService.getCategoryId());
         dto.setId(baseService.getId());
-        if (Objects.equals(locale, "ua")) {
+        if (Objects.equals(locale, UA_LOCALE)) {
             dto.setService(baseService.getServiceUa());
             dto.setCategory(category.getNameUa());
         } else {
@@ -109,5 +142,17 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
         dto.setPrice(baseService.getPrice());
         return dto;
+    }
+
+    public void setServiceCategoryService(ServiceCategoryService serviceCategoryService) {
+        this.serviceCategoryService = serviceCategoryService;
+    }
+
+    public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
+        this.baseServiceDao = baseServiceDao;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }

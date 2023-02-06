@@ -3,10 +3,6 @@ package ua.vspelykh.salon.controller.command;
 import ua.vspelykh.salon.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.MastersLevel;
 import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.service.BaseServiceService;
-import ua.vspelykh.salon.service.ServiceCategoryService;
-import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -23,10 +19,6 @@ import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
 public class MastersCommand extends Command {
 
-    private final UserService userService = ServiceFactory.getUserService();
-    private final BaseServiceService baseService = ServiceFactory.getBaseServiceService();
-    private ServiceCategoryService categoryService = ServiceFactory.getServiceCategoryService();
-
     @Override
     public void process() throws ServletException, IOException {
         try {
@@ -41,11 +33,11 @@ public class MastersCommand extends Command {
             String search = request.getParameter(SEARCH);
             setCheckedLists(levels, serviceIds, search, categoriesIds);
             String locale = String.valueOf(request.getSession().getAttribute(LANG));
-            List<UserMasterDTO> mastersDto = userService.getMastersDto(levels, serviceIds, categoriesIds,
+            List<UserMasterDTO> mastersDto = getServiceFactory().getUserService().getMastersDto(levels, serviceIds, categoriesIds,
                     search, page, size, sort, locale);
             request.setAttribute(MASTERS, mastersDto);
-            request.setAttribute(CATEGORIES, categoryService.findAll(locale));
-            int countOfItems = userService.getCountOfMasters(levels, serviceIds, categoriesIds, search);
+            request.setAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(locale));
+            int countOfItems = getServiceFactory().getUserService().getCountOfMasters(levels, serviceIds, categoriesIds, search);
             setPaginationParams(page, size, countOfItems, sort);
             Set<Role> roles = (Set<Role>) request.getSession().getAttribute("roles");
             request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
@@ -57,7 +49,8 @@ public class MastersCommand extends Command {
 
     private void setFilterAttributes() throws ServiceException {
         request.setAttribute(LEVELS, MastersLevel.list());
-        request.setAttribute(SERVICES, baseService.findAll(String.valueOf(request.getSession().getAttribute(LANG))));
+        request.setAttribute(SERVICES, getServiceFactory().getBaseServiceService().
+                findAll(String.valueOf(request.getSession().getAttribute(LANG))));
         request.setAttribute(SIZES, SIZE_ARRAY);
         request.setAttribute(SORTS, MasterSort.list());
     }

@@ -1,6 +1,5 @@
 package ua.vspelykh.salon.dao;
 
-import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -14,6 +13,4 @@ public interface MasterServiceDao extends Dao<Service> {
 
     List<Service> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
                                Integer continuanceFrom, Integer continuanceTo) throws DaoException;
-
-    List<MasterServiceDto> getDTOsByMasterId(int masterId) throws DaoException;
 }

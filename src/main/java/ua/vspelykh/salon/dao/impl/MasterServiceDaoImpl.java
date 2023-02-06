@@ -2,22 +2,25 @@ package ua.vspelykh.salon.dao.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.*;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
+import ua.vspelykh.salon.dao.AbstractDao;
+import ua.vspelykh.salon.dao.BaseServiceDao;
+import ua.vspelykh.salon.dao.MasterServiceDao;
+import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
-import ua.vspelykh.salon.dto.MasterServiceDto;
-import ua.vspelykh.salon.model.BaseService;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<Service> implements MasterServiceDao {
 
-    private BaseServiceDao baseServiceDao = DaoFactory.getBaseServiceDao();
+    private BaseServiceDao baseServiceDao;
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
 
@@ -28,7 +31,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
     @Override
     public int create(Service entity) throws DaoException {
         String query = INSERT + tableName + " (master_id, base_service_id, continuance)" + VALUES + "(?,?,?)";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setServiceStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -54,7 +57,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
     @Override
     public void update(Service entity) throws DaoException {
         String query = "UPDATE services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
-        try (PreparedStatement statement = DBCPDataSource.getConnection().prepareStatement(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(4, entity.getId());
             int key = statement.executeUpdate();
             if (key != 1) {
@@ -82,8 +85,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         MasterServiceFilteredQueryBuilder queryBuilder =
                 new MasterServiceFilteredQueryBuilder(userIds, serviceIds, continuanceFrom, continuanceTo);
         String query = queryBuilder.buildQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Service> services = new ArrayList<>();
@@ -96,17 +98,6 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
             LOG.error(e);
             throw new DaoException(e);
         }
-    }
-
-    public List<MasterServiceDto> getDTOsByMasterId(int masterId) throws DaoException{
-        List<Service> services = getAllByUserId(masterId);
-        List<MasterServiceDto> dtos = new ArrayList<>();
-        for (Service service : services){
-            BaseService baseService = baseServiceDao.findById(service.getBaseServiceId());
-            MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseService, service.getContinuance());
-            dtos.add(dto);
-        }
-        return dtos;
     }
 
     private class MasterServiceFilteredQueryBuilder {
@@ -198,5 +189,9 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         private boolean isAllParamsAreNull() {
             return userIds == null && serviceIds == null && continuanceFrom == null && continuanceTo == null;
         }
+    }
+
+    public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
+        this.baseServiceDao = baseServiceDao;
     }
 }

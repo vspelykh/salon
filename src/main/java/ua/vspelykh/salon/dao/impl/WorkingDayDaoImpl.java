@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.WorkingDayDao;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -33,8 +32,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     public int create(WorkingDay entity) throws DaoException {
         String query = INSERT + tableName + " (id, user_id, date, time_start, time_end)"
                 + VALUES + "(?,?,?,?,?)" + "AND date >= CURRENT_DATE-1";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setWorkingDayStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -67,8 +65,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     public void save(int userId, String[] datesArray, Time timeStart, Time timeEnd) throws DaoException {
         WorkingDayQueryBuilder queryBuilder = new WorkingDayQueryBuilder(userId, datesArray, timeStart, timeEnd);
         String query = queryBuilder.buildSaveQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParamsForSave(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -80,8 +77,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     @Override
     public List<WorkingDay> getWorkingDaysByUserId(Integer userId) throws DaoException {
         String query = SELECT + tableName + WHERE + USER_ID + EQUAL;
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<WorkingDay> workingDays = new ArrayList<>();
@@ -100,8 +96,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws DaoException {
         WorkingDay workingDay;
         String query = SELECT + tableName + " WHERE user_id=? AND date=?";
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             setIdAndDataWorkingDayStatement(preparedStatement, userId, date);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -121,8 +116,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) throws DaoException {
         WorkingDayQueryBuilder queryBuilder = new WorkingDayQueryBuilder(userId, datesArray);
         String query = queryBuilder.buildDeleteQuery();
-        try (Connection connection = DBCPDataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
