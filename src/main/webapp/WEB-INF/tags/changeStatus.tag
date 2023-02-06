@@ -7,6 +7,8 @@
 <%@ attribute name="days" required="true" %>
 <%@ attribute name="appointment_id" required="true" %>
 <%@ attribute name="status" required="true" %>
+<%@ attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
+
 
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="localization.messages"/>
@@ -34,20 +36,28 @@
             <button type="submit" name="status" value="DIDNT_COME" class="btn btn-warning">
                 <fmt:message key="change.absent"/>
             </button>
-            <button type="submit" name="status" value="CANCELLED" class="btn btn-danger">
-                <fmt:message key="change.cancel"/>
-            </button>
+            <c:choose>
+                <c:when test="${isAdmin}">
+                    <button type="submit" name="status" value="CANCELLED" class="btn btn-danger">
+                        <fmt:message key="change.cancel"/>
+                    </button>
+                </c:when>
+            </c:choose>
         </form>
-        <form action="${pageContext.request.contextPath}/salon"
-              method="get">
-            <input hidden name="command" value="postponement-appointment">
-            <input hidden name="id" value="${id}">
-            <input hidden name="days" value="${days}">
-            <input hidden name="appointment_id" value="${appointment_id}">
-            <button type="submit" class="btn btn-outline-black">
-                <fmt:message key="change.postponement"/>
-            </button>
-        </form>
+        <c:choose>
+            <c:when test="${isAdmin}">
+                <form action="${pageContext.request.contextPath}/salon"
+                      method="get">
+                    <input hidden name="command" value="postponement-appointment">
+                    <input hidden name="id" value="${id}">
+                    <input hidden name="days" value="${days}">
+                    <input hidden name="appointment_id" value="${appointment_id}">
+                    <button type="submit" class="btn btn-outline-black">
+                        <fmt:message key="change.postponement"/>
+                    </button>
+                </form>
+            </c:when>
+        </c:choose>
     </c:when>
 </c:choose>
 </body>

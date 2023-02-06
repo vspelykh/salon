@@ -63,6 +63,7 @@
                                                 <div class="modal-body">
                                                     <tags:changeStatus id="${param.id}" days="${param.days}"
                                                                        appointment_id="${scheduleItem.appointment.id}"
+                                                                       isAdmin="${isAdmin}"
                                                                        status="${scheduleItem.appointment.status}"/>
                                                     <c:choose>
                                                         <c:when test="${isAdmin}">

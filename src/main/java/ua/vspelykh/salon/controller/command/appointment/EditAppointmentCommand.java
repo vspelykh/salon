@@ -41,15 +41,13 @@ public class EditAppointmentCommand extends Command {
     }
 
     private void setPaymentStatus(Appointment appointment) {
-        if (checkNullParam(request.getParameter(PAYMENT_STATUS))) {
+        if (isAdmin() && checkNullParam(request.getParameter(PAYMENT_STATUS))) {
             appointment.setPaymentStatus(PaymentStatus.valueOf(request.getParameter(PAYMENT_STATUS)));
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void setNewTimeSlot(Appointment appointment) {
-        Set<Role> roles = (Set<Role>) request.getSession().getAttribute(ROLES);
-        if (roles.contains(Role.ADMINISTRATOR) && checkNullParam(request.getParameter("new_slot"))) {
+        if (isAdmin() && checkNullParam(request.getParameter("new_slot"))) {
             appointment.setDate(LocalDateTime.of(appointment.getDate().toLocalDate(),
                     LocalTime.parse(request.getParameter("new_slot"))));
         }
@@ -57,7 +55,16 @@ public class EditAppointmentCommand extends Command {
 
     private void setStatus(Appointment appointment) {
         if (checkNullParam(request.getParameter(STATUS))) {
-            appointment.setStatus(AppointmentStatus.valueOf(request.getParameter(STATUS)));
+            String status = request.getParameter(STATUS);
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()){
+                return;
+            }
+            appointment.setStatus(AppointmentStatus.valueOf(status));
         }
+    }
+    @SuppressWarnings("unchecked")
+    private boolean isAdmin(){
+        Set<Role> roles = (Set<Role>) request.getSession().getAttribute(ROLES);
+        return roles.contains(Role.ADMINISTRATOR);
     }
 }
