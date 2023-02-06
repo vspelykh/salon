@@ -33,6 +33,7 @@ public class CommandNames {
     public static final String ORDERS = "orders";
     public static final String CREATE_INVITATION = "create-invitation";
     public static final String INVITATION = "invitation";
+    public static final String EDIT_MASTER = "edit-master";
 
     private CommandNames() {
     }

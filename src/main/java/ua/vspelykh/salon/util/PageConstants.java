@@ -56,6 +56,7 @@ public class PageConstants {
         put(CREATE_INVITATION, admin);
         put(INVITATION, admin);
         put(ROLES, admin);
+        put(EDIT_MASTER, admin);
     }
 
     public static Set<Role> getPermittedRoles(String command){

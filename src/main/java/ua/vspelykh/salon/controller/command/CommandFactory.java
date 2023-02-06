@@ -52,6 +52,7 @@ public class CommandFactory {
         commands.put(ORDERS, new OrdersCommand());
         commands.put(INVITATION, new InvitationFormCommand());
         commands.put(CREATE_INVITATION, new CreateInvitationCommand());
+        commands.put(EDIT_MASTER, new EditMasterCommand());
     }
 
     public static Command getCommand(HttpServletRequest request) {

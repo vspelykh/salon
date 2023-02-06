@@ -11,7 +11,10 @@ import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +51,13 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public void update(UserLevel entity) throws DaoException {
-        String query = "UPDATE user_level SET level = ? WHERE id = ?";
+        String query = "UPDATE user_level SET level=?, about=?, about_ua=? WHERE id = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
-            statement.setString(1, entity.getLevel().toString());
-            statement.setInt(2, entity.getMasterId());
+            int k = 0;
+            statement.setString(++k, entity.getLevel().toString());
+            statement.setString(++k, entity.getAbout());
+            statement.setString(++k, entity.getAboutUa());
+            statement.setInt(++k, entity.getMasterId());
             int key = statement.executeUpdate();
             if (key != 1) {
                 throw new DaoException(FAIL_UPDATE + tableName);

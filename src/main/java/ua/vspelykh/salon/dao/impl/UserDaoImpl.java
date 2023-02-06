@@ -58,7 +58,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
         } catch (SQLException e) {
             LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            throw new DaoException(e);
         }
     }
 
