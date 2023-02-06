@@ -41,32 +41,75 @@
                                     </c:when>
                                     <c:when test="${scheduleItem.info != 'Free slot'}">
                                         ${scheduleItem.info}
+                                        <button type="button" style="width: 40px; height: 40px " data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal">&#x270D;
+                                        </button>
                                     </c:when>
                                 </c:choose></p>
                             </li>
                             <c:choose>
                                 <c:when test="${scheduleItem.appointment != null}">
-                                    <form action="${pageContext.request.contextPath}/salon" method="post">
-                                        <input hidden name="command" value="edit-appointment">
-                                        <input hidden name="id" value="${param.id}">
-                                        <input hidden name="days" value="${param.days}">
-                                        <input hidden name="appointment_id" value="${scheduleItem.appointment.id}">
-                                        <select name="status" onchange="confirmBeforeSubmit(this.form)"
-                                                class="form-select">
-                                            <c:forEach items="${status}" var="s">
-                                                <option ${scheduleItem.appointment.status == s ? 'selected disabled' : ''}
-                                                        value="${s}">${s}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <select name="new_slot" onchange="confirmBeforeSubmit(this.form)"
-                                                class="form-select">
-                                            <option selected disabled><fmt:message key="schedule.possible"/></option>
-                                            <c:forEach items="${free_slots_map.get(scheduleItem.appointment.id)}"
-                                                       var="slot">
-                                                <option value="${slot}">${slot}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </form>
+                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                         aria-labelledby="exampleModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel"><fmt:message
+                                                            key="appointment.name"/></h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <tags:changeStatus id="${param.id}" days="${param.days}"
+                                                                       appointment_id="${scheduleItem.appointment.id}"
+                                                                       status="${scheduleItem.appointment.status}"/>
+                                                    <c:choose>
+                                                        <c:when test="${isAdmin}">
+                                                            <tags:acceptPayment id="${param.id}" days="${param.days}"
+                                                                                appointment_id="${scheduleItem.appointment.id}"
+                                                                                status="${scheduleItem.appointment.paymentStatus}"/>
+                                                        </c:when>
+                                                    </c:choose>
+
+                                                    <c:choose>
+                                                        <c:when test="${isAdmin && scheduleItem.appointment.status == 'RESERVED'}">
+                                                            <form action="${pageContext.request.contextPath}/salon"
+                                                                  method="post">
+                                                                <input hidden name="command" value="edit-appointment">
+                                                                <input hidden name="id" value="${param.id}">
+                                                                <input hidden name="days" value="${param.days}">
+                                                                <input hidden name="appointment_id"
+                                                                       value="${scheduleItem.appointment.id}">
+                                                                <select name="new_slot"
+                                                                        onchange="if(!confirm('<fmt:message
+                                                                                key="submit.slot"/>')){return false;}"
+                                                                        class="form-select">
+                                                                    <option selected disabled><fmt:message
+                                                                            key="schedule.possible"/></option>
+                                                                    <c:forEach
+                                                                            items="${free_slots_map.get(scheduleItem.appointment.id)}"
+                                                                            var="slot">
+                                                                        <option value="${slot}">${slot}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </form>
+
+                                                        </c:when>
+                                                    </c:choose>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"><fmt:message
+                                                            key="main.cancel"/></button>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <fmt:message key="main.submit"/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </c:when>
                             </c:choose>
                         </ul>

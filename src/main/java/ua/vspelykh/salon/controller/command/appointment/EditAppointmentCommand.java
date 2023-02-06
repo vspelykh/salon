@@ -3,12 +3,15 @@ package ua.vspelykh.salon.controller.command.appointment;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.PaymentStatus;
+import ua.vspelykh.salon.model.Role;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
@@ -22,6 +25,7 @@ public class EditAppointmentCommand extends Command {
         try {
             Appointment appointment = getServiceFactory().getAppointmentService().findById(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
             setStatus(appointment);
+            setPaymentStatus(appointment);
             setNewTimeSlot(appointment);
             getServiceFactory().getAppointmentService().save(appointment);
             String masterId = request.getParameter(ID);
@@ -36,8 +40,16 @@ public class EditAppointmentCommand extends Command {
         }
     }
 
+    private void setPaymentStatus(Appointment appointment) {
+        if (checkNullParam(request.getParameter(PAYMENT_STATUS))) {
+            appointment.setPaymentStatus(PaymentStatus.valueOf(request.getParameter(PAYMENT_STATUS)));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void setNewTimeSlot(Appointment appointment) {
-        if (checkNullParam(request.getParameter("new_slot"))) {
+        Set<Role> roles = (Set<Role>) request.getSession().getAttribute(ROLES);
+        if (roles.contains(Role.ADMINISTRATOR) && checkNullParam(request.getParameter("new_slot"))) {
             appointment.setDate(LocalDateTime.of(appointment.getDate().toLocalDate(),
                     LocalTime.parse(request.getParameter("new_slot"))));
         }

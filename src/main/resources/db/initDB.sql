@@ -136,7 +136,7 @@ CREATE TABLE invitations
 INSERT INTO users (name, surname, email, number, password)
 VALUES ('Marina', 'Alkova', 'admin@gmail.com', '+380661239900', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Anastasia', 'Semenova', 'master@gmail.com', '+380971239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
-       ('Alina', 'Ivanova', 'ivanovaa@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
+       ('Alina', 'Ivanova', 'client@gmail.com', '+380504561132', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Galina', 'Shevchenko', 'random1@gmail.com', '+380970239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Valentina', 'Glushko', 'random12@gmail.com', '+380972239050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
        ('Tatiana', 'Dubina', 'random13@gmail.com', '+380971235050', 'lm7vuxj9PYktix+xnLhQarMqbSws3die'),
@@ -161,6 +161,7 @@ INSERT INTO user_roles
 VALUES (1, 'ADMINISTRATOR'),
        (1, 'CLIENT'),
        (2, 'HAIRDRESSER'),
+       (2, 'CLIENT'),
        (3, 'CLIENT'),
        (4, 'HAIRDRESSER'),
        (5, 'HAIRDRESSER'),

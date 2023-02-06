@@ -189,6 +189,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         dto.setDiscount(appointment.getDiscount());
         dto.setOrderings(orderingDao.getByAppointmentId(appointment.getId()));
         dto.setStatus(appointment.getStatus());
+        dto.setPaymentStatus(appointment.getPaymentStatus());
         return dto;
     }
 

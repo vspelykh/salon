@@ -26,6 +26,7 @@ function confirmBeforeSubmit(form) {
         form.submit();
         return true;
     } else {
+        form.cancel();
+        return false;
     }
-    return false;
 }
