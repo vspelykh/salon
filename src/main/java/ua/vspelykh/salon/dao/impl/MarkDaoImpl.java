@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.vspelykh.salon.dao.mapper.Column.APPOINTMENT_ID;
+import static ua.vspelykh.salon.dao.mapper.Column.DATE;
 
 public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
 
@@ -109,6 +110,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
         public String buildQuery() {
             StringBuilder query = new StringBuilder(SELECT).append(tableName).append(WHERE).append(APPOINTMENT_ID);
             query.append(" IN(SELECT id FROM appointments WHERE master_id=?)");
+            query.append(ORDER_BY).append(DATE).append(" DESC");
             return setPagingParamsAndGetQuery(query);
         }
 

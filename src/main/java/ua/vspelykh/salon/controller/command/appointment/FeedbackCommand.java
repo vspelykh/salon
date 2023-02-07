@@ -21,7 +21,7 @@ public class FeedbackCommand extends Command {
         try {
             checkIsRequestValid();
         } catch (Exception e) {
-            e.printStackTrace();
+            response.sendError(404);
         }
     }
 
