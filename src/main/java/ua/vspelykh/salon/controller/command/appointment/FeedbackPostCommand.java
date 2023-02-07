@@ -24,7 +24,7 @@ public class FeedbackPostCommand extends Command {
         try {
             getServiceFactory().getMarkService().save(mark);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(500);
         }
         request.getSession().setAttribute(MESSAGE, MESSAGE + DOT + FEEDBACK);
         redirect(SUCCESS_REDIRECT);

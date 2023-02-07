@@ -17,7 +17,7 @@ public class LookScheduleCommand extends AbstractScheduleCommand {
             setCurrentWorkingDays();
             request.setAttribute(USER, getServiceFactory().getUserService().findById(Integer.valueOf(request.getParameter(ID))));
         } catch (ServiceException e) {
-            //todo
+            response.sendError(404);
         }
         forward(LOOK_SCHEDULE);
     }

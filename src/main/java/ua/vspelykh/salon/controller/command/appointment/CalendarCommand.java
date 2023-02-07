@@ -34,17 +34,17 @@ public class CalendarCommand extends Command {
     public void process() throws ServletException, IOException {
         try {
             User user = (User) request.getSession().getAttribute(CURRENT_USER);
-            if (user.getId().equals(Integer.valueOf(request.getParameter(ID)))){
+            if (user.getId().equals(Integer.valueOf(request.getParameter(ID)))) {
                 redirect(MASTERS_REDIRECT);
                 return;
             }
             setMasterInfoAttrs();
             setFeedbacksAttrs();
             setTimeSlotsForChosenDayElseSetEmptyPlaceholder();
+            forward(CALENDAR);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(404);
         }
-        forward(CALENDAR);
     }
 
     private void setMasterInfoAttrs() throws ServiceException {

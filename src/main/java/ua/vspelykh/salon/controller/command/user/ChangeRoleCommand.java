@@ -28,7 +28,7 @@ public class ChangeRoleCommand extends Command {
             redirect(context.getContextPath() + HOME_REDIRECT +
                     "?command=roles&message=success&search=" + user.getEmail());
         } catch (ServiceException e) {
-            //TODO
+            response.sendError(500);
         }
     }
 }

@@ -36,7 +36,7 @@ public class OrdersCommand extends Command {
                     getCountOfAppointments(masterId, dateFrom, dateTo, status));
             forward(ORDERS);
         } catch (ServiceException e) {
-
+            response.sendError(404);
         }
     }
 

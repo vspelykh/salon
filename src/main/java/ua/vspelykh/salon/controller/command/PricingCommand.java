@@ -29,7 +29,7 @@ public class PricingCommand extends Command {
             setCheckedList(categoriesIds);
             forward(PRICING);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(500);
         }
     }
 

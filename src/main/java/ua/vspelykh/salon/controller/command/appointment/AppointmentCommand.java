@@ -42,12 +42,17 @@ public class AppointmentCommand extends Command {
             List<Appointment> appointments =
                     getServiceFactory().getAppointmentService().getByDateAndMasterId(getLocalDate(request.getParameter(DAY)),
                             master.getId());
-            request.setAttribute(ALLOWED_TIME, countAllowedMinutes(getTime(request.getParameter(TIME)), appointments,
+            int allowedTime = countAllowedMinutes(getTime(request.getParameter(TIME)), appointments,
                     getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(master.getId(),
-                            getLocalDate(request.getParameter(DAY)))));
+                            getLocalDate(request.getParameter(DAY))));
+            if (allowedTime <= 0){
+                response.sendError(404);
+                return;
+            }
+            request.setAttribute(ALLOWED_TIME, allowedTime);
             forward(APPOINTMENT);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(404);
         }
     }
 }

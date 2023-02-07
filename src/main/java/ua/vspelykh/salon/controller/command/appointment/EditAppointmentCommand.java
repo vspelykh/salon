@@ -36,7 +36,7 @@ public class EditAppointmentCommand extends Command {
                         DAYS, request.getParameter(DAYS)));
             }
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(500);
         }
     }
 

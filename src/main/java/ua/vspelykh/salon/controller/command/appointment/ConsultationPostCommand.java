@@ -19,7 +19,7 @@ public class ConsultationPostCommand extends Command {
         try {
             getServiceFactory().getConsultationService().save(consultation);
         } catch (ServiceException e) {
-            //TODO
+            response.sendError(500);
         }
         redirect(context.getContextPath() + SUCCESS_REDIRECT);
     }

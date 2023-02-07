@@ -19,7 +19,7 @@ public class ConsultationDeleteCommand extends Command {
             getServiceFactory().getConsultationService().delete(Integer.valueOf(request.getParameter(ID)));
             redirect(context.getContextPath() + HOME_REDIRECT + COMMAND_PARAM + CONSULTATION);
         } catch (ServiceException e) {
-            //TODO
+            response.sendError(500);
         }
     }
 }

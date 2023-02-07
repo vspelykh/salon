@@ -24,8 +24,7 @@ public class EditMasterCommand extends Command {
             serviceFactory.getUserService().update(userLevel);
             redirect(SCHEDULE_REDIRECT + masterId);
         } catch (ServiceException e) {
-            //TODO
-            e.printStackTrace();
+            response.sendError(500);
         }
     }
 }

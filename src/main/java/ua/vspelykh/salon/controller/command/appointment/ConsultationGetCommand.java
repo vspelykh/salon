@@ -16,7 +16,7 @@ public class ConsultationGetCommand extends Command {
             request.setAttribute(CONSULTATION, getServiceFactory().getConsultationService().findAll());
             forward(CONSULTATION);
         } catch (ServiceException e) {
-            //TODO
+            response.sendError(500);
         }
     }
 }

@@ -3,6 +3,7 @@ package ua.vspelykh.salon.util;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -57,7 +58,10 @@ public class TimeSlotsUtils {
         }
     }
 
-    public static int countAllowedMinutes(Time time, List<Appointment> appointments, WorkingDay workingDay) {
+    public static int countAllowedMinutes(Time time, List<Appointment> appointments, WorkingDay workingDay) throws ServiceException {
+        if (workingDay == null){
+            throw new ServiceException("Trying to create an appointment on weekend day");
+        }
         if (appointments.isEmpty()) {
             return getDuration(time, workingDay.getTimeEnd());
         }

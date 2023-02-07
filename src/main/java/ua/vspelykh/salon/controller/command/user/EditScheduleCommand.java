@@ -28,7 +28,7 @@ public class EditScheduleCommand extends AbstractScheduleCommand {
                 getServiceFactory().getWorkingDayService().deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
             }
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(500);
         }
         redirect(SCHEDULE_REDIRECT + userId);
     }

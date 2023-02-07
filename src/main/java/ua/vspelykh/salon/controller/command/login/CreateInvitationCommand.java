@@ -19,7 +19,7 @@ public class CreateInvitationCommand extends Command {
         try {
             getServiceFactory().getInvitationService().create(request.getParameter(EMAIL), Role.valueOf(request.getParameter(ROLE)));
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(500);
         }
         request.getSession().setAttribute(MESSAGE, SUCCESS + DOT +INVITATION);
         redirect(SUCCESS_REDIRECT);

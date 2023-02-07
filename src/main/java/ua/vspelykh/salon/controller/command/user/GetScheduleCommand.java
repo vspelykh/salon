@@ -40,8 +40,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
 
             forward(GET_SCHEDULE);
         } catch (ServiceException e) {
-            e.printStackTrace();
-            //TODO
+            response.sendError(404);
         }
     }
 

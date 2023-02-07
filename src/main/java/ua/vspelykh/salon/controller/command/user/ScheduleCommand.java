@@ -22,7 +22,7 @@ public class ScheduleCommand extends AbstractScheduleCommand {
             UserLevel userLevel = serviceFactory.getUserService().getUserLevelByUserId(masterId);
             request.setAttribute(USER_LEVEL, userLevel);
         } catch (ServiceException e) {
-            //todo
+            response.sendError(404);
         }
         forward(SCHEDULE);
     }

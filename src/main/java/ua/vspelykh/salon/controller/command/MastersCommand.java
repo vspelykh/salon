@@ -43,7 +43,7 @@ public class MastersCommand extends Command {
             request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
             forward(MASTERS);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            response.sendError(404);
         }
     }
 

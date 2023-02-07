@@ -24,7 +24,7 @@ public class RolesCommand extends Command {
                 List<User> users = getServiceFactory().getUserService().findBySearch(search);
                 request.setAttribute(USERS, users);
             } catch (ServiceException e) {
-                //TODO
+                response.sendError(500);
             }
         }
         forward(ROLES);
