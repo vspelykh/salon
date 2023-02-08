@@ -2,6 +2,7 @@ package ua.vspelykh.salon.dao;
 
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.PaymentStatus;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public interface AppointmentDao extends Dao<Appointment> {
     List<Appointment> getAllByDate(LocalDate date) throws DaoException;
 
     List<Appointment> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo,
-                                  AppointmentStatus status, int page, int size) throws DaoException;
+                                  AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws DaoException;
 
-    int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) throws DaoException;
+    int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) throws DaoException;
 }

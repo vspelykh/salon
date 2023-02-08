@@ -4,12 +4,10 @@
 
 
 <%@ attribute name="id" required="true" %>
-<%@ attribute name="days" required="true" %>
+<%@ attribute name="days" required="false" %>
 <%@ attribute name="appointment_id" required="true" %>
 <%@ attribute name="status" required="true" %>
-
-<fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="localization.messages"/>
+<%@ attribute name="redirect" required="false" %>
 
 <head>
     <title>Change status of appointment</title>
@@ -26,6 +24,7 @@
               method="post">
             <input hidden name="command" value="edit-appointment">
             <input hidden name="id" value="${id}">
+            <input hidden name="redirect" value="${redirect}">
             <input hidden name="days" value="${days}">
             <input hidden name="appointment_id" value="${appointment_id}">
             <button type="submit" name="payment_status" value="PAID_IN_SALON" class="btn btn-info">

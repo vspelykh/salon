@@ -4,7 +4,8 @@
 
 
 <%@ attribute name="id" required="true" %>
-<%@ attribute name="days" required="true" %>
+<%@ attribute name="days" required="false" %>
+<%@ attribute name="redirect" required="false" %>
 <%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.dto.AppointmentDto" %>
 <%@ attribute name="status" required="true" %>
 <%@ attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
@@ -28,8 +29,9 @@
               method="post">
             <input hidden name="command" value="edit-appointment">
             <input hidden name="id" value="${id}">
-            <input hidden name="days" value="${days}">
             <input hidden name="appointment_id" value="${appointment.id}">
+            <input hidden name="days" value="${days}">
+            <input hidden name="redirect" value="${redirect}">
             <button type="submit" name="status" value="SUCCESS" class="btn btn-success">
                 <fmt:message key="change.success"/>
             </button>

@@ -29,7 +29,7 @@ public class EditAppointmentCommand extends Command {
             setNewTimeSlot(appointment);
             getServiceFactory().getAppointmentService().save(appointment);
             String masterId = request.getParameter(ID);
-            if (request.getParameter("redirect") != null) {
+            if (request.getParameter("redirect") != null && request.getParameter("redirect").equals("redirect")) {
                 redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);
             } else {
                 redirect(String.format("%s%s%s&%s=%s&%s=%s", HOME_REDIRECT, COMMAND_PARAM, GET_SCHEDULE, ID, masterId,

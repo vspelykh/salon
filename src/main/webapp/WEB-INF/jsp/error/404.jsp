@@ -18,7 +18,7 @@
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="text-center">
             <h1 class="display-1 fw-bold">404</h1>
-            <p class="fs-3"><span class="text-danger"><fmt:message key="404.opps"/></span> <fmt:message key="404.page"/> </p>
+            <p class="fs-3"><span class="text-danger"><fmt:message key="404.oops"/></span> <fmt:message key="404.page"/> </p>
             <p class="lead">
                 <fmt:message key="404.exist"/>
             </p>

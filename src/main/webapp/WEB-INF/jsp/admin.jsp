@@ -15,6 +15,10 @@
             <fmt:message key="admin.roles"/>
         </a>
         </li>
+        <li><a href="${pageContext.request.contextPath}/salon?command=orders" class="nav-link px-2 text-primary">
+            <fmt:message key="admin.orders"/>
+        </a>
+        </li>
         <li><a href="${pageContext.request.contextPath}/salon?command=masters" class="nav-link px-2 text-primary">
             <fmt:message key="admin.manage"/>
             </a>

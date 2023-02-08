@@ -3,6 +3,7 @@ package ua.vspelykh.salon.service;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.PaymentStatus;
 import ua.vspelykh.salon.model.Service;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -30,8 +31,8 @@ public interface AppointmentService {
     List<AppointmentDto> getAllByDate(LocalDate date) throws ServiceException;
 
     List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo,
-                                     AppointmentStatus status, int page, int size) throws ServiceException;
+                                     AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws ServiceException;
 
-    int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) throws ServiceException;
+    int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) throws ServiceException;
 
 }

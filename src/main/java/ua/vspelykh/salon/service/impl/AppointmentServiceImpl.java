@@ -160,11 +160,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, int page, int size) throws ServiceException {
+    public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws ServiceException {
         try {
             transaction.start();
             List<AppointmentDto> appointmentDtos = toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo,
-                    status, page, size));
+                    status, paymentStatus, page, size));
             transaction.commit();
             return appointmentDtos;
         } catch (DaoException | TransactionException e) {
@@ -179,9 +179,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) throws ServiceException {
+    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) throws ServiceException {
         try {
-            return appointmentDao.getCountOfAppointments(masterId, dateFrom, dateTo, status);
+            return appointmentDao.getCountOfAppointments(masterId, dateFrom, dateTo, status, paymentStatus);
         } catch (DaoException e) {
             e.printStackTrace();
             //TODO

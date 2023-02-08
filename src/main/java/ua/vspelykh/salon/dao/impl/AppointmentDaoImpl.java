@@ -9,6 +9,7 @@ import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.PaymentStatus;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
@@ -64,8 +65,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public List<Appointment> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo,
-                                         AppointmentStatus status, int page, int size) throws DaoException {
-        AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status, page, size);
+                                         AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws DaoException {
+        AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status, paymentStatus, page, size);
         String query = queryBuilder.buildFilteredQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setFilteredParams(preparedStatement);
@@ -83,9 +84,9 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
     }
 
     @Override
-    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) throws DaoException {
+    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) throws DaoException {
         int count;
-        AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status);
+        AppointmentQueryBuilder queryBuilder = new AppointmentQueryBuilder(masterId, dateFrom, dateTo, status, paymentStatus);
         String query = queryBuilder.buildCountQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setFilteredParams(preparedStatement);
@@ -184,6 +185,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         private LocalDate dateFrom;
         private LocalDate dateTo;
         private AppointmentStatus status;
+        private PaymentStatus paymentStatus;
         private int page;
         private int size;
 
@@ -198,20 +200,23 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         public AppointmentQueryBuilder(Integer masterId, LocalDate dateFrom, LocalDate dateTo,
-                                       AppointmentStatus status, int page, int size) {
+                                       AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) {
             this.entityId = masterId;
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
             this.status = status;
+            this.paymentStatus = paymentStatus;
             this.page = page;
             this.size = size;
         }
 
-        public AppointmentQueryBuilder(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status) {
+        public AppointmentQueryBuilder(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status,
+                                       PaymentStatus paymentStatus) {
             this.entityId = masterId;
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
             this.status = status;
+            this.paymentStatus = paymentStatus;
         }
 
         public String buildQuery() {
@@ -232,6 +237,9 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
             if (status != null) {
                 preparedStatement.setString(++k, status.name());
+            }
+            if (paymentStatus != null) {
+                preparedStatement.setString(++k, paymentStatus.name());
             }
             if (dateFrom != null) {
                 preparedStatement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(dateFrom, LocalTime.MIN)));
@@ -273,7 +281,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         private boolean isOneFilteredParamNotNull() {
-            return entityId != null || dateFrom != null || dateTo != null || status != null;
+            return entityId != null || dateFrom != null || dateTo != null || status != null || paymentStatus != null;
         }
 
         private String appendPagingAndOrderParams(StringBuilder query) {
@@ -303,6 +311,11 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
                 appendAnd(query, count);
                 count++;
                 query.append(STATUS).append(EQUAL);
+            }
+            if (paymentStatus != null) {
+                appendAnd(query, count);
+                count++;
+                query.append(PAYMENT_STATUS).append(EQUAL);
             }
             return count;
         }
