@@ -2,7 +2,7 @@ package ua.vspelykh.salon.util;
 
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.Ordering;
+import ua.vspelykh.salon.model.AppointmentItem;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -57,8 +57,8 @@ public class ScheduleBuilder {
                 LocalTime start = appointment.getDate().toLocalTime();
                 LocalTime end = start.plusMinutes(appointment.getContinuance());
                 StringJoiner joiner = new StringJoiner(", ");
-                for (Ordering ordering : appointment.getOrderings()) {
-                    joiner.add(getServiceName(ordering));
+                for (AppointmentItem appointmentItem : appointment.getAppointmentItems()) {
+                    joiner.add(getServiceName(appointmentItem));
                 }
                 items.add(new ScheduleItem(appointment, start, end, joiner.toString()));
                 freeSlotsForAppointments.put(appointment.getId(), getPossibleSlotsForAppointment(day, appointment));
@@ -118,9 +118,9 @@ public class ScheduleBuilder {
         items.add(item);
     }
 
-    private String getServiceName(Ordering ordering) throws ServiceException {
-        return "ua".equals(locale) ? serviceFactory.getBaseServiceService().findById(ordering.getServiceId()).getServiceUa()
-                : serviceFactory.getBaseServiceService().findById(ordering.getServiceId()).getService();
+    private String getServiceName(AppointmentItem appointmentItem) throws ServiceException {
+        return "ua".equals(locale) ? serviceFactory.getBaseServiceService().findById(appointmentItem.getServiceId()).getServiceUa()
+                : serviceFactory.getBaseServiceService().findById(appointmentItem.getServiceId()).getService();
     }
 
     public List<ScheduleItem> getItems() {

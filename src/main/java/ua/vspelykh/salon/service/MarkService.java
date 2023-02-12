@@ -1,20 +1,20 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dto.MarkDto;
-import ua.vspelykh.salon.model.Mark;
+import ua.vspelykh.salon.dto.FeedbackDto;
+import ua.vspelykh.salon.model.Feedback;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
 
 public interface MarkService {
 
-    void save(Mark mark) throws ServiceException;
+    void save(Feedback mark) throws ServiceException;
 
-    List<MarkDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException;
+    List<FeedbackDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException;
 
     void delete(Integer id) throws ServiceException;
 
     int countMarksByMasterId(Integer masterID) throws ServiceException;
 
-    Mark getMarkByAppointmentId(Integer appointmentId);
+    Feedback getMarkByAppointmentId(Integer appointmentId);
 }

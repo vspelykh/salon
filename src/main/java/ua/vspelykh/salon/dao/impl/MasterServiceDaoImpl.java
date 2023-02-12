@@ -8,7 +8,7 @@ import ua.vspelykh.salon.dao.MasterServiceDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.mapper.Column;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
-import ua.vspelykh.salon.model.Service;
+import ua.vspelykh.salon.model.MasterService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.PreparedStatement;
@@ -18,18 +18,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MasterServiceDaoImpl extends AbstractDao<Service> implements MasterServiceDao {
+public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements MasterServiceDao {
 
     private BaseServiceDao baseServiceDao;
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
 
     public MasterServiceDaoImpl() {
-        super(RowMapperFactory.getMasterServiceRowMapper(), Table.SERVICE);
+        super(RowMapperFactory.getMasterServiceRowMapper(), Table.MASTER_SERVICES);
     }
 
     @Override
-    public int create(Service entity) throws DaoException {
+    public int create(MasterService entity) throws DaoException {
         String query = INSERT + tableName + " (master_id, base_service_id, continuance)" + VALUES + "(?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setServiceStatement(entity, statement);
@@ -46,7 +46,7 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
         }
     }
 
-    private void setServiceStatement(Service entity, PreparedStatement statement) throws SQLException {
+    private void setServiceStatement(MasterService entity, PreparedStatement statement) throws SQLException {
         int k = 0;
         statement.setInt(++k, entity.getId());
         statement.setInt(++k, entity.getMasterId());
@@ -55,8 +55,8 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
     }
 
     @Override
-    public void update(Service entity) throws DaoException {
-        String query = "UPDATE services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
+    public void update(MasterService entity) throws DaoException {
+        String query = "UPDATE master_services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(4, entity.getId());
             int key = statement.executeUpdate();
@@ -70,30 +70,30 @@ public class MasterServiceDaoImpl extends AbstractDao<Service> implements Master
     }
 
     @Override
-    public List<Service> getAllByUserId(Integer userId) throws DaoException {
+    public List<MasterService> getAllByUserId(Integer userId) throws DaoException {
         return findAllByParam(userId, Column.MASTER_ID);
     }
 
     @Override
-    public List<Service> getAllByBaseServiceId(Integer baseServiceId) throws DaoException {
+    public List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws DaoException {
         return findAllByParam(baseServiceId, Column.BASE_SERVICE_ID);
     }
 
     @Override
-    public List<Service> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
-                                      Integer continuanceFrom, Integer continuanceTo) throws DaoException {
+    public List<MasterService> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
+                                            Integer continuanceFrom, Integer continuanceTo) throws DaoException {
         MasterServiceFilteredQueryBuilder queryBuilder =
                 new MasterServiceFilteredQueryBuilder(userIds, serviceIds, continuanceFrom, continuanceTo);
         String query = queryBuilder.buildQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Service> services = new ArrayList<>();
+            List<MasterService> masterServices = new ArrayList<>();
             while (resultSet.next()) {
-                Service entity = rowMapper.map(resultSet);
-                services.add(entity);
+                MasterService entity = rowMapper.map(resultSet);
+                masterServices.add(entity);
             }
-            return services;
+            return masterServices;
         } catch (SQLException e) {
             LOG.error(e);
             throw new DaoException(e);

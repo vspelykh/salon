@@ -27,8 +27,8 @@ public interface ServiceFactory extends AutoCloseable {
     BaseServiceDao getBaseServiceDao() throws ServiceException;
     MasterServiceDao getMasterServiceDao() throws ServiceException;
     AppointmentDao getAppointmentDao() throws ServiceException;
-    OrderingDao getOrderingDao() throws ServiceException;
-    MarkDao getMarkDao() throws ServiceException;
+    AppointmentItemDao getOrderingDao() throws ServiceException;
+    FeedbackDao getMarkDao() throws ServiceException;
     ConsultationDao getConsultationDao() throws ServiceException;
     WorkingDayDao getWorkingDayDao() throws ServiceException;
 

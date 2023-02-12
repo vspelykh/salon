@@ -4,7 +4,7 @@ import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
 import ua.vspelykh.salon.model.PaymentStatus;
-import ua.vspelykh.salon.model.Service;
+import ua.vspelykh.salon.model.MasterService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public interface AppointmentService {
 
     void save(Appointment appointment) throws ServiceException;
 
-    void save(Appointment appointment, List<Service> services) throws ServiceException;
+    void save(Appointment appointment, List<MasterService> masterServices) throws ServiceException;
 
     void delete(Integer id) throws ServiceException;
 

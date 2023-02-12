@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.dto.MarkDto;
+import ua.vspelykh.salon.dto.FeedbackDto;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -80,7 +80,7 @@ public class CalendarCommand extends Command {
 
     private void setFeedbacksAttrs() throws ServiceException {
         int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
-        List<MarkDto> marks = serviceFactory.getMarkService().getMarksByMasterId(Integer.valueOf(request.getParameter(ID)),
+        List<FeedbackDto> marks = serviceFactory.getMarkService().getMarksByMasterId(Integer.valueOf(request.getParameter(ID)),
                 page);
         request.setAttribute(FEEDBACKS, marks);
         request.setAttribute(PAGE + CHECKED, page);

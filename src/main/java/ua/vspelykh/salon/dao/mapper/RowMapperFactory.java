@@ -33,7 +33,7 @@ public class RowMapperFactory {
         return baseServiceRowMapper;
     }
 
-    public static RowMapper<Service> getMasterServiceRowMapper() {
+    public static RowMapper<MasterService> getMasterServiceRowMapper() {
         return masterServiceRowMapper;
     }
 
@@ -41,11 +41,11 @@ public class RowMapperFactory {
         return appointmentRowMapper;
     }
 
-    public static RowMapper<Ordering> getOrderingRowMapper() {
+    public static RowMapper<AppointmentItem> getOrderingRowMapper() {
         return orderingRowMapper;
     }
 
-    public static RowMapper<Mark> getMarkRowMapper() {
+    public static RowMapper<Feedback> getMarkRowMapper() {
         return markRowMapper;
     }
 

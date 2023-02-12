@@ -320,7 +320,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private void appendServices(StringBuilder query) {
             if (!serviceIds.isEmpty()) {
-                query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
+                query.append(INNER_JOIN).append("(SELECT master_id from master_services s").append(WHERE);
                 query.append("s.base_service_id IN(");
                 appendQuestionMarks(query, serviceIds);
                 if (!categoriesIds.isEmpty()) {
@@ -329,7 +329,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 appendCategories(query);
                 query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
             } else if (!categoriesIds.isEmpty()){
-                query.append(INNER_JOIN).append("(SELECT master_id from services s").append(WHERE);
+                query.append(INNER_JOIN).append("(SELECT master_id from master_services s").append(WHERE);
                 appendCategories(query);
                 query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
             }

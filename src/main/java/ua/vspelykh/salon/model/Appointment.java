@@ -1,8 +1,19 @@
 package ua.vspelykh.salon.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDateTime;
 
-public class Appointment extends AbstractBaseEntity{
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+public class Appointment extends AbstractBaseEntity {
 
     private Integer masterId;
     private Integer clientId;
@@ -13,86 +24,4 @@ public class Appointment extends AbstractBaseEntity{
     private AppointmentStatus status;
     private PaymentStatus paymentStatus;
 
-    public Appointment() {
-    }
-
-    private Appointment(Integer id, Integer masterId, Integer clientId, int continuance, LocalDateTime date, int price, int discount, AppointmentStatus status, PaymentStatus paymentStatus) {
-        super(id);
-        this.masterId = masterId;
-        this.clientId = clientId;
-        this.continuance = continuance;
-        this.date = date;
-        this.price = price;
-        this.discount = discount;
-        this.status = status;
-        this.paymentStatus = paymentStatus;
-    }
-
-    public static Appointment createAppointment(Integer masterId, Integer clientId, int continuance, LocalDateTime date, int price, int discount, PaymentStatus paymentStatus) {
-        return new Appointment(null, masterId, clientId, continuance, date, price, discount, AppointmentStatus.RESERVED, paymentStatus);
-    }
-
-    public Integer getMasterId() {
-        return masterId;
-    }
-
-    public void setMasterId(Integer masterId) {
-        this.masterId = masterId;
-    }
-
-    public Integer getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
-
-    public int getContinuance() {
-        return continuance;
-    }
-
-    public void setContinuance(int continuance) {
-        this.continuance = continuance;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(int discount) {
-        this.discount = discount;
-    }
-
-    public AppointmentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AppointmentStatus status) {
-        this.status = status;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
 }

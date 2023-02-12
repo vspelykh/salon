@@ -3,7 +3,7 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AppointmentDao;
-import ua.vspelykh.salon.dao.OrderingDao;
+import ua.vspelykh.salon.dao.AppointmentItemDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dto.AppointmentDto;
 import ua.vspelykh.salon.dto.UserDto;
@@ -24,7 +24,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentDao appointmentDao;
     private UserDao userDao;
-    private OrderingDao orderingDao;
+    private AppointmentItemDao appointmentItemDao;
     private Transaction transaction;
 
     @Override
@@ -59,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void save(Appointment appointment, List<Service> services) throws ServiceException {
+    public void save(Appointment appointment, List<MasterService> masterServices) throws ServiceException {
         try {
             transaction.start();
             if (appointment.isNew()) {
@@ -68,8 +68,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             } else {
                 appointmentDao.update(appointment);
             }
-            for (Service service : services) {
-                orderingDao.create(new Ordering(appointment.getId(), service.getId()));
+            for (MasterService masterService : masterServices) {
+                appointmentItemDao.create(new AppointmentItem(appointment.getId(), masterService.getId()));
             }
             transaction.commit();
         } catch (DaoException | TransactionException e) {
@@ -198,18 +198,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private AppointmentDto toDTO(Appointment appointment) throws DaoException {
-        AppointmentDto dto = new AppointmentDto();
-        dto.setId(appointment.getId());
-        dto.setMaster(userToDto(userDao.findById(appointment.getMasterId())));
-        dto.setClient(userToDto(userDao.findById(appointment.getClientId())));
-        dto.setContinuance(appointment.getContinuance());
-        dto.setDate(appointment.getDate());
-        dto.setPrice(appointment.getPrice());
-        dto.setDiscount(appointment.getDiscount());
-        dto.setOrderings(orderingDao.getByAppointmentId(appointment.getId()));
-        dto.setStatus(appointment.getStatus());
-        dto.setPaymentStatus(appointment.getPaymentStatus());
-        return dto;
+        return AppointmentDto.builder()
+                .id(appointment.getId())
+                .master(userToDto(userDao.findById(appointment.getMasterId())))
+                .client(userToDto(userDao.findById(appointment.getClientId())))
+                .continuance(appointment.getContinuance())
+                .date(appointment.getDate())
+                .price(appointment.getPrice())
+                .discount(appointment.getDiscount())
+                .appointmentItems(appointmentItemDao.getByAppointmentId(appointment.getId()))
+                .status(appointment.getStatus())
+                .paymentStatus(appointment.getPaymentStatus())
+                .build();
     }
 
     private UserDto userToDto(User user) {
@@ -226,8 +226,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.userDao = userDao;
     }
 
-    public void setOrderingDao(OrderingDao orderingDao) {
-        this.orderingDao = orderingDao;
+    public void setOrderingDao(AppointmentItemDao appointmentItemDao) {
+        this.appointmentItemDao = appointmentItemDao;
     }
 
     public void setTransaction(Transaction transaction) {

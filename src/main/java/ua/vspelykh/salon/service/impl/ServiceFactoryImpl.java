@@ -147,15 +147,15 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public OrderingDao getOrderingDao() throws ServiceException {
-        OrderingDaoImpl orderingDao = new OrderingDaoImpl();
+    public AppointmentItemDao getOrderingDao() throws ServiceException {
+        AppointmentItemDaoImpl orderingDao = new AppointmentItemDaoImpl();
         orderingDao.setConnection(getConnection());
         return orderingDao;
     }
 
     @Override
-    public MarkDao getMarkDao() throws ServiceException {
-        MarkDaoImpl markDao = new MarkDaoImpl();
+    public FeedbackDao getMarkDao() throws ServiceException {
+        FeedbackDaoImpl markDao = new FeedbackDaoImpl();
         markDao.setConnection(getConnection());
         return markDao;
     }

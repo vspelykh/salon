@@ -3,7 +3,7 @@ package ua.vspelykh.salon.controller.command.appointment;
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.Appointment;
 import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.Mark;
+import ua.vspelykh.salon.model.Feedback;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -33,7 +33,7 @@ public class FeedbackCommand extends Command {
         Integer appointmentId = Integer.valueOf(request.getParameter(ID));
         Appointment appointment = serviceFactory.getAppointmentService().findById(appointmentId);
         User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
-        Mark mark = getServiceFactory().getMarkService().getMarkByAppointmentId(appointmentId);
+        Feedback mark = getServiceFactory().getMarkService().getMarkByAppointmentId(appointmentId);
         if (mark != null){
             request.getSession().setAttribute(MESSAGE, MESSAGE + DOT + FEEDBACK + ".exist");
             redirect(SUCCESS_REDIRECT);

@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.dto;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.model.UserLevel;
 
@@ -7,6 +9,10 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
+import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+
+@Data
+@EqualsAndHashCode(of = "id")
 public class UserMasterDTO {
 
     private int id;
@@ -20,9 +26,6 @@ public class UserMasterDTO {
 
     private static DecimalFormat df = new DecimalFormat("0.00");
 
-    public UserMasterDTO() {
-    }
-
     public static UserMasterDTO build(User user, UserLevel userLevel, double rating, String locale) {
         UserMasterDTO dto = new UserMasterDTO();
         dto.setId(user.getId());
@@ -31,7 +34,7 @@ public class UserMasterDTO {
         dto.setEmail(user.getEmail());
         dto.setNumber(user.getNumber());
         dto.setLevel(String.valueOf(userLevel.getLevel()));
-        if (Objects.equals(locale, "ua")) {
+        if (Objects.equals(locale, UA_LOCALE)) {
             dto.setAbout(userLevel.getAboutUa());
         } else {
             dto.setAbout(userLevel.getAbout());
@@ -43,77 +46,5 @@ public class UserMasterDTO {
             dto.setRating(df.format(rating));
         }
         return dto;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getAbout() {
-        return about;
-    }
-
-    public void setAbout(String about) {
-        this.about = about;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    @Override
-    public String toString() {
-        return "UserMasterDTO{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
     }
 }

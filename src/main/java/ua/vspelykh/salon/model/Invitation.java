@@ -1,16 +1,24 @@
 package ua.vspelykh.salon.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Invitation extends AbstractBaseEntity {
 
     private String email;
     private Role role;
     private String key;
     private LocalDate date;
-
-    public Invitation() {
-    }
 
     public Invitation(String email, Role role, String key) {
         this.email = email;
@@ -24,37 +32,5 @@ public class Invitation extends AbstractBaseEntity {
         this.role = role;
         this.key = key;
         this.date = date;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 }

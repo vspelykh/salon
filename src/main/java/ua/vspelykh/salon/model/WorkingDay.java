@@ -1,16 +1,31 @@
 package ua.vspelykh.salon.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class WorkingDay extends AbstractBaseEntity{
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+public class WorkingDay extends AbstractBaseEntity {
 
     private Integer userId;
     private LocalDate date;
     private LocalTime timeStart;
     private LocalTime timeEnd;
 
-    public WorkingDay() {
+    public WorkingDay(Integer userId, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
+        this.userId = userId;
+        this.date = date;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
     }
 
     public WorkingDay(Integer id, Integer userId, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
@@ -18,38 +33,6 @@ public class WorkingDay extends AbstractBaseEntity{
         this.userId = userId;
         this.date = date;
         this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTimeStart() {
-        return timeStart;
-    }
-
-    public void setTimeStart(LocalTime timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public LocalTime getTimeEnd() {
-        return timeEnd;
-    }
-
-    public void setTimeEnd(LocalTime timeEnd) {
         this.timeEnd = timeEnd;
     }
 }

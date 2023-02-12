@@ -3,10 +3,10 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AppointmentDao;
-import ua.vspelykh.salon.dao.MarkDao;
+import ua.vspelykh.salon.dao.FeedbackDao;
 import ua.vspelykh.salon.dao.UserDao;
-import ua.vspelykh.salon.dto.MarkDto;
-import ua.vspelykh.salon.model.Mark;
+import ua.vspelykh.salon.dto.FeedbackDto;
+import ua.vspelykh.salon.model.Feedback;
 import ua.vspelykh.salon.model.User;
 import ua.vspelykh.salon.service.MarkService;
 import ua.vspelykh.salon.service.Transaction;
@@ -21,16 +21,16 @@ public class MarkServiceImpl implements MarkService {
 
     private static final Logger LOG = LogManager.getLogger(MarkServiceImpl.class);
 
-    private MarkDao markDao;
+    private FeedbackDao feedbackDao;
     private AppointmentDao appointmentDao;
     private UserDao userDao;
     private Transaction transaction;
 
     @Override
-    public void save(Mark mark) throws ServiceException {
+    public void save(Feedback mark) throws ServiceException {
         try {
             transaction.start();
-            markDao.create(mark);
+            feedbackDao.create(mark);
             transaction.commit();
         } catch (DaoException | TransactionException e) {
             try {
@@ -44,10 +44,10 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public List<MarkDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException {
+    public List<FeedbackDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException {
         try {
             transaction.start();
-            List<Mark> marks = markDao.getMarksByMasterId(masterId, page);
+            List<Feedback> marks = feedbackDao.getFeedbacksByMasterId(masterId, page);
             transaction.commit();
             return toDTOs(marks);
         } catch (DaoException | TransactionException e) {
@@ -61,24 +61,24 @@ public class MarkServiceImpl implements MarkService {
         }
     }
 
-    private List<MarkDto> toDTOs(List<Mark> marks) throws DaoException {
-        List<MarkDto> dtos = new ArrayList<>();
-        for (Mark mark : marks) {
+    private List<FeedbackDto> toDTOs(List<Feedback> marks) throws DaoException {
+        List<FeedbackDto> dtos = new ArrayList<>();
+        for (Feedback mark : marks) {
             dtos.add(toDTO(mark));
         }
         return dtos;
     }
 
-    private MarkDto toDTO(Mark mark) throws DaoException {
+    private FeedbackDto toDTO(Feedback mark) throws DaoException {
         User client = userDao.findById(appointmentDao.findById(mark.getAppointmentId()).getClientId());
-        return new MarkDto.MarkDtoBuilder(client, mark).build();
+        return new FeedbackDto.FeedbackDtoBuilder(client, mark).build();
     }
 
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
             transaction.start();
-            markDao.removeById(id);
+            feedbackDao.removeById(id);
             transaction.commit();
         } catch (DaoException | TransactionException e) {
             try {
@@ -94,7 +94,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     public int countMarksByMasterId(Integer masterID) throws ServiceException {
         try {
-            return markDao.countMarksByMasterId(masterID);
+            return feedbackDao.countFeedbacksByMasterId(masterID);
         } catch (DaoException e) {
             e.printStackTrace();
             throw new ServiceException(e);
@@ -102,16 +102,16 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public Mark getMarkByAppointmentId(Integer appointmentId) {
+    public Feedback getMarkByAppointmentId(Integer appointmentId) {
         try {
-            return markDao.findByAppointmentId(appointmentId);
+            return feedbackDao.findByAppointmentId(appointmentId);
         } catch (DaoException e) {
             return null;
         }
     }
 
-    public void setMarkDao(MarkDao markDao) {
-        this.markDao = markDao;
+    public void setMarkDao(FeedbackDao feedbackDao) {
+        this.feedbackDao = feedbackDao;
     }
 
     public void setAppointmentDao(AppointmentDao appointmentDao) {

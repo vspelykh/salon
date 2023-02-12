@@ -2,6 +2,7 @@ package ua.vspelykh.salon.dao;
 
 import ua.vspelykh.salon.util.exception.DaoException;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface Dao<T> {
@@ -15,4 +16,6 @@ public interface Dao<T> {
     void update(T entity) throws DaoException;
 
     void removeById(int id) throws DaoException;
+
+    void setConnection(Connection connection);
 }

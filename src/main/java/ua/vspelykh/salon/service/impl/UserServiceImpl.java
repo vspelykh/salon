@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.dao.InvitationDao;
-import ua.vspelykh.salon.dao.MarkDao;
+import ua.vspelykh.salon.dao.FeedbackDao;
 import ua.vspelykh.salon.dao.UserDao;
 import ua.vspelykh.salon.dao.UserLevelDao;
 import ua.vspelykh.salon.dto.UserMasterDTO;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
     private UserLevelDao userLevelDao;
-    private MarkDao markDao;
+    private FeedbackDao feedbackDao;
     private InvitationDao invitationDao;
 
     private Transaction transaction;
@@ -280,7 +280,7 @@ public class UserServiceImpl implements UserService {
             List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, categoriesIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
-                List<Mark> marks = markDao.getMarksByMasterId(currentMaster.getId(), page);
+                List<Feedback> marks = feedbackDao.getFeedbacksByMasterId(currentMaster.getId(), page);
                 UserLevel userLevel = userLevelDao.getUserLevelByUserId(currentMaster.getId());
                 dtos.add(UserMasterDTO.build(currentMaster, userLevel, countRating(marks), locale));
             }
@@ -296,9 +296,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private double countRating(List<Mark> marks) {
+    private double countRating(List<Feedback> marks) {
         double rating = 0;
-        for (Mark mark : marks) {
+        for (Feedback mark : marks) {
             rating += mark.getMark();
         }
         return rating / marks.size();
@@ -362,8 +362,8 @@ public class UserServiceImpl implements UserService {
         this.userLevelDao = userLevelDao;
     }
 
-    public void setMarkDao(MarkDao markDao) {
-        this.markDao = markDao;
+    public void setMarkDao(FeedbackDao feedbackDao) {
+        this.feedbackDao = feedbackDao;
     }
 
     public void setTransaction(Transaction transaction) {

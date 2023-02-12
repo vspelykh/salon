@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Mark;
+import ua.vspelykh.salon.model.Feedback;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ public class FeedbackPostCommand extends Command {
 
     @Override
     public void process() throws ServletException, IOException {
-        Mark mark = new Mark();
+        Feedback mark = new Feedback();
         mark.setMark(Integer.parseInt(request.getParameter(MARK)));
         mark.setComment(request.getParameter(COMMENT));
         mark.setAppointmentId(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));

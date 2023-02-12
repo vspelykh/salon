@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS user_level;
 DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS marks;
-DROP TABLE IF EXISTS orderings;
-DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS feedbacks;
+DROP TABLE IF EXISTS appointment_items;
+DROP TABLE IF EXISTS master_services;
 DROP TABLE IF EXISTS base_services;
 DROP TABLE IF EXISTS service_categories;
 DROP TABLE IF EXISTS appointments;
@@ -30,6 +30,7 @@ CREATE TABLE user_level
     about    VARCHAR NOT NULL,
     about_ua VARCHAR NOT NULL,
     active   BOOLEAN NOT NULL,
+    CONSTRAINT user_level_idx UNIQUE (id),
     FOREIGN KEY (id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -58,7 +59,7 @@ CREATE TABLE base_services
     FOREIGN KEY (category_id) REFERENCES service_categories (id)
 );
 
-CREATE TABLE services
+CREATE TABLE master_services
 (
     id              SERIAL PRIMARY KEY,
     master_id       INTEGER NOT NULL,
@@ -83,17 +84,17 @@ CREATE TABLE appointments
     FOREIGN KEY (client_id) REFERENCES users (id)
 );
 
-CREATE TABLE orderings
+CREATE TABLE appointment_items
 (
     id             SERIAL PRIMARY KEY,
     appointment_id INTEGER NOT NULL,
     service_id     INTEGER NOT NULL,
-    FOREIGN KEY (service_id) REFERENCES services (id),
+    FOREIGN KEY (service_id) REFERENCES master_services (id),
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
 
-CREATE TABLE marks
+CREATE TABLE feedbacks
 (
     id             SERIAL PRIMARY KEY,
     appointment_id INTEGER   NOT NULL,
@@ -103,7 +104,7 @@ CREATE TABLE marks
     FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX mark_unique_appointment_idx ON marks (appointment_id);
+CREATE UNIQUE INDEX mark_unique_appointment_idx ON feedbacks (appointment_id);
 
 CREATE TABLE consultations
 (
@@ -230,7 +231,7 @@ VALUES (2, 'TOP', true, 'hairdresser-modeler, colorist, bio-perm specialist',
         'перукар-модельєр, колорист, спеціаліст біозавивки'),
        (11, 'PRO', true, 'hairdresser-modeler, colorist', 'перукар-модельєр, колорист');
 
-INSERT INTO services (master_id, base_service_id, continuance)
+INSERT INTO master_services (master_id, base_service_id, continuance)
 VALUES (2, 1, 20),
        (2, 2, 25),
        (2, 3, 30),
@@ -285,7 +286,7 @@ VALUES (2, 12, 180, '1.11.2022 18:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON
        (4, 16, 180, '5.11.2022 12:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON'),
        (4, 17, 180, '5.11.2022 16:00:00', '650', '-1', 'SUCCESS', 'PAID_IN_SALON');
 
-INSERT INTO orderings (appointment_id, service_id)
+INSERT INTO appointment_items (appointment_id, service_id)
 VALUES (1, 4),
        (1, 8),
        (2, 8),
@@ -310,7 +311,7 @@ VALUES (1, 4),
        (6, 5),
        (11, 5),
        (10, 5);
-INSERT INTO marks (appointment_id, mark, comment, date)
+INSERT INTO feedbacks (appointment_id, mark, comment, date)
 VALUES (1, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00'),
        (2, 5, 'Super, Awesome coloring', '14.11.2022 18:38:00'),
        (3, 4, 'Super, Awesome coloring', '14.11.2022 18:38:00'),

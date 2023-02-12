@@ -8,7 +8,7 @@ import ua.vspelykh.salon.dao.ServiceCategoryDao;
 import ua.vspelykh.salon.dto.BaseServiceDto;
 import ua.vspelykh.salon.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.BaseService;
-import ua.vspelykh.salon.model.Service;
+import ua.vspelykh.salon.model.MasterService;
 import ua.vspelykh.salon.model.ServiceCategory;
 import ua.vspelykh.salon.service.ServiceService;
 import ua.vspelykh.salon.service.Transaction;
@@ -29,7 +29,7 @@ public class ServiceServiceImpl implements ServiceService {
     private Transaction transaction;
 
     @Override
-    public Service findById(Integer id) throws ServiceException {
+    public MasterService findById(Integer id) throws ServiceException {
         try {
             return msDao.findById(id);
         } catch (DaoException e) {
@@ -38,7 +38,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public List<Service> getAllByMasterId(Integer masterId) throws ServiceException {
+    public List<MasterService> getAllByMasterId(Integer masterId) throws ServiceException {
         try {
             return msDao.getAllByUserId(masterId);
         } catch (DaoException e) {
@@ -48,13 +48,13 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public void save(Service service) throws ServiceException {
+    public void save(MasterService masterService) throws ServiceException {
         try {
             transaction.start();
-            if (service.isNew()) {
-                msDao.create(service);
+            if (masterService.isNew()) {
+                msDao.create(masterService);
             } else {
-                msDao.update(service);
+                msDao.update(masterService);
             }
             transaction.commit();
         } catch (DaoException | TransactionException e) {
@@ -69,7 +69,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public List<Service> getAllByBaseServiceId(Integer baseServiceId) throws ServiceException {
+    public List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws ServiceException {
         try {
             return msDao.getAllByBaseServiceId(baseServiceId);
         } catch (DaoException e) {
@@ -79,8 +79,8 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public List<Service> findByFilter(List<Integer> userIds, List<Integer> serviceIds, Integer continuanceFrom,
-                                      Integer continuanceTo) throws ServiceException {
+    public List<MasterService> findByFilter(List<Integer> userIds, List<Integer> serviceIds, Integer continuanceFrom,
+                                            Integer continuanceTo) throws ServiceException {
         try {
             return msDao.findByFilter(userIds, serviceIds, continuanceFrom, continuanceTo);
         } catch (DaoException e) {
@@ -110,13 +110,13 @@ public class ServiceServiceImpl implements ServiceService {
     public List<MasterServiceDto> getDTOsByMasterId(int masterId, String locale) throws ServiceException {
         try {
             transaction.start();
-            List<Service> services = msDao.getAllByUserId(masterId);
+            List<MasterService> masterServices = msDao.getAllByUserId(masterId);
             List<MasterServiceDto> dtos = new ArrayList<>();
-            for (Service service : services) {
-                BaseService baseService = baseServiceDao.findById(service.getBaseServiceId());
+            for (MasterService masterService : masterServices) {
+                BaseService baseService = baseServiceDao.findById(masterService.getBaseServiceId());
                 ServiceCategory category = serviceCategoryDao.findById(baseService.getCategoryId());
                 BaseServiceDto baseServiceDto = new BaseServiceDto.BaseServiceDtoBuilder(baseService, category, locale).build();
-                MasterServiceDto dto = new MasterServiceDto(service.getId(), service.getMasterId(), baseServiceDto, service.getContinuance());
+                MasterServiceDto dto = new MasterServiceDto(masterService.getId(), masterService.getMasterId(), baseServiceDto, masterService.getContinuance());
                 dtos.add(dto);
             }
             transaction.commit();

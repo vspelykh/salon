@@ -1,32 +1,28 @@
 package ua.vspelykh.salon.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
+@SuperBuilder
+@EqualsAndHashCode
 public abstract class AbstractBaseEntity implements Serializable {
 
     protected Integer id;
 
-    public AbstractBaseEntity() {
+    protected AbstractBaseEntity() {
     }
 
-    public AbstractBaseEntity(Integer id) {
+    protected AbstractBaseEntity(Integer id) {
         this.id = id;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public boolean isNew(){
-        return this.id == null;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + ":" + id;
+    public boolean isNew() {
+        return id == null;
     }
 }

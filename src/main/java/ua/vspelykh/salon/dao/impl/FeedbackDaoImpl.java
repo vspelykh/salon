@@ -3,10 +3,10 @@ package ua.vspelykh.salon.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.dao.AbstractDao;
-import ua.vspelykh.salon.dao.MarkDao;
+import ua.vspelykh.salon.dao.FeedbackDao;
 import ua.vspelykh.salon.dao.Table;
 import ua.vspelykh.salon.dao.mapper.RowMapperFactory;
-import ua.vspelykh.salon.model.Mark;
+import ua.vspelykh.salon.model.Feedback;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
@@ -16,16 +16,16 @@ import java.util.List;
 import static ua.vspelykh.salon.dao.mapper.Column.APPOINTMENT_ID;
 import static ua.vspelykh.salon.dao.mapper.Column.DATE;
 
-public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
+public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDao {
 
-    private static final Logger LOG = LogManager.getLogger(MarkDaoImpl.class);
+    private static final Logger LOG = LogManager.getLogger(FeedbackDaoImpl.class);
 
-    public MarkDaoImpl() {
-        super(RowMapperFactory.getMarkRowMapper(), Table.MARK);
+    public FeedbackDaoImpl() {
+        super(RowMapperFactory.getMarkRowMapper(), Table.FEEDBACKS);
     }
 
     @Override
-    public int create(Mark entity) throws DaoException {
+    public int create(Feedback entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, mark, comment, date)" + VALUES + "(?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setMarkStatement(entity, statement);
@@ -42,7 +42,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
         }
     }
 
-    private void setMarkStatement(Mark entity, PreparedStatement statement) throws SQLException {
+    private void setMarkStatement(Feedback entity, PreparedStatement statement) throws SQLException {
         int k = 0;
         statement.setInt(++k, entity.getAppointmentId());
         statement.setInt(++k, entity.getMark());
@@ -51,19 +51,19 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     }
 
     @Override
-    public void update(Mark entity) throws DaoException {
+    public void update(Feedback entity) throws DaoException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<Mark> getMarksByMasterId(Integer masterId, int page) throws DaoException {
+    public List<Feedback> getFeedbacksByMasterId(Integer masterId, int page) throws DaoException {
         String query = new MarkQueryBuilder(page).buildQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Mark> marks = new ArrayList<>();
+            List<Feedback> marks = new ArrayList<>();
             while (resultSet.next()) {
-                Mark entity = rowMapper.map(resultSet);
+                Feedback entity = rowMapper.map(resultSet);
                 marks.add(entity);
             }
             return marks;
@@ -74,7 +74,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     }
 
     @Override
-    public int countMarksByMasterId(Integer masterId) throws DaoException {
+    public int countFeedbacksByMasterId(Integer masterId) throws DaoException {
         String query = new MarkQueryBuilder().buildCountQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
@@ -92,7 +92,7 @@ public class MarkDaoImpl extends AbstractDao<Mark> implements MarkDao {
     }
 
     @Override
-    public Mark findByAppointmentId(Integer appointmentId) throws DaoException {
+    public Feedback findByAppointmentId(Integer appointmentId) throws DaoException {
         return findByParam(appointmentId, APPOINTMENT_ID);
     }
 
