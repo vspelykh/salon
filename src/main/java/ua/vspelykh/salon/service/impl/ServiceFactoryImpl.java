@@ -134,7 +134,6 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public MasterServiceDao getMasterServiceDao() throws ServiceException {
         MasterServiceDaoImpl msDao = new MasterServiceDaoImpl();
-        msDao.setBaseServiceDao(getBaseServiceDao());
         msDao.setConnection(getConnection());
         return msDao;
     }

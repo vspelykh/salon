@@ -37,8 +37,8 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 

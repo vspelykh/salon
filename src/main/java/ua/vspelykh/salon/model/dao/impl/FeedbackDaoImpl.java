@@ -37,8 +37,8 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
             }
             return marks;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%s%s by masterId. Issue: %s", FAIL_FIND_LIST, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -82,11 +82,11 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                //TODO
-                throw new DaoException("TODO");
+                LOG.error(FAIL_COUNT + tableName);
+                throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_COUNT, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }

@@ -44,7 +44,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }

@@ -57,7 +57,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -74,8 +74,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_UPDATE, e);
-            throw new DaoException(FAIL_UPDATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -107,7 +107,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
         } catch (SQLException e) {
             LOG.error(String.format("%s %s by email and password", FAIL_FIND, tableName));
-            throw new DaoException(FAIL_FIND + tableName + " by email and password");
+            throw new DaoException(e);
         }
         return setUserRoles(user);
     }
@@ -162,12 +162,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
             } else {
-                //TODO
-                throw new DaoException("TODO");
+                LOG.error(FAIL_COUNT + tableName);
+                throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException("TODO");
+            LOG.error(String.format(LOG_PATTERN, FAIL_COUNT, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
         return count;
     }
@@ -191,8 +191,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             setUserRoleStatement(statement, userId, role);
             statement.executeUpdate();
         } catch (SQLException e) {
-            //TODO
-            throw new DaoException();
+            LOG.error(String.format("Fail to update role. Issue: %s", e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -214,7 +214,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             return users;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("Fail to get users from DB. Issue: %s", e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -232,7 +232,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             return users;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%sby role. Issue: %s", FAIL_FIND_LIST, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -257,8 +257,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             return user;
         } catch (SQLException e) {
-            LOG.error("Error during setting roles for user");
-            throw new DaoException("Error during setting roles for user", e);
+            LOG.error(String.format("Error during setting roles for user. Issue: %s", e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -375,11 +375,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
 
         private String buildSearchQuery() {
-            StringBuilder query = new StringBuilder(SELECT + tableName);
-            query.append(WHERE);
-            query.append(NUMBER).append(ILIKE).append(String.format(SEARCH_PATTERN, search)).append(OR);
-            query.append(EMAIL).append(ILIKE).append(String.format(SEARCH_PATTERN, search));
-            return query.toString();
+            return SELECT + tableName + WHERE +
+                    NUMBER + ILIKE + String.format(SEARCH_PATTERN, search) + OR +
+                    EMAIL + ILIKE + String.format(SEARCH_PATTERN, search);
         }
 
         private String shortQuery() {
@@ -411,19 +409,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private void addSortingParams(StringBuilder q) {
             q.append(ORDER_BY);
-            switch (sort) {
-                case NAME_ASC:
-                    q.append(NAME_ASC);
-                    break;
-                case NAME_DESC:
-                    q.append(NAME_DESC);
-                    break;
-                case FIRST_PRO:
-                    q.append(LEVEL_EXP);
-                    break;
-                case FIRST_YOUNG:
-                    q.append(LEVEL_YOUNG);
-                    break;
+            if (sort == MasterSort.NAME_ASC) {
+                q.append(NAME_ASC);
+            } else if (sort == MasterSort.NAME_DESC) {
+                q.append(NAME_DESC);
+            } else if (sort == MasterSort.FIRST_PRO) {
+                q.append(LEVEL_EXP);
+            } else if (sort == MasterSort.FIRST_YOUNG) {
+                q.append(LEVEL_YOUNG);
             }
         }
 

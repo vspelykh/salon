@@ -44,7 +44,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(String.format("%s%s", FAIL_CREATE, tableName));
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -64,7 +64,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
                 throw new DaoException(FAIL_UPDATE + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(String.format("%s%s", FAIL_UPDATE, tableName), e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -81,7 +81,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
             }
             return users;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("Fail to get users by level. Issue: %s", e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -112,7 +112,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
                 throw new DaoException("Error to get information is userLevel exists ind DB");
             }
         } catch (SQLException e) {
-            LOG.error("Error to get information is userLevel exists ind DB");
+            LOG.error(String.format("Error to get information is userLevel exists ind DB. Issue: %s", e.getMessage()));
             throw new DaoException(e);
         }
     }

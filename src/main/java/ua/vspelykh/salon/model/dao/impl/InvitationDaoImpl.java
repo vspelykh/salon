@@ -23,7 +23,6 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
         super(RowMapperFactory.getInvitationRowMapper(), Table.INVITATION);
     }
 
-
     @Override
     public int create(Invitation entity) throws DaoException {
         String query = INSERT + tableName + " (email, role, key)" + VALUES + "(?,?,?)";
@@ -37,8 +36,8 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -59,9 +58,8 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
         try {
             return findByParam(email, Column.EMAIL);
         } catch (DaoException e) {
-            e.printStackTrace();
-            //TODO
-            throw new DaoException();
+            LOG.error(String.format("%sin %s by email. Issue: %s", FAIL_FIND, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -76,7 +74,7 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
             }
         } catch (SQLException e) {
             LOG.error("Fail to delete item.", e);
-            throw new DaoException("Fail to delete item, e");
+            throw new DaoException(e);
         }
     }
 }

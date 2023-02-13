@@ -3,7 +3,6 @@ package ua.vspelykh.salon.model.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
-import ua.vspelykh.salon.model.dao.BaseServiceDao;
 import ua.vspelykh.salon.model.dao.MasterServiceDao;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.Column;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements MasterServiceDao {
-
-    private BaseServiceDao baseServiceDao;
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
 
@@ -41,8 +38,8 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -64,8 +61,8 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
                 throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_UPDATE, e);
-            throw new DaoException(FAIL_UPDATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -95,7 +92,7 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
             }
             return masterServices;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_FIND_LIST, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -189,9 +186,5 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
         private boolean isAllParamsAreNull() {
             return userIds == null && serviceIds == null && continuanceFrom == null && continuanceTo == null;
         }
-    }
-
-    public void setBaseServiceDao(BaseServiceDao baseServiceDao) {
-        this.baseServiceDao = baseServiceDao;
     }
 }

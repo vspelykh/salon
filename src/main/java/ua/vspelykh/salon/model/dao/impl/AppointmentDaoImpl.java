@@ -58,7 +58,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
             return appointments;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%sby date in %s. Issue: %s", FAIL_FIND, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -78,7 +78,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
             return appointments;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%sby filter params in %s. Issue: %s", FAIL_FIND, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -94,12 +94,12 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
             } else {
-                //TODO
-                throw new DaoException("TODO");
+                LOG.error(FAIL_COUNT + tableName);
+                throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException("TODO");
+            LOG.error(String.format(LOG_PATTERN, FAIL_COUNT, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
         return count;
     }
@@ -122,7 +122,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
             return appointments;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%s in %s by date and %s. Issue: %s", FAIL_FIND, tableName, column, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -141,8 +141,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -157,7 +157,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
                 throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_UPDATE, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
             throw new DaoException(FAIL_UPDATE + tableName, e);
         }
     }

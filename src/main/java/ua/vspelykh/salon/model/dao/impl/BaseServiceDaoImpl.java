@@ -40,7 +40,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             }
             return baseServices;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%s%s by filter params. Issue: %s", FAIL_FIND_LIST, tableName, e.getMessage()));
             throw new DaoException(e);
         }
     }
@@ -56,12 +56,12 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
             } else {
-                //TODO
-                throw new DaoException("TODO");
+                LOG.error(FAIL_COUNT + tableName);
+                throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException("TODO");
+            LOG.error(String.format("%s%s. Issue: %s", FAIL_COUNT, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
         return count;
     }
@@ -79,8 +79,8 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format("%s%s. Issue: %s", FAIL_CREATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
@@ -103,14 +103,14 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
                 throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_UPDATE, e);
-            throw new DaoException(FAIL_UPDATE + tableName, e);
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
+            throw new DaoException(e);
         }
     }
 
     private class BaseServiceFilteredQueryBuilder {
 
-        private List<Integer> categoriesIds;
+        private final List<Integer> categoriesIds;
         private final Integer page;
         private final Integer size;
 

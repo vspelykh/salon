@@ -16,9 +16,11 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    protected static final String LOG_PATTERN = "%s%s. Issue: %s";
     protected static final String FAIL_UPDATE = "Fail to update item in";
     protected static final String FAIL_CREATE = "Fail to create item in";
     protected static final String FAIL_FIND = "Fail to find entity ";
+    protected static final String FAIL_COUNT = "Fail to count items in ";
     protected static final String FAIL_FIND_LIST = "Fail to find entities ";
     protected static final String FAIL_DELETE = "Fail to delete";
     protected static final String NO_ID = "No id was generated in ";
@@ -27,6 +29,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String SELECT = "SELECT * FROM ";
     protected static final String INSERT = "INSERT INTO ";
     protected static final String VALUES = " VALUES ";
+    @SuppressWarnings("SqlWithoutWhere")
     protected static final String DELETE = "DELETE FROM ";
     protected static final String WHERE = " WHERE ";
     protected static final String EQUAL = "=?";

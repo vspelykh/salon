@@ -15,17 +15,19 @@ public class ServiceCategoryDaoImpl extends AbstractDao<ServiceCategory> impleme
 
 
     public ServiceCategoryDaoImpl() {
-        super(RowMapperFactory.getServiceCategoryRowMapper(), Table.SERVICE_CATEGORY);;
+        super(RowMapperFactory.getServiceCategoryRowMapper(), Table.SERVICE_CATEGORY);
     }
 
 
     @Override
     public int create(ServiceCategory entity) throws DaoException {
+        LOG.error("Create service category is unsupported operation!");
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void update(ServiceCategory entity) throws DaoException {
+        LOG.error("Update service category is unsupported operation!");
         throw new UnsupportedOperationException();
     }
 
