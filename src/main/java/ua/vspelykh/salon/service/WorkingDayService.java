@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Time;

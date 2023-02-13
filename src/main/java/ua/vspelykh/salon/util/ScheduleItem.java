@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.util;
 
-import ua.vspelykh.salon.dto.AppointmentDto;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
 
 import java.io.Serializable;
 import java.time.LocalTime;

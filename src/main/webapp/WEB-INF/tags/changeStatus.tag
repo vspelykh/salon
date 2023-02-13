@@ -6,7 +6,7 @@
 <%@ attribute name="id" required="true" %>
 <%@ attribute name="days" required="false" %>
 <%@ attribute name="redirect" required="false" %>
-<%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.dto.AppointmentDto" %>
+<%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.model.dto.AppointmentDto" %>
 <%@ attribute name="status" required="true" %>
 <%@ attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
 

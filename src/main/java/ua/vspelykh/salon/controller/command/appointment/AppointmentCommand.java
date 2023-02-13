@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.dto.MasterServiceDto;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.dto.MasterServiceDto;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,7 +15,7 @@ import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.countAllowedMinutes;

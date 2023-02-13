@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dao.*;
+import ua.vspelykh.salon.model.dao.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Connection;

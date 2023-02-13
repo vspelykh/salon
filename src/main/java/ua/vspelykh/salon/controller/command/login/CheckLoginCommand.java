@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.login;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;

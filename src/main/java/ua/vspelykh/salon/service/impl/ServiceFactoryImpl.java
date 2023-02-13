@@ -1,8 +1,8 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.dao.*;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
-import ua.vspelykh.salon.dao.impl.*;
+import ua.vspelykh.salon.model.dao.*;
+import ua.vspelykh.salon.model.dao.connection.DBCPDataSource;
+import ua.vspelykh.salon.model.dao.impl.*;
 import ua.vspelykh.salon.service.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 

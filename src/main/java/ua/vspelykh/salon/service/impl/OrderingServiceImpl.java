@@ -2,8 +2,8 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.AppointmentItemDao;
-import ua.vspelykh.salon.model.AppointmentItem;
+import ua.vspelykh.salon.model.dao.AppointmentItemDao;
+import ua.vspelykh.salon.model.entity.AppointmentItem;
 import ua.vspelykh.salon.service.OrderingService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;

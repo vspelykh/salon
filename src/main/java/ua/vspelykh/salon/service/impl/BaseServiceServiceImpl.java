@@ -2,10 +2,10 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.BaseServiceDao;
-import ua.vspelykh.salon.dto.BaseServiceDto;
-import ua.vspelykh.salon.model.BaseService;
-import ua.vspelykh.salon.model.ServiceCategory;
+import ua.vspelykh.salon.model.dao.BaseServiceDao;
+import ua.vspelykh.salon.model.dto.BaseServiceDto;
+import ua.vspelykh.salon.model.entity.BaseService;
+import ua.vspelykh.salon.model.entity.ServiceCategory;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.Transaction;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 public class BaseServiceServiceImpl implements BaseServiceService {
 

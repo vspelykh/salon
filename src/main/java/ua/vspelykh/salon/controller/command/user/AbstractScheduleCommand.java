@@ -1,14 +1,14 @@
 package ua.vspelykh.salon.controller.command.user;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 
 public abstract class AbstractScheduleCommand extends Command {
 

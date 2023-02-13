@@ -3,7 +3,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 
 
-<%@ attribute name="status" required="true" type="ua.vspelykh.salon.model.AppointmentStatus" %>
+<%@ attribute name="status" required="true" type="ua.vspelykh.salon.model.entity.AppointmentStatus" %>
 
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="localization.messages"/>

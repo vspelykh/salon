@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Feedback;
+import ua.vspelykh.salon.model.entity.Feedback;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class FeedbackPostCommand extends Command {
 

@@ -1,10 +1,10 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.Feedback;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.Feedback;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 
 public class FeedbackCommand extends Command {
 

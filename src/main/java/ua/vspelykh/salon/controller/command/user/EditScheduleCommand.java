@@ -8,7 +8,7 @@ import java.sql.Time;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
 
 public class EditScheduleCommand extends AbstractScheduleCommand {

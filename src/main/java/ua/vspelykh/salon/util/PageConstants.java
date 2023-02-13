@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.util;
 
-import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.model.entity.Role;
 
 import java.util.*;
 

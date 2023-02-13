@@ -1,16 +1,16 @@
 package ua.vspelykh.salon.controller.command.user;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.dao.mapper.Column.ROLE;
-import static ua.vspelykh.salon.dao.mapper.Column.USER_ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
+import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
 
 public class ChangeRoleCommand extends Command {
     public static String REMOVE = "remove";

@@ -3,12 +3,12 @@ package ua.vspelykh.salon.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.InvitationDao;
-import ua.vspelykh.salon.dao.FeedbackDao;
-import ua.vspelykh.salon.dao.UserDao;
-import ua.vspelykh.salon.dao.UserLevelDao;
-import ua.vspelykh.salon.dto.UserMasterDTO;
-import ua.vspelykh.salon.model.*;
+import ua.vspelykh.salon.model.dao.FeedbackDao;
+import ua.vspelykh.salon.model.dao.InvitationDao;
+import ua.vspelykh.salon.model.dao.UserDao;
+import ua.vspelykh.salon.model.dao.UserLevelDao;
+import ua.vspelykh.salon.model.dto.UserMasterDTO;
+import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.MasterSort;
@@ -21,7 +21,7 @@ import java.util.List;
 
 import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
 import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
-import static ua.vspelykh.salon.dao.mapper.Column.KEY;
+import static ua.vspelykh.salon.model.dao.mapper.Column.KEY;
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 
 public class UserServiceImpl implements UserService {

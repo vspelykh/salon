@@ -1,10 +1,10 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dto.AppointmentDto;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.PaymentStatus;
-import ua.vspelykh.salon.model.MasterService;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.MasterService;
+import ua.vspelykh.salon.model.entity.PaymentStatus;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.time.LocalDate;

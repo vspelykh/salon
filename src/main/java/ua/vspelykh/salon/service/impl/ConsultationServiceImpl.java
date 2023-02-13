@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.dao.ConsultationDao;
-import ua.vspelykh.salon.model.Consultation;
+import ua.vspelykh.salon.model.dao.ConsultationDao;
+import ua.vspelykh.salon.model.entity.Consultation;
 import ua.vspelykh.salon.service.ConsultationService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;

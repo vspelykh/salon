@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.controller.command.user;
 
-import ua.vspelykh.salon.dto.AppointmentDto;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.ScheduleBuilder;
 import ua.vspelykh.salon.util.ScheduleItem;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -18,8 +18,8 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
-import static ua.vspelykh.salon.dao.mapper.Column.STATUS;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.STATUS;
 import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 
 public class GetScheduleCommand extends AbstractScheduleCommand {

@@ -2,8 +2,8 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.WorkingDayDao;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.dao.WorkingDayDao;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.service.WorkingDayService;
 import ua.vspelykh.salon.util.exception.DaoException;

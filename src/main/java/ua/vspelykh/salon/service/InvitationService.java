@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.model.Invitation;
-import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.model.entity.Invitation;
+import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 public interface InvitationService {

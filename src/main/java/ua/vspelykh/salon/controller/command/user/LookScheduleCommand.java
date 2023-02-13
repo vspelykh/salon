@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.USER;
 import static ua.vspelykh.salon.controller.command.CommandNames.LOOK_SCHEDULE;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 
 public class LookScheduleCommand extends AbstractScheduleCommand {
 

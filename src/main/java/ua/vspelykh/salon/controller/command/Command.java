@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command;
 
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.util.TimeSlotsUtils;
 import ua.vspelykh.salon.util.exception.ServiceException;

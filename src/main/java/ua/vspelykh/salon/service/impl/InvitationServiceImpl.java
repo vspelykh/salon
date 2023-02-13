@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.service.impl;
 
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import ua.vspelykh.salon.dao.InvitationDao;
-import ua.vspelykh.salon.model.Invitation;
-import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.model.dao.InvitationDao;
+import ua.vspelykh.salon.model.entity.Invitation;
+import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.InvitationService;
 import ua.vspelykh.salon.service.Transaction;

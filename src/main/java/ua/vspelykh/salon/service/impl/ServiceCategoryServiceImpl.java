@@ -1,8 +1,8 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.dao.ServiceCategoryDao;
-import ua.vspelykh.salon.dto.ServiceCategoryDto;
-import ua.vspelykh.salon.model.ServiceCategory;
+import ua.vspelykh.salon.model.dao.ServiceCategoryDao;
+import ua.vspelykh.salon.model.dto.ServiceCategoryDto;
+import ua.vspelykh.salon.model.entity.ServiceCategory;
 import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -12,7 +12,7 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 public class ServiceCategoryServiceImpl implements ServiceCategoryService {
 

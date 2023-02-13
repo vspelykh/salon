@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.*;
+import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.util.SalonUtils;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.*;
-import static ua.vspelykh.salon.dao.mapper.Column.MASTER_ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.MASTER_ID;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 

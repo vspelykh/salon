@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.filter;
 
-import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +14,9 @@ import static ua.vspelykh.salon.controller.Controller.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
-import static ua.vspelykh.salon.model.Role.ADMINISTRATOR;
-import static ua.vspelykh.salon.model.Role.HAIRDRESSER;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.entity.Role.ADMINISTRATOR;
+import static ua.vspelykh.salon.model.entity.Role.HAIRDRESSER;
 import static ua.vspelykh.salon.util.PageConstants.PAGE_COMMAND_PATTERN;
 import static ua.vspelykh.salon.util.PageConstants.getPermittedRoles;
 

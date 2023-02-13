@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dto.FeedbackDto;
-import ua.vspelykh.salon.model.Feedback;
+import ua.vspelykh.salon.model.dto.FeedbackDto;
+import ua.vspelykh.salon.model.entity.Feedback;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;

@@ -1,10 +1,10 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.PaymentStatus;
-import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.PaymentStatus;
+import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.util.Set;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class EditAppointmentCommand extends Command {
 

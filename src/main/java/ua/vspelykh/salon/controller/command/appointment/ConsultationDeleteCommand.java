@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.COMMAND_PARAM;
 import static ua.vspelykh.salon.controller.ControllerConstants.HOME_REDIRECT;
-import static ua.vspelykh.salon.dao.Table.CONSULTATION;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.Table.CONSULTATION;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 
 public class ConsultationDeleteCommand extends Command {
 

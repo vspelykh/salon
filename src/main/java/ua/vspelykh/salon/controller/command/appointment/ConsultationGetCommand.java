@@ -6,7 +6,7 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-import static ua.vspelykh.salon.dao.Table.CONSULTATION;
+import static ua.vspelykh.salon.model.dao.Table.CONSULTATION;
 
 public class ConsultationGetCommand extends Command {
 

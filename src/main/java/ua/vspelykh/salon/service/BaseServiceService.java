@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dto.BaseServiceDto;
-import ua.vspelykh.salon.model.BaseService;
+import ua.vspelykh.salon.model.dto.BaseServiceDto;
+import ua.vspelykh.salon.model.entity.BaseService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;

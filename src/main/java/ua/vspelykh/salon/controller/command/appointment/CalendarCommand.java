@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.dto.FeedbackDto;
-import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.dto.FeedbackDto;
+import ua.vspelykh.salon.model.entity.User;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 
 public class CalendarCommand extends Command {

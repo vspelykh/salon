@@ -2,8 +2,8 @@ package ua.vspelykh.salon.listener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dto.AppointmentDto;
-import ua.vspelykh.salon.model.AppointmentStatus;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
 import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
