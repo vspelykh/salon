@@ -6,7 +6,7 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
 
-public interface ServiceService {
+public interface MasterServiceService {
 
     MasterService findById(Integer id) throws ServiceException;
 

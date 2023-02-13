@@ -23,6 +23,7 @@ import static ua.vspelykh.salon.util.PageConstants.getPermittedRoles;
 public class SecurityFilter implements Filter {
 
     @Override
+    @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
@@ -30,10 +31,8 @@ public class SecurityFilter implements Filter {
         boolean userIsGuest = checkIfSessionHasRolesAttr(req);
 
         String command = req.getParameter(COMMAND);
-        if (isUserBanned(req)) {
-            logout(req, res);
-            return;
-        }
+        if (logoutIfUserIsBanned(req, res)) return;
+
         Set<Role> roles = getPermittedRoles(command);
 
         if (roles != null) {
@@ -41,11 +40,7 @@ public class SecurityFilter implements Filter {
             if (session != null) {
                 Set<Role> rolesInSession = (Set<Role>) session.getAttribute(ROLES);
                 if (rolesInSession != null && checkUserContainsAnyPermissionRole(rolesInSession, roles)) {
-                    if (command != null && (command.equals(GET_SCHEDULE) || command.equals(LOOK_SCHEDULE))
-                            && !isCurrentUserIsMasterAndIdIsEqual(req)) {
-                        res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
-                        return;
-                    }
+                    if (checkAccessForMasterToSchedulePages(req, res, command)) return;
                     chain.doFilter(request, response);
                     return;
                 }
@@ -57,15 +52,24 @@ public class SecurityFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        if (userIsGuest) {
-            String path = HOME_REDIRECT + "?" + req.getQueryString();
-            req.getSession().setAttribute(LAST_PAGE, path);
-            res.sendRedirect(String.format(PAGE_COMMAND_PATTERN, LOGIN));
-        } else if (command.equals(LOGIN) || command.equals(SIGN_UP)) {
-            res.sendRedirect(HOME_REDIRECT);
-        } else {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+        isUserIsGuest(req, res, userIsGuest, command);
+    }
+
+    private boolean logoutIfUserIsBanned(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (isUserBanned(req)) {
+            logout(req, res);
+            return true;
         }
+        return false;
+    }
+
+    private boolean checkAccessForMasterToSchedulePages(HttpServletRequest req, HttpServletResponse res, String command) throws IOException {
+        if (command != null && (command.equals(GET_SCHEDULE) || command.equals(LOOK_SCHEDULE))
+                && !isCurrentUserIsMasterAndIdIsEqual(req)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+            return true;
+        }
+        return false;
     }
 
     private void logout(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -100,6 +104,7 @@ public class SecurityFilter implements Filter {
         return !Collections.disjoint(rolesInSession, roles);
     }
 
+    @SuppressWarnings("unchecked")
     private boolean checkIfSessionHasRolesAttr(HttpServletRequest req) {
         HttpSession session = req.getSession();
         Set<Role> userRoles = (Set<Role>) session.getAttribute(ROLES);
@@ -109,5 +114,17 @@ public class SecurityFilter implements Filter {
             return true;
         }
         return userRoles.contains(Role.GUEST);
+    }
+
+    private void isUserIsGuest(HttpServletRequest req, HttpServletResponse res, boolean userIsGuest, String command) throws IOException {
+        if (userIsGuest) {
+            String path = HOME_REDIRECT + "?" + req.getQueryString();
+            req.getSession().setAttribute(LAST_PAGE, path);
+            res.sendRedirect(String.format(PAGE_COMMAND_PATTERN, LOGIN));
+        } else if (command.equals(LOGIN) || command.equals(SIGN_UP)) {
+            res.sendRedirect(HOME_REDIRECT);
+        } else {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+        }
     }
 }

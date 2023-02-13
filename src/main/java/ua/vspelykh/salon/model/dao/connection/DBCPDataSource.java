@@ -19,7 +19,7 @@ public class DBCPDataSource {
     private static final String DB_USER = "db.user";
     private static final String DB_PASSWORD = "db.password";
 
-    private static BasicDataSource ds = new BasicDataSource();
+    private static final BasicDataSource ds = new BasicDataSource();
 
     static {
         Properties properties = new Properties();

@@ -5,7 +5,7 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;
 
-public interface OrderingService {
+public interface AppointmentItemService {
 
     void save(AppointmentItem appointmentItem) throws ServiceException;
 

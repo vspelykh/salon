@@ -26,7 +26,7 @@ public interface AppointmentService {
 
     List<Appointment> getByDateAndMasterId(LocalDate date, int masterId) throws ServiceException;
 
-    List<AppointmentDto> getDtosByDateAndMasterId(LocalDate date, int masterId) throws ServiceException;
+    List<AppointmentDto> getDTOsByDateAndMasterId(LocalDate date, int masterId) throws ServiceException;
 
     List<AppointmentDto> getAllByDate(LocalDate date) throws ServiceException;
 

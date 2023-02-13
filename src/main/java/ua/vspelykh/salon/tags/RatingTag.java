@@ -1,13 +1,19 @@
 package ua.vspelykh.salon.tags;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 public class RatingTag extends TagSupport {
 
+    private static final Logger LOG = LogManager.getLogger(RatingTag.class);
+
     private int mark;
 
+    @Override
     public int doStartTag() {
         JspWriter out = pageContext.getOut();
         try {
@@ -19,7 +25,7 @@ public class RatingTag extends TagSupport {
                 out.print("&#9734");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error to print stars for feedback");
         }
         return SKIP_BODY;
     }

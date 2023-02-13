@@ -70,8 +70,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public OrderingService getOrderingService() throws ServiceException {
-        OrderingServiceImpl orderingService = new OrderingServiceImpl();
+    public AppointmentItemService getOrderingService() throws ServiceException {
+        AppointmentItemServiceImpl orderingService = new AppointmentItemServiceImpl();
         orderingService.setOrderingDao(getOrderingDao());
         orderingService.setTransaction(getTransaction());
         return orderingService;
@@ -86,8 +86,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public ServiceService getServiceService() throws ServiceException {
-        ServiceServiceImpl serviceService = new ServiceServiceImpl();
+    public MasterServiceService getServiceService() throws ServiceException {
+        MasterServiceServiceImpl serviceService = new MasterServiceServiceImpl();
         serviceService.setMsDao(getMasterServiceDao());
         serviceService.setBaseServiceDao(getBaseServiceDao());
         serviceService.setServiceCategoryDao(getServiceCategoryDao());

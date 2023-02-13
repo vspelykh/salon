@@ -32,7 +32,6 @@ public class InvitationServiceImpl implements InvitationService {
             } else throw new ServiceException("Incorrect key or invitation doesn't exist");
 
         } catch (DaoException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
@@ -52,8 +51,6 @@ public class InvitationServiceImpl implements InvitationService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }

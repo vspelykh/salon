@@ -309,7 +309,6 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.getCountOfMasters(levels, serviceIds, categoriesIds, search);
         } catch (DaoException e) {
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -364,7 +363,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isNewHairdresser(String action, Role role) throws DaoException {
+    private boolean isNewHairdresser(String action, Role role)  {
         return (action.equals(ADD) && role == Role.HAIRDRESSER);
     }
 

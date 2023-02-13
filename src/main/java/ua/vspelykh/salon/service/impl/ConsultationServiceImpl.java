@@ -20,7 +20,6 @@ public class ConsultationServiceImpl implements ConsultationService {
         try {
             return dao.findAll();
         } catch (DaoException e) {
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -37,7 +36,6 @@ public class ConsultationServiceImpl implements ConsultationService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -54,7 +52,6 @@ public class ConsultationServiceImpl implements ConsultationService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
             throw new ServiceException(e);
         }
     }

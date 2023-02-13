@@ -105,8 +105,6 @@ public class BaseServiceServiceImpl implements BaseServiceService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
@@ -116,7 +114,6 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         try {
             return baseServiceDao.getCountOfCategories(categoriesIds, page, size);
         } catch (DaoException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }

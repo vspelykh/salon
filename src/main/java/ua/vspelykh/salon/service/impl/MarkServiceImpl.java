@@ -96,7 +96,6 @@ public class MarkServiceImpl implements MarkService {
         try {
             return feedbackDao.countFeedbacksByMasterId(masterID);
         } catch (DaoException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }

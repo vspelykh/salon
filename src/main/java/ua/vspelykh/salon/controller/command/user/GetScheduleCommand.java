@@ -47,7 +47,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
     private void scheduleBuildingProcess(int userId, String[] datesArray, Map<LocalDate, List<ScheduleItem>> mapOfSchedules, Map<Integer, List<LocalTime>> freeSlots, String locale) throws ServiceException {
         for (String date : datesArray) {
             List<AppointmentDto> appointments =
-                    getServiceFactory().getAppointmentService().getDtosByDateAndMasterId(getLocalDate(date), userId);
+                    getServiceFactory().getAppointmentService().getDTOsByDateAndMasterId(getLocalDate(date), userId);
             WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(userId, getLocalDate(date));
             ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale, serviceFactory);
             List<ScheduleItem> schedule = builder.build();

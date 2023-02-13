@@ -26,7 +26,6 @@ public class WorkingDayServiceImpl implements WorkingDayService {
         try {
             return workingDayDao.getWorkingDaysByUserId(userId);
         } catch (DaoException e) {
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -60,8 +59,6 @@ public class WorkingDayServiceImpl implements WorkingDayService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
         }
     }
 
@@ -83,7 +80,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     }
 
     @Override
-    public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws ServiceException {
+    public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) {
         try {
             return workingDayDao.getDayByUserIdAndDate(userId, date);
         } catch (DaoException e) {
@@ -92,7 +89,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     }
 
     @Override
-    public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) {
+    public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) throws ServiceException {
         try {
             transaction.start();
             workingDayDao.deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
@@ -103,7 +100,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            e.printStackTrace();
+            throw new ServiceException(e);
         }
     }
 

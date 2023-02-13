@@ -15,6 +15,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 public class ProfileCommand extends Command {
 
     @Override
+    @SuppressWarnings("unchecked")
     public void process() throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(CURRENT_USER);
         request.setAttribute(ControllerConstants.USER, user);
@@ -27,11 +28,9 @@ public class ProfileCommand extends Command {
             try {
                 request.setAttribute(USER_LEVEL, getServiceFactory().getUserService().getUserLevelByUserId(user.getId()));
             } catch (ServiceException e) {
-                //TODO
+                response.sendError(404);
             }
         }
         forward(PROFILE);
     }
-
-
 }

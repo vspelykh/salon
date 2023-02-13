@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.entity.AppointmentItem;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
@@ -13,20 +15,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 
 public class ScheduleBuilder {
 
+    private static final Logger LOG = LogManager.getLogger(ScheduleBuilder.class);
+
     private static final String FREE_SLOT = "Free slot";
 
-    private List<ScheduleItem> items = new ArrayList<>();
+    private final List<ScheduleItem> items = new ArrayList<>();
     private final List<AppointmentDto> appointments;
     private final WorkingDay day;
-    private String locale;
+    private final String locale;
     private boolean isWeekend = false;
-    private Map<Integer, List<LocalTime>> freeSlotsForAppointments = new HashMap<>();
+    private final Map<Integer, List<LocalTime>> freeSlotsForAppointments = new HashMap<>();
 
-    private ServiceFactory serviceFactory;
+    private final ServiceFactory serviceFactory;
 
     public ScheduleBuilder(List<AppointmentDto> appointments, WorkingDay day, String locale, ServiceFactory serviceFactory) {
         if (day == null) {
@@ -43,7 +48,7 @@ public class ScheduleBuilder {
         return new ScheduleItem(LocalTime.of(8, 0), LocalTime.of(20, 0), "weekend");
     }
 
-    public List<ScheduleItem> build() {
+    public List<ScheduleItem> build() throws ServiceException {
         if (!isWeekend) {
             addItemsFromAppointments();
             addFreeSlots();
@@ -51,7 +56,7 @@ public class ScheduleBuilder {
         return getItems();
     }
 
-    private void addItemsFromAppointments() {
+    private void addItemsFromAppointments() throws ServiceException {
         try {
             for (AppointmentDto appointment : appointments) {
                 LocalTime start = appointment.getDate().toLocalTime();
@@ -64,8 +69,8 @@ public class ScheduleBuilder {
                 freeSlotsForAppointments.put(appointment.getId(), getPossibleSlotsForAppointment(day, appointment));
             }
         } catch (ServiceException e) {
-            //TODO
-            e.printStackTrace();
+            LOG.error("Error getting service names during schedule building");
+            throw new ServiceException("500.error");
         }
     }
 
@@ -119,7 +124,7 @@ public class ScheduleBuilder {
     }
 
     private String getServiceName(AppointmentItem appointmentItem) throws ServiceException {
-        return "ua".equals(locale) ? serviceFactory.getBaseServiceService().findById(appointmentItem.getServiceId()).getServiceUa()
+        return UA_LOCALE.equals(locale) ? serviceFactory.getBaseServiceService().findById(appointmentItem.getServiceId()).getServiceUa()
                 : serviceFactory.getBaseServiceService().findById(appointmentItem.getServiceId()).getService();
     }
 

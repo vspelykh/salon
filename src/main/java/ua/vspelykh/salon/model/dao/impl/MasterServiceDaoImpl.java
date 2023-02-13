@@ -144,27 +144,23 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
             return query.toString();
         }
 
-        private void setParams(PreparedStatement preparedStatement) {
-            try {
-                int paramNum = 1;
-                if (userIds != null) {
-                    for (Integer userId : userIds) {
-                        preparedStatement.setInt(paramNum++, userId);
-                    }
+        private void setParams(PreparedStatement preparedStatement) throws SQLException {
+            int paramNum = 1;
+            if (userIds != null) {
+                for (Integer userId : userIds) {
+                    preparedStatement.setInt(paramNum++, userId);
                 }
-                if (serviceIds != null) {
-                    for (Integer serviceId : serviceIds) {
-                        preparedStatement.setInt(paramNum++, serviceId);
-                    }
+            }
+            if (serviceIds != null) {
+                for (Integer serviceId : serviceIds) {
+                    preparedStatement.setInt(paramNum++, serviceId);
                 }
-                if (continuanceFrom != null) {
-                    preparedStatement.setInt(paramNum++, continuanceFrom);
-                }
-                if (continuanceTo != null) {
-                    preparedStatement.setInt(paramNum, continuanceTo);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            }
+            if (continuanceFrom != null) {
+                preparedStatement.setInt(paramNum++, continuanceFrom);
+            }
+            if (continuanceTo != null) {
+                preparedStatement.setInt(paramNum, continuanceTo);
             }
         }
 

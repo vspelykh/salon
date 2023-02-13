@@ -10,7 +10,7 @@ import ua.vspelykh.salon.model.dto.MasterServiceDto;
 import ua.vspelykh.salon.model.entity.BaseService;
 import ua.vspelykh.salon.model.entity.MasterService;
 import ua.vspelykh.salon.model.entity.ServiceCategory;
-import ua.vspelykh.salon.service.ServiceService;
+import ua.vspelykh.salon.service.MasterServiceService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -19,9 +19,9 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceServiceImpl implements ServiceService {
+public class MasterServiceServiceImpl implements MasterServiceService {
 
-    private static final Logger LOG = LogManager.getLogger(ServiceServiceImpl.class);
+    private static final Logger LOG = LogManager.getLogger(MasterServiceServiceImpl.class);
 
     private ServiceCategoryDao serviceCategoryDao;
     private MasterServiceDao msDao;
@@ -127,8 +127,6 @@ public class ServiceServiceImpl implements ServiceService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }

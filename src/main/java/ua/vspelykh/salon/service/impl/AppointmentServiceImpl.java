@@ -131,12 +131,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDto> getDtosByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
+    public List<AppointmentDto> getDTOsByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
         try {
             transaction.start();
-            List<AppointmentDto> appointmentDtos = toDTOs(getByDateAndMasterId(date, masterId));
+            List<AppointmentDto> appointmentDTOs = toDTOs(getByDateAndMasterId(date, masterId));
             transaction.commit();
-            return appointmentDtos;
+            return appointmentDTOs;
         } catch (DaoException | TransactionException e) {
             try {
                 transaction.rollback();
@@ -163,17 +163,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws ServiceException {
         try {
             transaction.start();
-            List<AppointmentDto> appointmentDtos = toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo,
+            List<AppointmentDto> appointmentDTOs = toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo,
                     status, paymentStatus, page, size));
             transaction.commit();
-            return appointmentDtos;
+            return appointmentDTOs;
         } catch (DaoException | TransactionException e) {
             try {
                 transaction.rollback();
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
+            LOG.error("Error to find appointments by filter params");
             throw new ServiceException(e);
         }
     }
@@ -183,8 +183,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         try {
             return appointmentDao.getCountOfAppointments(masterId, dateFrom, dateTo, status, paymentStatus);
         } catch (DaoException e) {
-            e.printStackTrace();
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -200,8 +198,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentDto toDTO(Appointment appointment) throws DaoException {
         return AppointmentDto.builder()
                 .id(appointment.getId())
-                .master(userToDto(userDao.findById(appointment.getMasterId())))
-                .client(userToDto(userDao.findById(appointment.getClientId())))
+                .master(userToDTO(userDao.findById(appointment.getMasterId())))
+                .client(userToDTO(userDao.findById(appointment.getClientId())))
                 .continuance(appointment.getContinuance())
                 .date(appointment.getDate())
                 .price(appointment.getPrice())
@@ -212,7 +210,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
     }
 
-    private UserDto userToDto(User user) {
+    private UserDto userToDTO(User user) {
         UserDto userDto = new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getNumber());
         userDto.setRoles(user.getRoles());
         return userDto;

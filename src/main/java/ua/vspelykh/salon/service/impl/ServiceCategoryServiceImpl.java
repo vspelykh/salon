@@ -24,7 +24,6 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
         try {
             return serviceCategoryDao.findById(id);
         } catch (DaoException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
@@ -45,8 +44,6 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-//            e.printStackTrace();
-            //TODO
             throw new ServiceException(e);
         }
     }

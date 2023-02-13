@@ -1,5 +1,9 @@
 package ua.vspelykh.salon.service;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -9,6 +13,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class EmailService {
+
+    private static final Logger LOG = LogManager.getLogger(EmailService.class);
 
     private final String username;
     private final String password;
@@ -27,8 +33,11 @@ public class EmailService {
                 properties.getProperty(EMAIL), (properties.getProperty(PASS)));
         try {
             emailService.sendMail(properties.getProperty(EMAIL), clientEmail, theme, message);
+            if (LOG.isEnabled(Level.INFO)) {
+                LOG.info(String.format("Email sent to %s. Theme: %s", clientEmail, theme));
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(String.format("Fail to sent email for %s. Theme: %s. Issue: %s", clientEmail, theme, e.getMessage()));
         }
     }
 
@@ -44,7 +53,7 @@ public class EmailService {
         this.password = password;
     }
 
-    private void sendMail(String from, String to, String subject, String msg) throws Exception {
+    private void sendMail(String from, String to, String subject, String msg) throws MessagingException {
 
         Session session = Session.getInstance(prop, new Authenticator() {
             @Override
@@ -73,8 +82,7 @@ public class EmailService {
         try {
             properties.load(EmailService.class.getClassLoader().getResourceAsStream(PROPERTY_PATH));
         } catch (IOException e) {
-            e.printStackTrace();
-//            LOG.error("Error to read property file for DB connection");
+            LOG.error(String.format("Error to read property file for DB connection. Issue %s", e.getMessage()));
         }
     }
 

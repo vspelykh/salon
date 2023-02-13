@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AppointmentItemDao;
 import ua.vspelykh.salon.model.entity.AppointmentItem;
-import ua.vspelykh.salon.service.OrderingService;
+import ua.vspelykh.salon.service.AppointmentItemService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -12,9 +12,9 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.List;
 
-public class OrderingServiceImpl implements OrderingService {
+public class AppointmentItemServiceImpl implements AppointmentItemService {
 
-    private static final Logger LOG = LogManager.getLogger(OrderingServiceImpl.class);
+    private static final Logger LOG = LogManager.getLogger(AppointmentItemServiceImpl.class);
 
     private AppointmentItemDao appointmentItemDao;
     private Transaction transaction;
