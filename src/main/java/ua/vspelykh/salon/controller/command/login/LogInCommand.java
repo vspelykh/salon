@@ -9,7 +9,6 @@ import java.io.IOException;
 public class LogInCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
-
         forward(CommandNames.LOGIN);
     }
 }

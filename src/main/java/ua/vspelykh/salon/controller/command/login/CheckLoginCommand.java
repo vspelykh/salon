@@ -12,13 +12,10 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 
 public class CheckLoginCommand extends Command {
 
-    private String login;
-    private String password;
-
     @Override
     public void process() throws ServletException, IOException {
-        login = request.getParameter(LOGIN);
-        password = request.getParameter(PASSWORD);
+        String login = request.getParameter(LOGIN);
+        String password = request.getParameter(PASSWORD);
 
         if (login != null && password != null) {
             try {

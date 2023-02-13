@@ -20,6 +20,8 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class EditAppointmentCommand extends Command {
 
+    private static final String REDIRECT = "redirect";
+
     @Override
     public void process() throws ServletException, IOException {
         try {
@@ -29,7 +31,7 @@ public class EditAppointmentCommand extends Command {
             setNewTimeSlot(appointment);
             getServiceFactory().getAppointmentService().save(appointment);
             String masterId = request.getParameter(ID);
-            if (request.getParameter("redirect") != null && request.getParameter("redirect").equals("redirect")) {
+            if (request.getParameter(REDIRECT) != null && request.getParameter(REDIRECT).equals(REDIRECT)) {
                 redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);
             } else {
                 redirect(String.format("%s%s%s&%s=%s&%s=%s", HOME_REDIRECT, COMMAND_PARAM, GET_SCHEDULE, ID, masterId,

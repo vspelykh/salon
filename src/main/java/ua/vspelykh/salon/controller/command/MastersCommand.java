@@ -20,6 +20,7 @@ import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 public class MastersCommand extends Command {
 
     @Override
+    @SuppressWarnings("unchecked")
     public void process() throws ServletException, IOException {
         try {
             setFilterAttributes();

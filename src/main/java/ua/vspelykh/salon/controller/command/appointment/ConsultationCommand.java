@@ -11,7 +11,6 @@ public class ConsultationCommand extends Command {
 
     @Override
     public void process() throws ServletException, IOException {
-
         forward(CONSULTATION);
     }
 }

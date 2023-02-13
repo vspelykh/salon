@@ -26,7 +26,7 @@ public class CreateAppointmentCommand extends Command {
     public void process() throws ServletException, IOException {
         try {
             List<MasterService> masterServices = new ArrayList<>();
-            parsingServicesProcess(masterServices);
+            parseServices(masterServices);
             validateAndSaveAppointment(masterServices);
             request.getSession().setAttribute(MESSAGE, APPOINTMENT + DOT + SUCCESS);
             redirect(SUCCESS_REDIRECT);
@@ -35,7 +35,7 @@ public class CreateAppointmentCommand extends Command {
         }
     }
 
-    private void parsingServicesProcess(List<MasterService> masterServices) throws ServiceException {
+    private void parseServices(List<MasterService> masterServices) throws ServiceException {
         if (checkNullParam(SERVICES)) {
             for (String service : request.getParameterValues(SERVICES)) {
                 int serviceId = Integer.parseInt(service.split("[|]")[3]);

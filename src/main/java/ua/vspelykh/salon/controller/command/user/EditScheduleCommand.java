@@ -13,12 +13,10 @@ import static ua.vspelykh.salon.util.SalonUtils.getTime;
 
 public class EditScheduleCommand extends AbstractScheduleCommand {
 
-    private int userId;
-
     @Override
     public void process() throws ServletException, IOException {
+        int userId = Integer.parseInt(request.getParameter(ID));
         try {
-            userId = Integer.parseInt(request.getParameter(ID));
             String[] datesArray = request.getParameter(DAYS).split(", ");
             if (SAVE.equals(request.getParameter(ACTION))) {
                 Time timeStart = getTime(request.getParameter(TIME_START));

@@ -25,7 +25,7 @@ public class CalendarCommand extends Command {
     protected static final String TIME = "time";
     private static final String USER = "user";
     private static final String FEEDBACKS = "feedbacks";
-    private static final String datePattern = "dd-MM-yyyy";
+    private static final String DATE_PATTERN = "dd-MM-yyyy";
     private static final String SLOTS = "slots";
     private static final String PLACEHOLDER = "placeholder";
     public static final int INTERVAL = 30;
@@ -59,9 +59,9 @@ public class CalendarCommand extends Command {
         if (request.getParameter(DAY) != null) {
             WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(
                     Integer.parseInt(request.getParameter(ID)),
-                    LocalDate.parse(request.getParameter(DAY), DateTimeFormatter.ofPattern(datePattern)));
+                    LocalDate.parse(request.getParameter(DAY), DateTimeFormatter.ofPattern(DATE_PATTERN)));
             request.setAttribute(DAY, day);
-            request.setAttribute(PLACEHOLDER, day.getDate().format(DateTimeFormatter.ofPattern(datePattern)));
+            request.setAttribute(PLACEHOLDER, day.getDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
             addTimeSlotsToAttributes(day);
 
         } else {

@@ -35,7 +35,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
             Map<Integer, List<LocalTime>> freeSlots = new LinkedHashMap<>();
             String locale = (String) request.getSession().getAttribute(LANG);
 
-            scheduleBuildingProcess(userId, datesArray, mapOfSchedules, freeSlots, locale);
+            buildSchedule(userId, datesArray, mapOfSchedules, freeSlots, locale);
             setAttrs(userId, mapOfSchedules, freeSlots);
 
             forward(GET_SCHEDULE);
@@ -44,7 +44,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
         }
     }
 
-    private void scheduleBuildingProcess(int userId, String[] datesArray, Map<LocalDate, List<ScheduleItem>> mapOfSchedules, Map<Integer, List<LocalTime>> freeSlots, String locale) throws ServiceException {
+    private void buildSchedule(int userId, String[] datesArray, Map<LocalDate, List<ScheduleItem>> mapOfSchedules, Map<Integer, List<LocalTime>> freeSlots, String locale) throws ServiceException {
         for (String date : datesArray) {
             List<AppointmentDto> appointments =
                     getServiceFactory().getAppointmentService().getDTOsByDateAndMasterId(getLocalDate(date), userId);
