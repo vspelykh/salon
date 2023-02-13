@@ -44,27 +44,28 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format("%s%s", FAIL_CREATE, tableName));
+            throw new DaoException(e);
         }
     }
 
     @Override
     public void update(UserLevel entity) throws DaoException {
-        String query = "UPDATE user_level SET level=?, about=?, about_ua=? WHERE id = ?";
+        String query = "UPDATE user_level SET level=?, about=?, about_ua=?, active=? WHERE id = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             int k = 0;
             statement.setString(++k, entity.getLevel().toString());
             statement.setString(++k, entity.getAbout());
             statement.setString(++k, entity.getAboutUa());
+            statement.setBoolean(++k, entity.isActive());
             statement.setInt(++k, entity.getMasterId());
             int key = statement.executeUpdate();
             if (key != 1) {
                 throw new DaoException(FAIL_UPDATE + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_UPDATE, e);
-            throw new DaoException(FAIL_UPDATE + tableName, e);
+            LOG.error(String.format("%s%s", FAIL_UPDATE, tableName), e);
+            throw new DaoException(e);
         }
     }
 
@@ -94,10 +95,25 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
         statement.setString(++k, userLevel.getAboutUa());
     }
 
-
     @Override
     public UserLevel getUserLevelByUserId(Integer userId) throws DaoException {
         return findByParam(userId, Column.ID);
     }
 
+    @Override
+    public boolean isExist(int userId) throws DaoException {
+        String query =" SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
+        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            } else {
+                throw new DaoException("Error to get information is userLevel exists ind DB");
+            }
+        } catch (SQLException e) {
+            LOG.error("Error to get information is userLevel exists ind DB");
+            throw new DaoException(e);
+        }
+    }
 }

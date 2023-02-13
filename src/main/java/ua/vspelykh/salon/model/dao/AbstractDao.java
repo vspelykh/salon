@@ -20,7 +20,9 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String FAIL_CREATE = "Fail to create item in";
     protected static final String FAIL_FIND = "Fail to find entity ";
     protected static final String FAIL_FIND_LIST = "Fail to find entities ";
+    protected static final String FAIL_DELETE = "Fail to delete";
     protected static final String NO_ID = "No id was generated in ";
+    protected static final String ACTIVE_PARAM = "ul.active='true'";
 
     protected static final String SELECT = "SELECT * FROM ";
     protected static final String INSERT = "INSERT INTO ";
@@ -47,7 +49,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String SEARCH_PATTERN = "'%%%s%%'";
 
     protected static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
-            "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN marks m ON u.id=" +
+            "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN feedbacks m ON u.id=" +
             "(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id)";
 
     protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.id ";
@@ -98,7 +100,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
             }
         } catch (SQLException e) {
             LOG.error("Fail to delete item.", e);
-            throw new DaoException("Fail to delete item, e");
+            throw new DaoException(e);
         }
     }
 
@@ -112,11 +114,11 @@ public abstract class AbstractDao<T> implements Dao<T> {
                 entity = rowMapper.map(resultSet);
             } else {
                 LOG.error("No entity from {} found by {} with value {}.", tableName, param, value);
-                throw new DaoException("No entity from " + tableName + " found by " + param + " with value " + value);
+                throw new DaoException(String.format("No entity from %s found by %s with value %s", tableName, param, value));
             }
         } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException("Fail to find entity in " + tableName + " by " + param + " with value " + value, e);
+            LOG.error(String.format("%sin%s by %s", FAIL_FIND, tableName, param));
+            throw new DaoException(e);
         }
         return entity;
     }
@@ -132,8 +134,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
             }
             return entities;
         } catch (SQLException e) {
-            LOG.error(e);
-            throw new DaoException(FAIL_FIND_LIST + tableName + " by " + param + " with value " + value, e);
+            LOG.error(String.format("%s%s by %s with value %s", FAIL_FIND_LIST, tableName, param, value), e);
+            throw new DaoException(e);
         }
     }
 

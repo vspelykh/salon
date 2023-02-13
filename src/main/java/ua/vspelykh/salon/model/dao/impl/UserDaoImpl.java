@@ -133,8 +133,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
-    public List<User> findMastersByLevelsAndServices(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
-                                                     String search, int page, int size, MasterSort sort) throws DaoException {
+    public List<User> findFiltered(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
+                                   String search, int page, int size, MasterSort sort) throws DaoException {
         MasterFilteredQueryBuilder queryBuilder = new MasterFilteredQueryBuilder(levels, serviceIds, categoriesIds,
                 page, size, sort, search);
         String query;
@@ -271,13 +271,13 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private class MasterFilteredQueryBuilder {
 
-        private List<MastersLevel> levels;
-        private List<Integer> serviceIds;
+        private final List<MastersLevel> levels;
+        private final List<Integer> serviceIds;
         private List<Integer> categoriesIds;
         private int page;
         private int size;
         private MasterSort sort;
-        private String search;
+        private final String search;
 
         public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                           int page, int size, MasterSort sort, String search) {
@@ -314,6 +314,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 appendLevels(query);
                 appendServices(query);
                 appendSearch(query, WHERE);
+                if (search != null && !search.isEmpty()) {
+                    query.append(AND);
+                } else {
+                    query.append(WHERE);
+                }
+                query.append(ACTIVE_PARAM);
             }
             return addPagingParams(query);
         }
@@ -328,7 +334,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                 }
                 appendCategories(query);
                 query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
-            } else if (!categoriesIds.isEmpty()){
+            } else if (!categoriesIds.isEmpty()) {
                 query.append(INNER_JOIN).append("(SELECT master_id from master_services s").append(WHERE);
                 appendCategories(query);
                 query.append(" GROUP BY s.master_id) AS q ON q.master_id = u.id");
@@ -353,11 +359,18 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         private String buildCountQuery() {
             StringBuilder query = new StringBuilder(COUNT_MASTERS_QUERY);
             if (isAllListsAndSearchAreEmpty()) {
+                query.append(WHERE).append(ACTIVE_PARAM);
                 return query.toString();
             }
             appendLevels(query);
             appendServices(query);
             appendSearch(query, WHERE);
+            if (search != null && !search.isEmpty()) {
+                query.append(AND);
+            } else {
+                query.append(WHERE);
+            }
+            query.append(ACTIVE_PARAM);
             return query.toString();
         }
 
@@ -371,6 +384,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private String shortQuery() {
             StringBuilder q = new StringBuilder(SELECT + tableName + " u" + INNER_JOIN + "user_level ul ON u.id = ul.id");
+            q.append(WHERE).append("ul.active='true'");
             return addPagingParams(q);
         }
 
@@ -484,6 +498,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (!levels.isEmpty()) {
                 q.append(WHERE).append("ul.level IN(");
                 appendQuestionMarks(q, levels);
+                q.append(AND).append(ACTIVE_PARAM);
+            } else {
+                q.append(WHERE).append(ACTIVE_PARAM);
             }
         }
 

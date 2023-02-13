@@ -12,4 +12,5 @@ public interface UserLevelDao extends Dao<UserLevel> {
 
     UserLevel getUserLevelByUserId(Integer userId) throws DaoException;
 
+    boolean isExist(int userId) throws DaoException;
 }

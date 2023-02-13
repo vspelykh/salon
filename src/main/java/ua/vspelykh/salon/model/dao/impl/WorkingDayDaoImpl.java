@@ -18,6 +18,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.vspelykh.salon.model.dao.mapper.Column.DATE;
+import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
 import static ua.vspelykh.salon.util.SalonUtils.getDate;
 
 public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements WorkingDayDao {
@@ -42,8 +44,8 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
                 throw new DaoException(NO_ID + tableName);
             }
         } catch (SQLException e) {
-            LOG.error(FAIL_CREATE + tableName, e);
-            throw new DaoException(FAIL_CREATE + tableName, e);
+            LOG.error(String.format("%s %s", FAIL_CREATE, tableName), e);
+            throw new DaoException(e);
         }
     }
 
@@ -69,14 +71,14 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             queryBuilder.setParamsForSave(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error("Error saving working days for user with id {}", userId);
             throw new DaoException(e);
         }
     }
 
     @Override
     public List<WorkingDay> getWorkingDaysByUserId(Integer userId) throws DaoException {
-        String query = SELECT + tableName + WHERE + Column.USER_ID + EQUAL;
+        String query = SELECT + tableName + WHERE + USER_ID + EQUAL;
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -87,7 +89,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             }
             return workingDays;
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%s%s %d", FAIL_FIND_LIST, USER_ID, userId));
             throw new DaoException(e);
         }
     }
@@ -95,7 +97,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     @Override
     public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws DaoException {
         WorkingDay workingDay;
-        String query = SELECT + tableName + " WHERE user_id=? AND date=?";
+        String query = SELECT + tableName + WHERE + USER_ID + EQUAL + AND + DATE + EQUAL;
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             setIdAndDataWorkingDayStatement(preparedStatement, userId, date);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -103,12 +105,12 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
                 workingDay = rowMapper.map(resultSet);
                 return workingDay;
             } else {
-//                LOG.error("No entity from {} found by {} with password.", tableName, email);
+                LOG.error("No entity from {} found by {}.", tableName, userId);
                 throw new DaoException("No entity");
             }
         } catch (SQLException e) {
-//            LOG.error(String.format("%s %s by email and password", FAIL_FIND, tableName));
-            throw new DaoException(FAIL_FIND + tableName);
+            LOG.error(String.format("%s %s by userId and date", FAIL_FIND, tableName));
+            throw new DaoException(e);
         }
     }
 
@@ -120,7 +122,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             queryBuilder.setParams(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.error(e);
+            LOG.error(String.format("%s working days by userId %d", FAIL_DELETE, userId));
             throw new DaoException(e);
         }
     }
@@ -133,8 +135,8 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
 
 
     private class WorkingDayQueryBuilder {
-        private int userId;
-        private String[] datesArray;
+        private final int userId;
+        private final String[] datesArray;
         private Time timeStart;
         private Time timeEnd;
 
@@ -155,7 +157,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             StringBuilder query = new StringBuilder(DELETE).append(tableName).append(WHERE).append(Column.DATE);
             query.append(" IN(");
             appendQuestionMarks(query, datesArray);
-            query.append(AND).append(Column.USER_ID).append(EQUAL);
+            query.append(AND).append(USER_ID).append(EQUAL);
             return query.toString();
         }
 
@@ -199,6 +201,5 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             preparedStatement.setTime(++paramNum, timeStart);
             preparedStatement.setTime(++paramNum, timeEnd);
         }
-
     }
 }

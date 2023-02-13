@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService {
         try {
             transaction.start();
             List<UserMasterDTO> dtos = new ArrayList<>();
-            List<User> masters = userDao.findMastersByLevelsAndServices(levels, serviceIds, categoriesIds, search, page, size, sort);
+            List<User> masters = userDao.findFiltered(levels, serviceIds, categoriesIds, search, page, size, sort);
 
             for (User currentMaster : masters) {
                 List<Feedback> marks = feedbackDao.getFeedbacksByMasterId(currentMaster.getId(), page);
@@ -336,9 +336,7 @@ public class UserServiceImpl implements UserService {
         try {
             transaction.start();
             userDao.updateRole(userId, action, role);
-            if (isNewHairdresser(action, role)) {
-                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, "New master", "Новий майстер", true));
-            }
+            editUserLevelIfRoleIsHairdresser(action, role, userId);
             transaction.commit();
         } catch (DaoException | TransactionException e) {
             try {
@@ -350,8 +348,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isNewHairdresser(String action, Role role) {
-        return action.equals(ADD) && role == Role.HAIRDRESSER;
+    private void editUserLevelIfRoleIsHairdresser(String action, Role role, int userId) throws DaoException {
+        if (isNewHairdresser(action, role)) {
+            if (!userLevelDao.isExist(userId)) {
+                userLevelDao.create(new UserLevel(userId, MastersLevel.YOUNG, "New master", "Новий майстер", true));
+            } else {
+                UserLevel userLevel = userLevelDao.findById(userId);
+                userLevel.setActive(true);
+                userLevelDao.update(userLevel);
+            }
+        } else if (action.equals(REMOVE) && role == Role.HAIRDRESSER) {
+            UserLevel level = userLevelDao.getUserLevelByUserId(userId);
+            level.setActive(false);
+            userLevelDao.update(level);
+        }
+    }
+
+    private boolean isNewHairdresser(String action, Role role) throws DaoException {
+        return (action.equals(ADD) && role == Role.HAIRDRESSER);
     }
 
     public void setUserDao(UserDao userDao) {

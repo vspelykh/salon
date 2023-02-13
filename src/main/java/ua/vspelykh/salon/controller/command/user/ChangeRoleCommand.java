@@ -13,8 +13,8 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
 
 public class ChangeRoleCommand extends Command {
-    public static String REMOVE = "remove";
-    public static String ADD = "add";
+    public static final String REMOVE = "remove";
+    public static final String ADD = "add";
 
     @Override
     public void process() throws ServletException, IOException {
