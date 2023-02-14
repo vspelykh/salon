@@ -20,4 +20,4 @@ Final project "Beauty Salon"
 - Do not use ORM and MVC frameworks;
 - The use of templates must be justified
 
-![img.png](img.png)
+![schema.png](schema.png)
