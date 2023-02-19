@@ -6,7 +6,10 @@ import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapper;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +20,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
     private static final Logger LOG = LogManager.getLogger();
 
     protected static final String LOG_PATTERN = "%s%s. Issue: %s";
-    protected static final String FAIL_UPDATE = "Fail to update item in";
-    protected static final String FAIL_CREATE = "Fail to create item in";
+    protected static final String FAIL_UPDATE = "Fail to update item in ";
+    protected static final String FAIL_CREATE = "Fail to create item in ";
     protected static final String FAIL_FIND = "Fail to find entity ";
     protected static final String FAIL_COUNT = "Fail to count items in ";
     protected static final String FAIL_FIND_LIST = "Fail to find entities ";
@@ -77,8 +80,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
     @Override
     public List<T> findAll() throws DaoException {
         String query = SELECT + tableName;
-        try (Statement statement = getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
             List<T> entities = new ArrayList<>();
             while (resultSet.next()) {
                 T entity = rowMapper.map(resultSet);

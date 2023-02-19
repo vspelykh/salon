@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface UserDao extends Dao<User> {
 
-    User findByEmailAndPassword(String email, String password) throws DaoException;
-
     User findByNumber(String number) throws DaoException;
 
     User findByEmail(String email) throws DaoException;

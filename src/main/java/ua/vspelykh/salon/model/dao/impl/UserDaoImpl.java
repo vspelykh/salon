@@ -44,6 +44,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
+    public List<User> findAll() throws DaoException {
+        return setUserRoles(super.findAll());
+    }
+
+    @Override
     public int create(User entity) throws DaoException {
         String query = INSERT + tableName + " (name, surname, email, number, password)" + VALUES + "(?,?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -89,27 +94,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             }
             user.setPassword(encryptor.encryptPassword(user.getPassword()));
         }
-    }
-
-    @Override
-    public User findByEmailAndPassword(String email, String password) throws DaoException {
-        User user;
-        String query = SELECT + tableName + " WHERE email=? AND password=?";
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                user = rowMapper.map(resultSet);
-            } else {
-                LOG.error("No entity from {} found by {} with password.", tableName, email);
-                throw new DaoException("No entity from " + tableName + " found by " + email + " with password.");
-            }
-        } catch (SQLException e) {
-            LOG.error(String.format("%s %s by email and password", FAIL_FIND, tableName));
-            throw new DaoException(e);
-        }
-        return setUserRoles(user);
     }
 
     @Override
@@ -162,7 +146,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
             } else {
-                LOG.error(FAIL_COUNT + tableName);
+                LOG.error(String.format("%s%s", FAIL_COUNT, tableName));
                 throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {

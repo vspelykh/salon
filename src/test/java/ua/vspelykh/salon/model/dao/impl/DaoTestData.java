@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.dao.impl;
+package ua.vspelykh.salon.model.dao.impl;
 
 import ua.vspelykh.salon.model.entity.User;
 
@@ -15,6 +15,5 @@ public class DaoTestData {
                 .password(PASSWORD_VALUE)
                 .roles(ROLES_VALUE)
                 .build();
-
     }
 }
