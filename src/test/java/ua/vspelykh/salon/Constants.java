@@ -24,4 +24,6 @@ public interface Constants {
     LocalDateTime DATE_VALUE = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
     int PRICE_VALUE = 200;
 
+    String ABOUT_VALUE = "master";
+    String ABOUT_UA_VALUE = "мастер";
 }

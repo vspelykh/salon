@@ -16,17 +16,9 @@ public interface UserService {
 
     User findByEmailAndPassword(String email, String password) throws ServiceException;
 
-    User findByNumber(String number) throws ServiceException;
-
     List<User> findAll() throws ServiceException;
 
-    List<User> findClients() throws ServiceException;
-
     List<User> findMasters(boolean isActive) throws ServiceException;
-
-    List<User> findAdministrators() throws ServiceException;
-
-    List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws ServiceException;
 
     void save(User user) throws ServiceException;
 

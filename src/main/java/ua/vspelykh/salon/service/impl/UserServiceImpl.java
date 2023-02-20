@@ -74,24 +74,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByNumber(String number) throws ServiceException {
-        try {
-            transaction.start();
-            User user = userDao.findByNumber(number);
-            transaction.commit();
-            return user;
-        } catch (DaoException | TransactionException e) {
-            try {
-                transaction.rollback();
-            } catch (TransactionException ex) {
-                /*ignore*/
-            }
-            LOG.error(String.format("User with number %s didn't find", number));
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public List<User> findAll() throws ServiceException {
         try {
             transaction.start();
@@ -109,46 +91,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findClients() throws ServiceException {
-        try {
-            transaction.start();
-            List<User> clients = userDao.findClients();
-            transaction.commit();
-            return clients;
-        } catch (DaoException | TransactionException e) {
-            try {
-                transaction.rollback();
-            } catch (TransactionException ex) {
-                /*ignore*/
-            }
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public List<User> findMasters(boolean isActive) throws ServiceException {
         try {
             transaction.start();
             List<User> masters = userDao.findMasters();
             transaction.commit();
             return masters;
-        } catch (DaoException | TransactionException e) {
-            try {
-                transaction.rollback();
-            } catch (TransactionException ex) {
-                /*ignore*/
-            }
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<User> findAdministrators() throws ServiceException {
-        try {
-            transaction.start();
-            List<User> administrators = userDao.findAdministrators();
-            transaction.commit();
-            return administrators;
         } catch (DaoException | TransactionException e) {
             try {
                 transaction.rollback();
@@ -228,16 +176,6 @@ public class UserServiceImpl implements UserService {
                 /*ignore*/
             }
             LOG.error("Error to delete user by id");
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws ServiceException {
-        try {
-            return userLevelDao.getUsersByLevel(userLevel, isActive);
-        } catch (DaoException e) {
-            LOG.error("Unable to get users by user level");
             throw new ServiceException(e);
         }
     }

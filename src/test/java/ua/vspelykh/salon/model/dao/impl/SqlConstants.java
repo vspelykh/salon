@@ -70,7 +70,10 @@ public interface SqlConstants {
                 "AND DATE(date) >= ? AND DATE(date) <= ?";
         String SELECT_COUNT_3 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND payment_status=? AND DATE(date) <= ?";
         String SELECT_COUNT_4 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND status=?DATE(date) >= ?";
-        String SELECT_BY_DATE_AND_ID =  "SELECT * FROM appointments WHERE DATE(date)=? AND master_id=? " +
+        String SELECT_BY_DATE_AND_MASTER_ID =  "SELECT * FROM appointments WHERE DATE(date)=? AND master_id=? " +
                 "AND status!=? ORDER BY date";
+        String INSERT_APPOINTMENT = "INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status, payment_status) VALUES (?,?,?,?,?,?,?,?)";
+        String UPDATE_APPOINTMENT = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?, price = ?, discount = ?, status = ?, payment_status = ? WHERE id = ?";
+        String SELECT_BY_DATE_AND_ID = "SELECT * FROM appointments WHERE date = ? AND master_id = ?";
     }
 }

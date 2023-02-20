@@ -7,7 +7,6 @@ import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.UserLevelDao;
 import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
-import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -15,8 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLevelDao {
 
@@ -24,11 +21,6 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     public UserLevelDaoImpl() {
         super(RowMapperFactory.getUserLevelRowMapper(), Table.USER_LEVEL);
-    }
-
-    @Override
-    public UserLevel findById(int id) throws DaoException {
-        return findByParam(id, Column.USER_ID);
     }
 
     @Override
@@ -69,23 +61,6 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
         }
     }
 
-    @Override
-    public List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws DaoException {
-        String query = SELECT + "users u INNER JOIN user_level ul ON u.id = ul.id WHERE ul.level=? AND active = ?";
-        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
-            setStatement(statement, userLevel);
-            ResultSet resultSet = statement.getGeneratedKeys();
-            List<User> users = new ArrayList<>();
-            while (resultSet.next()) {
-                RowMapperFactory.getUserRowMapper().map(resultSet);
-            }
-            return users;
-        } catch (SQLException e) {
-            LOG.error(String.format("Fail to get users by level. Issue: %s", e.getMessage()));
-            throw new DaoException(e);
-        }
-    }
-
     private void setStatement(PreparedStatement statement, UserLevel userLevel) throws SQLException {
         int k = 0;
         statement.setInt(++k, userLevel.getMasterId());
@@ -102,8 +77,8 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public boolean isExist(int userId) throws DaoException {
-        String query =" SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
-        try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        String query = " SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {

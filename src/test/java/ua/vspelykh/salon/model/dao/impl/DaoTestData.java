@@ -1,9 +1,6 @@
 package ua.vspelykh.salon.model.dao.impl;
 
-import ua.vspelykh.salon.model.entity.Appointment;
-import ua.vspelykh.salon.model.entity.AppointmentStatus;
-import ua.vspelykh.salon.model.entity.PaymentStatus;
-import ua.vspelykh.salon.model.entity.User;
+import ua.vspelykh.salon.model.entity.*;
 
 import static ua.vspelykh.salon.Constants.*;
 
@@ -30,6 +27,15 @@ public class DaoTestData {
                 .discount(ID_VALUE)
                 .status(AppointmentStatus.SUCCESS)
                 .paymentStatus(PaymentStatus.PAID_BY_CARD)
+                .build();
+    }
+
+    public static UserLevel getTestUserLevel() {
+        return UserLevel.builder().masterId(ID_VALUE)
+                .level(MastersLevel.YOUNG)
+                .about(ABOUT_VALUE)
+                .aboutUa(ABOUT_UA_VALUE)
+                .isActive(true)
                 .build();
     }
 }

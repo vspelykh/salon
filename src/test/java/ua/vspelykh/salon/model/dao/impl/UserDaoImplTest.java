@@ -4,9 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockito.junit.MockitoJUnitRunner;
 import ua.vspelykh.salon.model.dao.UserDao;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.model.entity.Role;
@@ -14,7 +12,10 @@ import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,12 +30,9 @@ import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.impl.SqlConstants.User.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
-@RunWith(MockitoJUnitRunner.class)
-class UserDaoImplTest {
+class UserDaoImplTest extends AbstractDaoTest {
 
-    private Connection mockConnection;
     private UserDao mockUserDao;
-    private ResultSet mockResultSet;
 
     @BeforeEach
     void setUp() {
@@ -64,7 +62,7 @@ class UserDaoImplTest {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
 
-            mockResultSetIfAbsent(mockResultSet);
+            mockResultSetIfAbsent();
 
             assertThrows(DaoException.class, () -> mockUserDao.findById(ERROR_CODE));
 
@@ -93,7 +91,7 @@ class UserDaoImplTest {
     void findAllNotFound() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
-            mockResultSetIfAbsent(mockResultSet);
+            mockResultSetIfAbsent();
 
             assertEquals(Collections.emptyList(), mockUserDao.findAll());
 
@@ -157,7 +155,7 @@ class UserDaoImplTest {
             testUser.setId(null);
             int id = mockUserDao.create(testUser);
 
-            verify(mockConnection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            verifySqlWithGeneratedKey(INSERT_USER);
             verifyNoMoreInteractions(mockConnection);
             verify(statement).setString(1, NAME_VALUE);
             verify(statement).setString(2, SURNAME_VALUE);
@@ -174,10 +172,10 @@ class UserDaoImplTest {
     void createWithException() throws SQLException {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
-            mockResultSetIfAbsent(mockResultSet);
+            mockResultSetIfAbsent();
             assertThrows(DaoException.class, () -> mockUserDao.create(getTestUser()));
 
-            verify(mockConnection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            verifySqlWithGeneratedKey(INSERT_USER);
             verifySql(SELECT_USER_BY_ID);
             verifyNoMoreInteractions(mockConnection);
         }
@@ -226,7 +224,7 @@ class UserDaoImplTest {
     void findFilteredNotFound() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
-            mockResultSetIfAbsent(mockResultSet);
+            mockResultSetIfAbsent();
 
             assertEquals(Collections.emptyList(), mockUserDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1,
                     5, MasterSort.NAME_ASC));
@@ -278,7 +276,7 @@ class UserDaoImplTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent(mockResultSet);
             mockUserDao.findFiltered(levels, serviceIds, categoriesIds, search, 1, 5, sort);
-            verify(mockConnection).prepareStatement(sqlExpected);
+            verifySql(sqlExpected);
         }
     }
 
@@ -323,14 +321,6 @@ class UserDaoImplTest {
                 {levels, serviceIds, categoriesIds, search, SELECT_COUNT_2},
                 {emptyLevels, serviceIds, emptyCategoriesIds, search, SELECT_COUNT_3},
         });
-    }
-
-    private void verifySql(String sql) throws SQLException {
-        verify(mockConnection).prepareStatement(sql);
-    }
-
-    private void mockResultSetIfAbsent(ResultSet resultSet) throws SQLException {
-        when(resultSet.next()).thenReturn(false);
     }
 
     private void mockResultSetIfPresent(ResultSet resultSet) throws SQLException {
