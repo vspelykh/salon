@@ -35,7 +35,9 @@ public class DBCPDataSource {
 
     public static Connection getConnection() throws SQLException {
         try {
-            return ds.getConnection();
+            Connection connection = ds.getConnection();
+            LOG.info("Get connection");
+            return connection;
         } catch (SQLException e) {
             throw new SQLException("Error to connect to DB");
         }

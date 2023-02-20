@@ -2,18 +2,26 @@ package ua.vspelykh.salon;
 
 import ua.vspelykh.salon.model.entity.Role;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Set;
 
-public class Constants {
+public interface Constants {
 
-    public static final int ID_VALUE = 1;
-    public static final String NAME_VALUE = "James";
-    public static final String SURNAME_VALUE = "Hetfield";
-    public static final String EMAIL_VALUE = "papahet@gmail.com";
-    public static final String NUMBER_VALUE = "+380976543211";
-    public static final String PASSWORD_VALUE = "Password1";
-    public static final Set<Role> ROLES_VALUE = Set.of(Role.CLIENT);
+    int ID_VALUE = 1;
+    String NAME_VALUE = "James";
+    String SURNAME_VALUE = "Hetfield";
+    String EMAIL_VALUE = "papahet@gmail.com";
+    String NUMBER_VALUE = "+380976543211";
+    String PASSWORD_VALUE = "Password1";
+    Set<Role> ROLES_VALUE = Set.of(Role.CLIENT);
 
-    public static final int ERROR_CODE = -1;
+    int ERROR_CODE = -1;
+
+    int CLIENT_ID_VALUE = 2;
+    int CONTINUANCE_VALUE = 30;
+    LocalDateTime DATE_VALUE = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
+    int PRICE_VALUE = 200;
 
 }

@@ -32,57 +32,57 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 @RunWith(MockitoJUnitRunner.class)
 class UserDaoImplTest {
 
-    private Connection connection;
-    private UserDao userDao;
-    private ResultSet resultSet;
+    private Connection mockConnection;
+    private UserDao mockUserDao;
+    private ResultSet mockResultSet;
 
     @BeforeEach
     void setUp() {
-        connection = mock(Connection.class);
-        userDao = new UserDaoImpl();
-        userDao.setConnection(connection);
-        resultSet = mock(ResultSet.class);
+        mockConnection = mock(Connection.class);
+        mockUserDao = new UserDaoImpl();
+        mockUserDao.setConnection(mockConnection);
+        mockResultSet = mock(ResultSet.class);
     }
 
     @Test
     void findById() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
 
-            mockResultSetIfPresent(resultSet);
-            User user = userDao.findById(getTestUser().getId());
+            mockResultSetIfPresent(mockResultSet);
+            User user = mockUserDao.findById(getTestUser().getId());
 
             verifySql(SELECT_USER_BY_ID);
             verifySql(SELECT_USER_ROLE);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
             assertEquals(getTestUser(), user);
         }
     }
 
     @Test
     void findByIdNotFound() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
 
-            mockResultSetIfAbsent(resultSet);
+            mockResultSetIfAbsent(mockResultSet);
 
-            assertThrows(DaoException.class, () -> userDao.findById(ERROR_CODE));
+            assertThrows(DaoException.class, () -> mockUserDao.findById(ERROR_CODE));
 
             verifySql(SELECT_USER_BY_ID);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void findAll() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            List<User> users = userDao.findAll();
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            List<User> users = mockUserDao.findAll();
 
             verifySql(SELECT_ALL_USERS);
             verifySql(SELECT_USER_ROLE);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
 
             assertEquals(1, users.size());
             assertEquals(getTestUser(), users.get(0));
@@ -91,46 +91,46 @@ class UserDaoImplTest {
 
     @Test
     void findAllNotFound() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfAbsent(resultSet);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfAbsent(mockResultSet);
 
-            assertEquals(Collections.emptyList(), userDao.findAll());
+            assertEquals(Collections.emptyList(), mockUserDao.findAll());
 
             verifySql(SELECT_ALL_USERS);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void removeById() throws SQLException {
         int i = 1;
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(i);
-            assertDoesNotThrow(() -> userDao.removeById(ID_VALUE));
+            assertDoesNotThrow(() -> mockUserDao.removeById(ID_VALUE));
 
             verifySql(DELETE_USER_BY_ID);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void removeByIdNotFound() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
-            assertThrows(DaoException.class, () -> userDao.removeById(ID_VALUE));
+            assertThrows(DaoException.class, () -> mockUserDao.removeById(ID_VALUE));
 
             verifySql(DELETE_USER_BY_ID);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void findByRole() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            List<User> users = userDao.findClients();
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            List<User> users = mockUserDao.findClients();
 
             verifySql(SELECT_USERS_BY_ROLE);
 
@@ -141,9 +141,9 @@ class UserDaoImplTest {
 
     @Test
     void updateRole() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
-            assertDoesNotThrow(() -> userDao.updateRole(ID_VALUE, "add", Role.HAIRDRESSER));
+            assertDoesNotThrow(() -> mockUserDao.updateRole(ID_VALUE, "add", Role.HAIRDRESSER));
             verifySql(INSERT_USER_ROLE);
         }
     }
@@ -151,14 +151,14 @@ class UserDaoImplTest {
     @Test
     @SuppressWarnings("MagicConstant")
     void create() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(connection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
-            int id = userDao.create(getTestUser());
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
+            User testUser = getTestUser();
+            testUser.setId(null);
+            int id = mockUserDao.create(testUser);
 
-            verify(connection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
-            verifySql(SELECT_USER_BY_ID);
-            verifySql(SELECT_USER_ROLE);
-            verifyNoMoreInteractions(connection);
+            verify(mockConnection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            verifyNoMoreInteractions(mockConnection);
             verify(statement).setString(1, NAME_VALUE);
             verify(statement).setString(2, SURNAME_VALUE);
             verify(statement).setString(3, EMAIL_VALUE);
@@ -172,49 +172,49 @@ class UserDaoImplTest {
     @Test
     @SuppressWarnings("MagicConstant")
     void createWithException() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(connection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
-            mockResultSetIfAbsent(resultSet);
-            assertThrows(DaoException.class, () -> userDao.create(getTestUser()));
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
+            mockResultSetIfAbsent(mockResultSet);
+            assertThrows(DaoException.class, () -> mockUserDao.create(getTestUser()));
 
-            verify(connection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            verify(mockConnection).prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
             verifySql(SELECT_USER_BY_ID);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void update() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
-            assertDoesNotThrow(() -> userDao.update(getTestUser()));
+            assertDoesNotThrow(() -> mockUserDao.update(getTestUser()));
 
             verifySql(UPDATE_USER);
             verifySql(SELECT_USER_BY_ID);
             verifySql(SELECT_USER_ROLE);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void updateWithException() throws SQLException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
-            assertThrows(DaoException.class, () -> userDao.update(getTestUser()));
+            assertThrows(DaoException.class, () -> mockUserDao.update(getTestUser()));
 
             verifySql(UPDATE_USER);
             verifySql(SELECT_USER_BY_ID);
             verifySql(SELECT_USER_ROLE);
-            verifyNoMoreInteractions(connection);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
     void findFiltered() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            List<User> users = userDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1, 5,
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            List<User> users = mockUserDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1, 5,
                     MasterSort.NAME_ASC);
 
             assertEquals(1, users.size());
@@ -224,21 +224,21 @@ class UserDaoImplTest {
 
     @Test
     void findFilteredNotFound() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfAbsent(resultSet);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfAbsent(mockResultSet);
 
-            assertEquals(Collections.emptyList(), userDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1,
+            assertEquals(Collections.emptyList(), mockUserDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1,
                     5, MasterSort.NAME_ASC));
         }
     }
 
     @Test
     void getCountOfMasters() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            int count = userDao.getCountOfMasters(emptyList(), emptyList(), emptyList(), "");
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            int count = mockUserDao.getCountOfMasters(emptyList(), emptyList(), emptyList(), "");
 
             assertEquals(1, count);
         }
@@ -246,10 +246,10 @@ class UserDaoImplTest {
 
     @Test
     void findBySearch() throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            List<User> users = userDao.findBySearch(EMAIL_VALUE);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            List<User> users = mockUserDao.findBySearch(EMAIL_VALUE);
 
             assertEquals(1, users.size());
             assertEquals(getTestUser(), users.get(0));
@@ -262,10 +262,10 @@ class UserDaoImplTest {
     @MethodSource("dataForSqlCountTest")
     void getCountOfMastersCheckSql(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                    String search, String sqlExpected) throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            userDao.getCountOfMasters(levels, serviceIds, categoriesIds, search);
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            mockUserDao.getCountOfMasters(levels, serviceIds, categoriesIds, search);
             verifySql(sqlExpected);
         }
     }
@@ -273,12 +273,12 @@ class UserDaoImplTest {
     @ParameterizedTest
     @MethodSource("dataForSqlTest")
     void findFilteredCheckSql(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
-                              String search, int page, int size, MasterSort sort, String sqlExpected) throws SQLException, DaoException {
-        try (PreparedStatement statement = mockPrepareStatement(connection)) {
-            when(statement.executeQuery()).thenReturn(resultSet);
-            mockResultSetIfPresent(resultSet);
-            userDao.findFiltered(levels, serviceIds, categoriesIds, search, page, size, sort);
-            verify(connection).prepareStatement(sqlExpected);
+                              String search, MasterSort sort, String sqlExpected) throws SQLException, DaoException {
+        try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent(mockResultSet);
+            mockUserDao.findFiltered(levels, serviceIds, categoriesIds, search, 1, 5, sort);
+            verify(mockConnection).prepareStatement(sqlExpected);
         }
     }
 
@@ -295,16 +295,13 @@ class UserDaoImplTest {
         String emptySearch = "";
         String search = "Anna";
 
-        int page = 1;
-        int size = 5;
-
         return Arrays.asList(new Object[][]{
-                {emptyLevels, emptyServiceIds, emptyCategoriesIds, emptySearch, page, size, MasterSort.NAME_ASC, SELECT_FILTERED_1},
-                {emptyLevels, emptyServiceIds, emptyCategoriesIds, emptySearch, page, size, MasterSort.RATING_ASC, SELECT_FILTERED_2},
-                {levels, serviceIds, categoriesIds, search, page, size, MasterSort.NAME_DESC, SELECT_FILTERED_3},
-                {levels, serviceIds, categoriesIds, search, page, size, MasterSort.RATING_DESC, SELECT_FILTERED_4},
-                {emptyLevels, serviceIds, emptyCategoriesIds, search, page, size, MasterSort.FIRST_YOUNG, SELECT_FILTERED_5},
-                {levels, emptyServiceIds, categoriesIds, emptySearch, page, size, MasterSort.FIRST_PRO, SELECT_FILTERED_6}
+                {emptyLevels, emptyServiceIds, emptyCategoriesIds, emptySearch, MasterSort.NAME_ASC, SELECT_FILTERED_1},
+                {emptyLevels, emptyServiceIds, emptyCategoriesIds, emptySearch, MasterSort.RATING_ASC, SELECT_FILTERED_2},
+                {levels, serviceIds, categoriesIds, search, MasterSort.NAME_DESC, SELECT_FILTERED_3},
+                {levels, serviceIds, categoriesIds, search, MasterSort.RATING_DESC, SELECT_FILTERED_4},
+                {emptyLevels, serviceIds, emptyCategoriesIds, search, MasterSort.FIRST_YOUNG, SELECT_FILTERED_5},
+                {levels, emptyServiceIds, categoriesIds, emptySearch, MasterSort.FIRST_PRO, SELECT_FILTERED_6}
         });
     }
 
@@ -329,7 +326,7 @@ class UserDaoImplTest {
     }
 
     private void verifySql(String sql) throws SQLException {
-        verify(connection).prepareStatement(sql);
+        verify(mockConnection).prepareStatement(sql);
     }
 
     private void mockResultSetIfAbsent(ResultSet resultSet) throws SQLException {
@@ -351,15 +348,13 @@ class UserDaoImplTest {
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(connection.prepareStatement(isA(String.class))).thenReturn(preparedStatement);
         doNothing().when(preparedStatement).setInt(isA(int.class), isA(int.class));
-        doNothing().when(preparedStatement).setLong(isA(int.class), isA(long.class));
         doNothing().when(preparedStatement).setString(isA(int.class), isA(String.class));
-        doNothing().when(preparedStatement).setObject(isA(int.class), isA(Object.class));
         when(preparedStatement.execute()).thenReturn(true);
-        when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(false).thenReturn(true).thenReturn(false);
-        when(resultSet.getString(anyString())).thenReturn(Role.CLIENT.name());
-        when(resultSet.getInt(1)).thenReturn(ID_VALUE);
+        when(preparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        when(preparedStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false).thenReturn(true).thenReturn(false);
+        when(mockResultSet.getString(anyString())).thenReturn(Role.CLIENT.name());
+        when(mockResultSet.getInt(1)).thenReturn(ID_VALUE);
         return preparedStatement;
     }
 }

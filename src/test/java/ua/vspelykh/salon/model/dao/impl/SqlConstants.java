@@ -55,4 +55,22 @@ public interface SqlConstants {
                 "OR email ILIKE '%papahet@gmail.com%'";
         String INSERT_USER_ROLE = "INSERT INTO user_roles VALUES (?,?)";
     }
+
+    interface Appointment {
+        String GET_APPOINTMENTS_ALL = "SELECT * FROM appointments WHERE master_id=? ORDER BY date DESC LIMIT 5 OFFSET 0";
+        String GET_APPOINTMENTS_FILTERED_1 = "SELECT * FROM appointments WHERE master_id=? AND status=? " +
+                "AND payment_status=? AND DATE(date) >= ? AND DATE(date) <= ? " +
+                "ORDER BY date DESC LIMIT 5 OFFSET 0";
+        String GET_APPOINTMENTS_FILTERED_2 = "SELECT * FROM appointments WHERE master_id=? AND payment_status=? " +
+                "AND DATE(date) <= ? ORDER BY date DESC LIMIT 5 OFFSET 0";
+        String GET_APPOINTMENTS_FILTERED_3 = "SELECT * FROM appointments WHERE master_id=? AND status=?DATE(date) >= ? " +
+                "ORDER BY date DESC LIMIT 5 OFFSET 0";
+        String SELECT_COUNT_1 = "SELECT COUNT(1) FROM appointments WHERE master_id=?";
+        String SELECT_COUNT_2 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND status=? AND payment_status=? " +
+                "AND DATE(date) >= ? AND DATE(date) <= ?";
+        String SELECT_COUNT_3 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND payment_status=? AND DATE(date) <= ?";
+        String SELECT_COUNT_4 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND status=?DATE(date) >= ?";
+        String SELECT_BY_DATE_AND_ID =  "SELECT * FROM appointments WHERE DATE(date)=? AND master_id=? " +
+                "AND status!=? ORDER BY date";
+    }
 }
