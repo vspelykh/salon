@@ -26,4 +26,7 @@ public interface Constants {
 
     String ABOUT_VALUE = "master";
     String ABOUT_UA_VALUE = "мастер";
+
+    String SERVICE_VALUE = "service";
+    String SERVICE_UA_VALUE = "сервіс";
 }

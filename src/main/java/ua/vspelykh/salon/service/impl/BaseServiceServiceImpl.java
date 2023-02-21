@@ -112,7 +112,7 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException {
         try {
-            return baseServiceDao.getCountOfCategories(categoriesIds, page, size);
+            return baseServiceDao.getCountOfCategories(categoriesIds);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }

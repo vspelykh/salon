@@ -87,4 +87,13 @@ public interface SqlConstants {
     interface AppointmentItem {
         String INSERT_APPOINTMENT_ITEM = "INSERT INTO appointment_items (appointment_id, service_id) VALUES (?,?)";
     }
+
+    interface BasService {
+        String INSERT_BASE_SERVICE = "INSERT INTO base_services (category_id, service, service_ua, price) VALUES (?,?,?,?)";
+        String UPDATE_BASE_SERVICE = "UPDATE base_services SET category_id = ?, service = ?, service_ua = ?, price = ? WHERE id = ?";
+        String SELECT_BASE_SERVICES_1 = "SELECT * FROM base_services WHERE category_id IN(?) LIMIT 5 OFFSET 0";
+        String SELECT_BASE_SERVICES_2 = "SELECT * FROM base_services LIMIT 5 OFFSET 0";
+        String SELECT_COUNT_1 = "SELECT COUNT(1) FROM base_services WHERE category_id IN(?)";
+        String SELECT_COUNT_2 = "SELECT COUNT(1) FROM base_services";
+    }
 }

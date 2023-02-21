@@ -45,4 +45,13 @@ public class DaoTestData {
                 .serviceId(ID_VALUE)
                 .build();
     }
+
+    public static BaseService getTestBaseService() {
+        return BaseService.builder().id(ID_VALUE)
+                .categoryId(ID_VALUE)
+                .service(SERVICE_VALUE)
+                .serviceUa(SERVICE_UA_VALUE)
+                .price(PRICE_VALUE)
+                .build();
+    }
 }

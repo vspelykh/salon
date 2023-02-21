@@ -9,5 +9,5 @@ public interface BaseServiceDao extends Dao<BaseService> {
 
     List<BaseService> findByFilter(List<Integer> categoriesIds, int page, int size) throws DaoException;
 
-    int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws DaoException;
+    int getCountOfCategories(List<Integer> categoriesIds) throws DaoException;
 }

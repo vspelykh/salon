@@ -46,9 +46,9 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
     }
 
     @Override
-    public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws DaoException {
+    public int getCountOfCategories(List<Integer> categoriesIds) throws DaoException {
         int count;
-        BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds, page, size);
+        BaseServiceFilteredQueryBuilder queryBuilder = new BaseServiceFilteredQueryBuilder(categoriesIds);
         String query = queryBuilder.buildCountQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             queryBuilder.setParams(preparedStatement);
@@ -68,9 +68,9 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     @Override
     public int create(BaseService entity) throws DaoException {
-        String query = INSERT + tableName + " (service, service_ua, price)" + VALUES + "(?,?,?)";
+        String query = INSERT + tableName + " (category_id, service, service_ua, price)" + VALUES + "(?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            setStatement(statement, entity);
+            setBaseServiceStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -84,20 +84,11 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
         }
     }
 
-    private void setStatement(PreparedStatement statement, BaseService entity) throws SQLException {
-        int k = 0;
-        statement.setString(++k, entity.getService());
-        statement.setString(++k, entity.getServiceUa());
-        statement.setInt(++k, entity.getPrice());
-    }
-
     @Override
     public void update(BaseService entity) throws DaoException {
-        String query = "UPDATE base_services SET service = ?, price = ? WHERE id = ?";
+        String query = "UPDATE base_services SET category_id = ?, service = ?, service_ua = ?, price = ? WHERE id = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
-            statement.setString(1, entity.getService());
-            statement.setInt(2, entity.getPrice());
-            statement.setInt(3, entity.getId());
+            setBaseServiceStatement(entity, statement);
             int key = statement.executeUpdate();
             if (key != 1) {
                 throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
@@ -108,16 +99,29 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
         }
     }
 
+    private void setBaseServiceStatement(BaseService entity, PreparedStatement statement) throws SQLException {
+        int k = 0;
+        statement.setInt(++k, entity.getCategoryId());
+        statement.setString(++k, entity.getService());
+        statement.setString(++k, entity.getServiceUa());
+        statement.setInt(++k, entity.getPrice());
+        statement.setInt(++k, entity.getId());
+    }
+
     private class BaseServiceFilteredQueryBuilder {
 
         private final List<Integer> categoriesIds;
-        private final Integer page;
-        private final Integer size;
+        private Integer page;
+        private Integer size;
 
         private BaseServiceFilteredQueryBuilder(List<Integer> categoriesIds, Integer page, Integer size) {
             this.categoriesIds = categoriesIds;
             this.page = page;
             this.size = size;
+        }
+
+        public BaseServiceFilteredQueryBuilder(List<Integer> categoriesIds) {
+            this.categoriesIds = categoriesIds;
         }
 
         private String buildQuery() {
