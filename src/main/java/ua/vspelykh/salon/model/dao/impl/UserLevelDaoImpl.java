@@ -77,7 +77,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public boolean isExist(int userId) throws DaoException {
-        String query = " SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
+        String query = "SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();

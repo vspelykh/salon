@@ -28,7 +28,7 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
     public int create(AppointmentItem entity) throws DaoException {
         String query = INSERT + tableName + " (appointment_id, service_id)" + VALUES + "(?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            setOrderingStatement(entity, statement);
+            setItemStatement(entity, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -42,7 +42,7 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
         }
     }
 
-    private void setOrderingStatement(AppointmentItem entity, PreparedStatement statement) throws SQLException {
+    private void setItemStatement(AppointmentItem entity, PreparedStatement statement) throws SQLException {
         int k = 0;
         statement.setInt(++k, entity.getAppointmentId());
         statement.setInt(++k, entity.getServiceId());

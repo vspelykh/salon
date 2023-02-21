@@ -14,10 +14,10 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUserLevel;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.UserLevel.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 
@@ -34,12 +34,13 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
     }
 
     @Test
+    @SuppressWarnings("MagicConstant")
     void create() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement()) {
-            when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
+            when(mockConnection.prepareStatement(eq(INSERT_USER_LEVEL), anyInt())).thenReturn(statement);
             int id = mockUserLevelDao.create(getTestUserLevel());
 
-            verifySqlWithGeneratedKey("INSERT INTO user_level (id, level, active, about, about_ua) VALUES (?,?,?,?,?)");
+            verifyQueryWithGeneratedKey(INSERT_USER_LEVEL);
             verifyNoMoreInteractions(mockConnection);
 
             int k = 0;
@@ -57,11 +58,11 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
     @SuppressWarnings("MagicConstant")
     void createWithException() throws SQLException {
         try (PreparedStatement statement = mockPrepareStatement()) {
-            when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
+            when(mockConnection.prepareStatement(eq(INSERT_USER_LEVEL), anyInt())).thenReturn(statement);
             mockResultSetIfAbsent();
             assertThrows(DaoException.class, () -> mockUserLevelDao.create(getTestUserLevel()));
 
-            verifySqlWithGeneratedKey("INSERT INTO user_level (id, level, active, about, about_ua) VALUES (?,?,?,?,?)");
+            verifyQueryWithGeneratedKey(INSERT_USER_LEVEL);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -72,7 +73,7 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
             assertDoesNotThrow(() -> mockUserLevelDao.update(getTestUserLevel()));
 
-            verifySql("UPDATE user_level SET level=?, about=?, about_ua=?, active=? WHERE id = ?");
+            verifyQuery(UPDATE_USER_LEVEL);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -83,7 +84,7 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
             assertThrows(DaoException.class, () -> mockUserLevelDao.update(getTestUserLevel()));
 
-            verifySql("UPDATE user_level SET level=?, about=?, about_ua=?, active=? WHERE id = ?");
+            verifyQuery(UPDATE_USER_LEVEL);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -97,7 +98,7 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
 
             assertEquals(getTestUserLevel(), userLevel);
 
-            verifySql("SELECT * FROM user_level WHERE id=?");
+            verifyQuery(SELECT_USER_LEVEL_BY_ID);
         }
     }
 
@@ -109,7 +110,7 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
 
             assertThrows(DaoException.class, () -> mockUserLevelDao.getUserLevelByUserId(ID_VALUE));
 
-            verifySql("SELECT * FROM user_level WHERE id=?");
+            verifyQuery(SELECT_USER_LEVEL_BY_ID);
         }
     }
 
@@ -122,9 +123,10 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
 
             assertTrue(isExist);
 
-            verifySql(" SELECT EXISTS (SELECT id FROM user_level WHERE id=?)");
+            verifyQuery(SELECT_USER_LEVEL_EXISTS);
         }
     }
+
 
     @Test
     void isExistWhenIsNotExist() throws SQLException {
@@ -133,7 +135,7 @@ class UserLevelDaoImplTest extends AbstractDaoTest {
             mockResultSetIfAbsent();
 
             assertThrows(DaoException.class, () -> mockUserLevelDao.isExist(ID_VALUE));
-            verifySql(" SELECT EXISTS (SELECT id FROM user_level WHERE id=?)");
+            verifyQuery(SELECT_USER_LEVEL_EXISTS);
         }
     }
 

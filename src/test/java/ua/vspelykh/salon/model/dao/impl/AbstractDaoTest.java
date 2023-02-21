@@ -21,11 +21,11 @@ public abstract class AbstractDaoTest {
         when(mockResultSet.next()).thenReturn(false);
     }
 
-    protected void verifySql(String sql) throws SQLException {
+    protected void verifyQuery(String sql) throws SQLException {
         verify(mockConnection).prepareStatement(sql);
     }
 
-    protected void verifySqlWithGeneratedKey(String sql) throws SQLException {
+    protected void verifyQueryWithGeneratedKey(String sql) throws SQLException {
         verify(mockConnection).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 }

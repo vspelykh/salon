@@ -50,8 +50,8 @@ class UserDaoImplTest extends AbstractDaoTest {
             mockResultSetIfPresent(mockResultSet);
             User user = mockUserDao.findById(getTestUser().getId());
 
-            verifySql(SELECT_USER_BY_ID);
-            verifySql(SELECT_USER_ROLE);
+            verifyQuery(SELECT_USER_BY_ID);
+            verifyQuery(SELECT_USER_ROLE);
             verifyNoMoreInteractions(mockConnection);
             assertEquals(getTestUser(), user);
         }
@@ -66,7 +66,7 @@ class UserDaoImplTest extends AbstractDaoTest {
 
             assertThrows(DaoException.class, () -> mockUserDao.findById(ERROR_CODE));
 
-            verifySql(SELECT_USER_BY_ID);
+            verifyQuery(SELECT_USER_BY_ID);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -78,8 +78,8 @@ class UserDaoImplTest extends AbstractDaoTest {
             mockResultSetIfPresent(mockResultSet);
             List<User> users = mockUserDao.findAll();
 
-            verifySql(SELECT_ALL_USERS);
-            verifySql(SELECT_USER_ROLE);
+            verifyQuery(SELECT_ALL_USERS);
+            verifyQuery(SELECT_USER_ROLE);
             verifyNoMoreInteractions(mockConnection);
 
             assertEquals(1, users.size());
@@ -95,7 +95,7 @@ class UserDaoImplTest extends AbstractDaoTest {
 
             assertEquals(Collections.emptyList(), mockUserDao.findAll());
 
-            verifySql(SELECT_ALL_USERS);
+            verifyQuery(SELECT_ALL_USERS);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -107,7 +107,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(i);
             assertDoesNotThrow(() -> mockUserDao.removeById(ID_VALUE));
 
-            verifySql(DELETE_USER_BY_ID);
+            verifyQuery(DELETE_USER_BY_ID);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -118,7 +118,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
             assertThrows(DaoException.class, () -> mockUserDao.removeById(ID_VALUE));
 
-            verifySql(DELETE_USER_BY_ID);
+            verifyQuery(DELETE_USER_BY_ID);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -130,7 +130,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             mockResultSetIfPresent(mockResultSet);
             List<User> users = mockUserDao.findClients();
 
-            verifySql(SELECT_USERS_BY_ROLE);
+            verifyQuery(SELECT_USERS_BY_ROLE);
 
             assertEquals(1, users.size());
             assertEquals(getTestUser(), users.get(0));
@@ -142,7 +142,7 @@ class UserDaoImplTest extends AbstractDaoTest {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
             assertDoesNotThrow(() -> mockUserDao.updateRole(ID_VALUE, "add", Role.HAIRDRESSER));
-            verifySql(INSERT_USER_ROLE);
+            verifyQuery(INSERT_USER_ROLE);
         }
     }
 
@@ -155,7 +155,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             testUser.setId(null);
             int id = mockUserDao.create(testUser);
 
-            verifySqlWithGeneratedKey(INSERT_USER);
+            verifyQueryWithGeneratedKey(INSERT_USER);
             verifyNoMoreInteractions(mockConnection);
             verify(statement).setString(1, NAME_VALUE);
             verify(statement).setString(2, SURNAME_VALUE);
@@ -175,8 +175,8 @@ class UserDaoImplTest extends AbstractDaoTest {
             mockResultSetIfAbsent();
             assertThrows(DaoException.class, () -> mockUserDao.create(getTestUser()));
 
-            verifySqlWithGeneratedKey(INSERT_USER);
-            verifySql(SELECT_USER_BY_ID);
+            verifyQueryWithGeneratedKey(INSERT_USER);
+            verifyQuery(SELECT_USER_BY_ID);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -187,9 +187,9 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
             assertDoesNotThrow(() -> mockUserDao.update(getTestUser()));
 
-            verifySql(UPDATE_USER);
-            verifySql(SELECT_USER_BY_ID);
-            verifySql(SELECT_USER_ROLE);
+            verifyQuery(UPDATE_USER);
+            verifyQuery(SELECT_USER_BY_ID);
+            verifyQuery(SELECT_USER_ROLE);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -200,9 +200,9 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
             assertThrows(DaoException.class, () -> mockUserDao.update(getTestUser()));
 
-            verifySql(UPDATE_USER);
-            verifySql(SELECT_USER_BY_ID);
-            verifySql(SELECT_USER_ROLE);
+            verifyQuery(UPDATE_USER);
+            verifyQuery(SELECT_USER_BY_ID);
+            verifyQuery(SELECT_USER_ROLE);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -252,7 +252,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             assertEquals(1, users.size());
             assertEquals(getTestUser(), users.get(0));
 
-            verifySql(SELECT_USER_BY_SEARCH);
+            verifyQuery(SELECT_USER_BY_SEARCH);
         }
     }
 
@@ -264,7 +264,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent(mockResultSet);
             mockUserDao.getCountOfMasters(levels, serviceIds, categoriesIds, search);
-            verifySql(sqlExpected);
+            verifyQuery(sqlExpected);
         }
     }
 
@@ -276,7 +276,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent(mockResultSet);
             mockUserDao.findFiltered(levels, serviceIds, categoriesIds, search, 1, 5, sort);
-            verifySql(sqlExpected);
+            verifyQuery(sqlExpected);
         }
     }
 

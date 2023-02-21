@@ -70,10 +70,21 @@ public interface SqlConstants {
                 "AND DATE(date) >= ? AND DATE(date) <= ?";
         String SELECT_COUNT_3 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND payment_status=? AND DATE(date) <= ?";
         String SELECT_COUNT_4 = "SELECT COUNT(1) FROM appointments WHERE master_id=? AND status=?DATE(date) >= ?";
-        String SELECT_BY_DATE_AND_MASTER_ID =  "SELECT * FROM appointments WHERE DATE(date)=? AND master_id=? " +
+        String SELECT_BY_DATE_AND_MASTER_ID = "SELECT * FROM appointments WHERE DATE(date)=? AND master_id=? " +
                 "AND status!=? ORDER BY date";
         String INSERT_APPOINTMENT = "INSERT INTO appointments (master_id, client_id, continuance, date, price, discount, status, payment_status) VALUES (?,?,?,?,?,?,?,?)";
         String UPDATE_APPOINTMENT = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?, price = ?, discount = ?, status = ?, payment_status = ? WHERE id = ?";
         String SELECT_BY_DATE_AND_ID = "SELECT * FROM appointments WHERE date = ? AND master_id = ?";
+    }
+
+    interface UserLevel {
+        String INSERT_USER_LEVEL = "INSERT INTO user_level (id, level, active, about, about_ua) VALUES (?,?,?,?,?)";
+        String UPDATE_USER_LEVEL = "UPDATE user_level SET level=?, about=?, about_ua=?, active=? WHERE id = ?";
+        String SELECT_USER_LEVEL_BY_ID = "SELECT * FROM user_level WHERE id=?";
+        String SELECT_USER_LEVEL_EXISTS = "SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
+    }
+
+    interface AppointmentItem {
+        String INSERT_APPOINTMENT_ITEM = "INSERT INTO appointment_items (appointment_id, service_id) VALUES (?,?)";
     }
 }

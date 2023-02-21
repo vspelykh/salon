@@ -48,7 +48,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             testAppointment.setId(null);
             int id = mockAppointmentDao.create(testAppointment);
 
-            verifySqlWithGeneratedKey(INSERT_APPOINTMENT);
+            verifyQueryWithGeneratedKey(INSERT_APPOINTMENT);
             verifyNoMoreInteractions(mockConnection);
 
             int k = 0;
@@ -73,7 +73,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             mockResultSetIfAbsent();
             assertThrows(DaoException.class, () -> mockAppointmentDao.create(getTestAppointment()));
 
-            verifySqlWithGeneratedKey(INSERT_APPOINTMENT);
+            verifyQueryWithGeneratedKey(INSERT_APPOINTMENT);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -84,7 +84,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ID_VALUE);
             assertDoesNotThrow(() -> mockAppointmentDao.update(getTestAppointment()));
 
-            verifySql(UPDATE_APPOINTMENT);
+            verifyQuery(UPDATE_APPOINTMENT);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -95,7 +95,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             when(statement.executeUpdate()).thenReturn(ERROR_CODE);
             assertThrows(DaoException.class, () -> mockAppointmentDao.update(getTestAppointment()));
 
-            verifySql(UPDATE_APPOINTMENT);
+            verifyQuery(UPDATE_APPOINTMENT);
             verifyNoMoreInteractions(mockConnection);
         }
     }
@@ -110,7 +110,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             assertEquals(1, appointments.size());
             assertEquals(getTestAppointment(), appointments.get(0));
 
-            verifySql(SELECT_BY_DATE_AND_MASTER_ID);
+            verifyQuery(SELECT_BY_DATE_AND_MASTER_ID);
         }
     }
 
@@ -169,7 +169,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent();
             mockAppointmentDao.getFiltered(ID_VALUE, from, to, status, paymentStatus, 1, 5);
-            verifySql(sqlExpected);
+            verifyQuery(sqlExpected);
         }
     }
 
@@ -181,7 +181,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent();
             mockAppointmentDao.getCountOfAppointments(ID_VALUE, from, to, status, paymentStatus);
-            verifySql(sqlExpected);
+            verifyQuery(sqlExpected);
         }
     }
 

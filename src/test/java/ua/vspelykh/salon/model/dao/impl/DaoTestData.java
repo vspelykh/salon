@@ -38,4 +38,11 @@ public class DaoTestData {
                 .isActive(true)
                 .build();
     }
+
+    public static AppointmentItem getTestAppointmentItem() {
+        return AppointmentItem.builder().id(ID_VALUE)
+                .appointmentId(ID_VALUE)
+                .serviceId(ID_VALUE)
+                .build();
+    }
 }
