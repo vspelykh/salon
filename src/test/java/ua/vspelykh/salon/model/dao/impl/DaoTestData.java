@@ -55,12 +55,20 @@ public class DaoTestData {
                 .build();
     }
 
-    public static Feedback getTestFeedback(){
+    public static Feedback getTestFeedback() {
         return Feedback.builder().id(ID_VALUE)
                 .appointmentId(ID_VALUE)
                 .mark(MARK_VALUE)
                 .comment(COMMENT_VALUE)
                 .date(DATE_VALUE)
+                .build();
+    }
+
+    public static MasterService getTestMasterService() {
+        return MasterService.builder().id(ID_VALUE)
+                .masterId(ID_VALUE)
+                .baseServiceId(ID_VALUE)
+                .continuance(CONTINUANCE_VALUE)
                 .build();
     }
 }

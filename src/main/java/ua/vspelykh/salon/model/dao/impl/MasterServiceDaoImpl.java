@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements MasterServiceDao {
@@ -45,7 +44,6 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
 
     private void setServiceStatement(MasterService entity, PreparedStatement statement) throws SQLException {
         int k = 0;
-        statement.setInt(++k, entity.getId());
         statement.setInt(++k, entity.getMasterId());
         statement.setInt(++k, entity.getBaseServiceId());
         statement.setInt(++k, entity.getContinuance());
@@ -74,113 +72,5 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
     @Override
     public List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws DaoException {
         return findAllByParam(baseServiceId, Column.BASE_SERVICE_ID);
-    }
-
-    @Override
-    public List<MasterService> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
-                                            Integer continuanceFrom, Integer continuanceTo) throws DaoException {
-        MasterServiceFilteredQueryBuilder queryBuilder =
-                new MasterServiceFilteredQueryBuilder(userIds, serviceIds, continuanceFrom, continuanceTo);
-        String query = queryBuilder.buildQuery();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
-            queryBuilder.setParams(preparedStatement);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<MasterService> masterServices = new ArrayList<>();
-            while (resultSet.next()) {
-                MasterService entity = rowMapper.map(resultSet);
-                masterServices.add(entity);
-            }
-            return masterServices;
-        } catch (SQLException e) {
-            LOG.error(String.format(LOG_PATTERN, FAIL_FIND_LIST, tableName, e.getMessage()));
-            throw new DaoException(e);
-        }
-    }
-
-    private class MasterServiceFilteredQueryBuilder {
-
-        private final List<Integer> userIds;
-        private final List<Integer> serviceIds;
-        private final Integer continuanceFrom;
-        private final Integer continuanceTo;
-
-        private int count;
-
-        private MasterServiceFilteredQueryBuilder(List<Integer> userIds, List<Integer> serviceIds,
-                                                  Integer continuanceFrom, Integer continuanceTo) {
-            this.userIds = userIds;
-            this.serviceIds = serviceIds;
-            this.continuanceFrom = continuanceFrom;
-            this.continuanceTo = continuanceTo;
-        }
-
-        private String buildQuery() {
-            StringBuilder query = new StringBuilder(SELECT + tableName);
-            if (isAllParamsAreNull()) {
-                return query.toString();
-            } else {
-                query.append(WHERE);
-                if (userIds != null) {
-                    query.append(" master_id IN (");
-                    appendQuestionMarks(query, userIds);
-                    count++;
-                }
-                if (serviceIds != null) {
-                    appendAnd(query);
-                    query.append(" base_service_id IN (");
-                    appendQuestionMarks(query, serviceIds);
-                    count++;
-                }
-                if (continuanceFrom != null) {
-                    appendAnd(query);
-                    query.append(Column.CONTINUANCE).append(">=").append("?");
-                    count++;
-                }
-                if (continuanceTo != null) {
-                    appendAnd(query);
-                    query.append(Column.CONTINUANCE).append("<=").append("?");
-                }
-            }
-            return query.toString();
-        }
-
-        private void setParams(PreparedStatement preparedStatement) throws SQLException {
-            int paramNum = 1;
-            if (userIds != null) {
-                for (Integer userId : userIds) {
-                    preparedStatement.setInt(paramNum++, userId);
-                }
-            }
-            if (serviceIds != null) {
-                for (Integer serviceId : serviceIds) {
-                    preparedStatement.setInt(paramNum++, serviceId);
-                }
-            }
-            if (continuanceFrom != null) {
-                preparedStatement.setInt(paramNum++, continuanceFrom);
-            }
-            if (continuanceTo != null) {
-                preparedStatement.setInt(paramNum, continuanceTo);
-            }
-        }
-
-        private void appendQuestionMarks(StringBuilder query, List<Integer> userIds) {
-            for (int i = 0; i < userIds.size(); i++) {
-                query.append("?");
-                if (i != userIds.size() - 1)
-                    query.append(",");
-            }
-            query.append(")");
-        }
-
-        private void appendAnd(StringBuilder query) {
-            if (count > 0) {
-                query.append(" AND ");
-            }
-        }
-
-        private boolean isAllParamsAreNull() {
-            return userIds == null && serviceIds == null && continuanceFrom == null && continuanceTo == null;
-        }
     }
 }

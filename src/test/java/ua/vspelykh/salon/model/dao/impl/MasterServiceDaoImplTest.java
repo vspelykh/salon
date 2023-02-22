@@ -2,32 +2,31 @@ package ua.vspelykh.salon.model.dao.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ua.vspelykh.salon.model.dao.FeedbackDao;
-import ua.vspelykh.salon.model.entity.Feedback;
+import ua.vspelykh.salon.model.dao.MasterServiceDao;
+import ua.vspelykh.salon.model.entity.MasterService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestFeedback;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Feedback.*;
+import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestMasterService;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.MasterService.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
-class FeedbackDaoImplTest extends AbstractDaoTest {
+class MasterServiceDaoImplTest extends AbstractDaoTest {
 
-    private FeedbackDao mockFeedbackDao;
+    private MasterServiceDao mockMasterServiceDao;
 
     @BeforeEach
     void setUp() {
         mockConnection = mock(Connection.class);
-        mockFeedbackDao = new FeedbackDaoImpl();
-        mockFeedbackDao.setConnection(mockConnection);
+        mockMasterServiceDao = new MasterServiceDaoImpl();
+        mockMasterServiceDao.setConnection(mockConnection);
         mockResultSet = mock(ResultSet.class);
     }
 
@@ -36,18 +35,17 @@ class FeedbackDaoImplTest extends AbstractDaoTest {
     void create() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement()) {
             when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
-            Feedback testFeedback = getTestFeedback();
-            testFeedback.setId(null);
-            int id = mockFeedbackDao.create(testFeedback);
+            MasterService testMasterService = getTestMasterService();
+            testMasterService.setId(null);
+            int id = mockMasterServiceDao.create(testMasterService);
 
-            verifyQueryWithGeneratedKey(INSERT_FEEDBACK);
+            verifyQueryWithGeneratedKey(INSERT_MASTER_SERVICE);
             verifyNoMoreInteractions(mockConnection);
 
             int k = 0;
             verify(statement).setInt(++k, ID_VALUE);
-            verify(statement).setInt(++k, MARK_VALUE);
-            verify(statement).setString(++k, COMMENT_VALUE);
-            verify(statement).setTimestamp(++k, Timestamp.valueOf(DATE_VALUE));
+            verify(statement).setInt(++k, ID_VALUE);
+            verify(statement).setInt(++k, CONTINUANCE_VALUE);
             assertEquals(ID_VALUE, id);
         }
     }
@@ -58,42 +56,46 @@ class FeedbackDaoImplTest extends AbstractDaoTest {
         try (PreparedStatement statement = mockPrepareStatement()) {
             when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(statement);
             mockResultSetIfAbsent();
-            assertThrows(DaoException.class, () -> mockFeedbackDao.create(getTestFeedback()));
+            assertThrows(DaoException.class, () -> mockMasterServiceDao.create(getTestMasterService()));
 
-            verifyQueryWithGeneratedKey(INSERT_FEEDBACK);
+            verifyQueryWithGeneratedKey(INSERT_MASTER_SERVICE);
             verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
-    void updateIsUnsupported() {
-        Feedback testFeedback = getTestFeedback();
-        assertThrows(UnsupportedOperationException.class, () -> mockFeedbackDao.update(testFeedback));
-
-    }
-
-    @Test
-    void getFeedbacksByMasterId() throws SQLException, DaoException {
+    void update() throws SQLException {
         try (PreparedStatement statement = mockPrepareStatement()) {
-            when(statement.executeQuery()).thenReturn(mockResultSet);
-            mockResultSetIfPresent();
-            List<Feedback> feedbacks = mockFeedbackDao.getFeedbacksByMasterId(ID_VALUE, 1);
-            verifyQuery(SELECT_FEEDBACKS_MY_MASTER_ID);
+            when(statement.executeUpdate()).thenReturn(ID_VALUE);
+            assertDoesNotThrow(() -> mockMasterServiceDao.update(getTestMasterService()));
 
-            assertEquals(1, feedbacks.size());
-            assertEquals(getTestFeedback(), feedbacks.get(0));
+            verifyQuery(UPDATE_MASTER_SERVICE);
+            verifyNoMoreInteractions(mockConnection);
         }
     }
 
     @Test
-    void countFeedbacksByMasterId() throws SQLException, DaoException {
+    void updateWithException() throws SQLException {
+        try (PreparedStatement statement = mockPrepareStatement()) {
+            when(statement.executeUpdate()).thenReturn(ERROR_CODE);
+            assertThrows(DaoException.class, () -> mockMasterServiceDao.update(getTestMasterService()));
+
+            verifyQuery(UPDATE_MASTER_SERVICE);
+            verifyNoMoreInteractions(mockConnection);
+        }
+    }
+
+    @Test
+    void getAllByUserId() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement()) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent();
+            List<MasterService> masterServices = mockMasterServiceDao.getAllByUserId(ID_VALUE);
 
-            int count = mockFeedbackDao.countFeedbacksByMasterId(ID_VALUE);
-            assertEquals(1, count);
-            verifyQuery(COUNT_FEEDBACKS);
+            assertEquals(1, masterServices.size());
+            assertEquals(getTestMasterService(), masterServices.get(0));
+
+            verifyQuery(SELECT_SERVICES_BY_MASTER_ID);
         }
     }
 
@@ -102,7 +104,6 @@ class FeedbackDaoImplTest extends AbstractDaoTest {
         when(mockConnection.prepareStatement(isA(String.class))).thenReturn(preparedStatement);
         doNothing().when(preparedStatement).setInt(isA(int.class), isA(int.class));
         doNothing().when(preparedStatement).setString(isA(int.class), isA(String.class));
-        doNothing().when(preparedStatement).setTimestamp(isA(int.class), isA(Timestamp.class));
         when(preparedStatement.execute()).thenReturn(true);
         when(mockResultSet.next()).thenReturn(true);
         when(preparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);

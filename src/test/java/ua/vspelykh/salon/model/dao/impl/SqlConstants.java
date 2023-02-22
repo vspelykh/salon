@@ -103,4 +103,10 @@ public interface SqlConstants {
                 "IN(SELECT id FROM appointments WHERE master_id=?) " + "ORDER BY date DESC LIMIT 5 OFFSET 0";
         String COUNT_FEEDBACKS = "SELECT COUNT(1) FROM feedbacks WHERE appointment_id IN(SELECT id FROM appointments WHERE master_id=?)";
     }
+
+    interface MasterService {
+        String INSERT_MASTER_SERVICE = "INSERT INTO master_services (master_id, base_service_id, continuance) VALUES (?,?,?)";
+        String UPDATE_MASTER_SERVICE = "UPDATE master_services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
+        String SELECT_SERVICES_BY_MASTER_ID = "SELECT * FROM master_services WHERE master_id=?";
+    }
 }

@@ -16,9 +16,6 @@ public interface MasterServiceService {
 
     List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws ServiceException;
 
-    List<MasterService> findByFilter(List<Integer> userIds, List<Integer> serviceIds,
-                                     Integer continuanceFrom, Integer continuanceTo) throws ServiceException;
-
     void delete(Integer id) throws ServiceException;
 
     List<MasterServiceDto> getDTOsByMasterId(int masterId, String locale) throws ServiceException;

@@ -79,17 +79,6 @@ public class MasterServiceServiceImpl implements MasterServiceService {
     }
 
     @Override
-    public List<MasterService> findByFilter(List<Integer> userIds, List<Integer> serviceIds, Integer continuanceFrom,
-                                            Integer continuanceTo) throws ServiceException {
-        try {
-            return msDao.findByFilter(userIds, serviceIds, continuanceFrom, continuanceTo);
-        } catch (DaoException e) {
-            LOG.error("Error to get services by filter");
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public void delete(Integer id) throws ServiceException {
         try {
             transaction.start();
