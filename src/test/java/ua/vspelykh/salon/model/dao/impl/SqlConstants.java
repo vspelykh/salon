@@ -109,4 +109,14 @@ public interface SqlConstants {
         String UPDATE_MASTER_SERVICE = "UPDATE master_services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
         String SELECT_SERVICES_BY_MASTER_ID = "SELECT * FROM master_services WHERE master_id=?";
     }
+
+    interface WorkingDay {
+        String INSERT_WORKING_DAY = "INSERT INTO working_days (user_id, date, time_start, time_end) " +
+                "VALUES (?,?,?,?)";
+        String SAVE_WORKING_DAYS = "INSERT INTO working_days (user_id, date, time_start, time_end) " +
+                "VALUES (?,?,?,?), (?,?,?,?)  ON CONFLICT (user_id, date)  DO UPDATE SET time_start=?, time_end=?";
+        String SELECT_WORKING_DAYS_BY_ID = "SELECT * FROM working_days WHERE user_id=?";
+        String DELETE_WORKING_DAYS = "DELETE FROM working_days WHERE date IN(?,?) AND user_id=?";
+        String SELECT_WORKING_DAY = "SELECT * FROM working_days WHERE user_id=? AND date=?";
+    }
 }

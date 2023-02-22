@@ -2,6 +2,9 @@ package ua.vspelykh.salon.model.dao.impl;
 
 import ua.vspelykh.salon.model.entity.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static ua.vspelykh.salon.Constants.*;
 
 public class DaoTestData {
@@ -70,5 +73,19 @@ public class DaoTestData {
                 .baseServiceId(ID_VALUE)
                 .continuance(CONTINUANCE_VALUE)
                 .build();
+    }
+
+    public static WorkingDay getTestWorkingDay() {
+        return WorkingDay.builder().id(ID_VALUE)
+                .userId(ID_VALUE)
+                .date(DATE_VALUE.toLocalDate())
+                .timeStart(START_TIME_VALUE)
+                .timeEnd(END_TIME_VALUE)
+                .build();
+    }
+
+    public static String[] getTestDates() {
+        return new String[]{(LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern(DATE_PATTERN))),
+                (LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern(DATE_PATTERN)))};
     }
 }

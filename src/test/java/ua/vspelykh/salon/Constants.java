@@ -32,4 +32,8 @@ public interface Constants {
 
     int MARK_VALUE = 5;
     String COMMENT_VALUE = "comment";
+
+    LocalTime START_TIME_VALUE = LocalTime.of(8, 0);
+    LocalTime END_TIME_VALUE = LocalTime.of(20, 0);
+    String DATE_PATTERN = "dd-MM-yyyy";
 }

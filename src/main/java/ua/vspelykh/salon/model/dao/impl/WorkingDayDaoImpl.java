@@ -12,8 +12,6 @@ import ua.vspelykh.salon.util.exception.DaoException;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +30,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
 
     @Override
     public int create(WorkingDay entity) throws DaoException {
-        String query = INSERT + tableName + " (id, user_id, date, time_start, time_end)"
-                + VALUES + "(?,?,?,?,?)" + "AND date >= CURRENT_DATE-1";
+        String query = INSERT + tableName + " (user_id, date, time_start, time_end)" + VALUES + "(?,?,?,?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setWorkingDayStatement(entity, statement);
             statement.executeUpdate();
@@ -51,9 +48,8 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
 
     private void setWorkingDayStatement(WorkingDay entity, PreparedStatement statement) throws SQLException {
         int k = 0;
-        statement.setInt(++k, entity.getId());
         statement.setInt(++k, entity.getUserId());
-        statement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(entity.getDate(), LocalTime.MIN)));
+        statement.setDate(++k, Date.valueOf(entity.getDate()));
         statement.setTime(++k, Time.valueOf(entity.getTimeStart()));
         statement.setTime(++k, Time.valueOf(entity.getTimeEnd()));
     }
@@ -132,7 +128,6 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
         statement.setInt(++k, userId);
         statement.setDate(++k, Date.valueOf(date));
     }
-
 
     private class WorkingDayQueryBuilder {
         private final int userId;
