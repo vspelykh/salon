@@ -96,4 +96,11 @@ public interface SqlConstants {
         String SELECT_COUNT_1 = "SELECT COUNT(1) FROM base_services WHERE category_id IN(?)";
         String SELECT_COUNT_2 = "SELECT COUNT(1) FROM base_services";
     }
+
+    interface Feedback {
+        String INSERT_FEEDBACK = "INSERT INTO feedbacks (appointment_id, mark, comment, date) VALUES (?,?,?,?)";
+        String SELECT_FEEDBACKS_MY_MASTER_ID = "SELECT * FROM feedbacks WHERE appointment_id " +
+                "IN(SELECT id FROM appointments WHERE master_id=?) " + "ORDER BY date DESC LIMIT 5 OFFSET 0";
+        String COUNT_FEEDBACKS = "SELECT COUNT(1) FROM feedbacks WHERE appointment_id IN(SELECT id FROM appointments WHERE master_id=?)";
+    }
 }

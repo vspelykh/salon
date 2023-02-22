@@ -186,7 +186,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> dataForSqlTest() {
+    private static Collection<Object[]> dataForSqlTest() {
         LocalDate date = LocalDate.from(DATE_VALUE);
         AppointmentStatus status = AppointmentStatus.SUCCESS;
         PaymentStatus paymentStatus = PaymentStatus.PAID_BY_CARD;
@@ -200,7 +200,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> dataForSqlCountTest() {
+    private static Collection<Object[]> dataForSqlCountTest() {
         LocalDate date = LocalDate.from(DATE_VALUE);
         AppointmentStatus status = AppointmentStatus.SUCCESS;
         PaymentStatus paymentStatus = PaymentStatus.PAID_BY_CARD;

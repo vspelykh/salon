@@ -281,7 +281,7 @@ class UserDaoImplTest extends AbstractDaoTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> dataForSqlTest() {
+    private static Collection<Object[]> dataForSqlTest() {
         List<MastersLevel> emptyLevels = Collections.emptyList();
         List<Integer> emptyServiceIds = Collections.emptyList();
         List<Integer> emptyCategoriesIds = Collections.emptyList();
@@ -304,7 +304,7 @@ class UserDaoImplTest extends AbstractDaoTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> dataForSqlCountTest() {
+    private static Collection<Object[]> dataForSqlCountTest() {
         List<MastersLevel> emptyLevels = Collections.emptyList();
         List<Integer> emptyServiceIds = Collections.emptyList();
         List<Integer> emptyCategoriesIds = Collections.emptyList();

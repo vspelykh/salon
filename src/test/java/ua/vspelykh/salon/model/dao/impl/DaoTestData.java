@@ -54,4 +54,13 @@ public class DaoTestData {
                 .price(PRICE_VALUE)
                 .build();
     }
+
+    public static Feedback getTestFeedback(){
+        return Feedback.builder().id(ID_VALUE)
+                .appointmentId(ID_VALUE)
+                .mark(MARK_VALUE)
+                .comment(COMMENT_VALUE)
+                .date(DATE_VALUE)
+                .build();
+    }
 }

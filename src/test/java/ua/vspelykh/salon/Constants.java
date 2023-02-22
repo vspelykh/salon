@@ -29,4 +29,7 @@ public interface Constants {
 
     String SERVICE_VALUE = "service";
     String SERVICE_UA_VALUE = "сервіс";
+
+    int MARK_VALUE = 5;
+    String COMMENT_VALUE = "comment";
 }
