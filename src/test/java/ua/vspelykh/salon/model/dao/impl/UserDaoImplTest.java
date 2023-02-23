@@ -207,13 +207,14 @@ class UserDaoImplTest extends AbstractDaoTest {
         }
     }
 
-    @Test
-    void findFiltered() throws SQLException, DaoException {
+    @ParameterizedTest
+    @MethodSource("dataForSqlTest")
+    void findFiltered(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
+                      String search, MasterSort sort) throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement(mockConnection)) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent(mockResultSet);
-            List<User> users = mockUserDao.findFiltered(emptyList(), emptyList(), emptyList(), "", 1, 5,
-                    MasterSort.NAME_ASC);
+            List<User> users = mockUserDao.findFiltered(levels, serviceIds, categoriesIds, search, 1, 5, sort);
 
             assertEquals(1, users.size());
             assertEquals(getTestUser(), users.get(0));

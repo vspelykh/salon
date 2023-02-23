@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.BaseServiceDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.BaseService;
@@ -16,7 +17,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.model.dao.mapper.Column.CATEGORY_ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements BaseServiceDao {
 
@@ -68,7 +69,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     @Override
     public int create(BaseService entity) throws DaoException {
-        String query = INSERT + tableName + " (category_id, service, service_ua, price)" + VALUES + "(?,?,?,?)";
+        String query = new QueryBuilder().insert(tableName, CATEGORY_ID, SERVICE, SERVICE + UA, PRICE).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setBaseServiceStatement(entity, statement);
             statement.executeUpdate();
@@ -86,7 +87,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
 
     @Override
     public void update(BaseService entity) throws DaoException {
-        String query = "UPDATE base_services SET category_id = ?, service = ?, service_ua = ?, price = ? WHERE id = ?";
+        String query = new QueryBuilder().update(tableName).set(CATEGORY_ID, SERVICE, SERVICE + UA, PRICE).where(ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             setBaseServiceStatement(entity, statement);
             int key = statement.executeUpdate();
@@ -108,7 +109,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
         statement.setInt(++k, entity.getId());
     }
 
-    private class BaseServiceFilteredQueryBuilder {
+    private class BaseServiceFilteredQueryBuilder extends QueryBuilder {
 
         private final List<Integer> categoriesIds;
         private Integer page;
@@ -124,34 +125,19 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             this.categoriesIds = categoriesIds;
         }
 
-        private String buildQuery() {
-            StringBuilder query = new StringBuilder(SELECT + tableName);
-            appendCategoriesIds(query);
-            return setPagingParamsAndGetQuery(query);
+        public String buildQuery() {
+            select(tableName);
+            appendCategoriesIds();
+            return pagination(page, size).build();
         }
 
-        private String setPagingParamsAndGetQuery(StringBuilder query) {
-            int offset;
-            if (page == 1) {
-                offset = 0;
-            } else {
-                offset = (page - 1) * size;
-            }
-            query.append(LIMIT).append(size);
-            query.append(OFFSET).append(offset);
-            return query.toString();
+        public String buildCountQuery() {
+            count(tableName);
+            appendCategoriesIds();
+            return build();
         }
 
-        private void appendQuestionMarks(StringBuilder query, List<?> userIds) {
-            for (int i = 0; i < userIds.size(); i++) {
-                query.append("?");
-                if (i != userIds.size() - 1)
-                    query.append(",");
-            }
-            query.append(")");
-        }
-
-        private void setParams(PreparedStatement preparedStatement) throws SQLException {
+        public void setParams(PreparedStatement preparedStatement) throws SQLException {
             int num = 0;
             if (!categoriesIds.isEmpty()) {
                 for (Integer id : categoriesIds) {
@@ -160,16 +146,9 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
             }
         }
 
-        public String buildCountQuery() {
-            StringBuilder query = new StringBuilder(COUNT_SERVICES_QUERY);
-            appendCategoriesIds(query);
-            return query.toString();
-        }
-
-        private void appendCategoriesIds(StringBuilder query) {
+        private void appendCategoriesIds() {
             if (!categoriesIds.isEmpty()) {
-                query.append(WHERE + CATEGORY_ID + " IN(");
-                appendQuestionMarks(query, categoriesIds);
+                whereIn(CATEGORY_ID, categoriesIds.size());
             }
         }
     }

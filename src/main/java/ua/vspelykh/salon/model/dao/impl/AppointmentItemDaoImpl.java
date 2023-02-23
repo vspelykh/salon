@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.AppointmentItemDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.AppointmentItem;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -15,6 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+
+import static ua.vspelykh.salon.model.dao.mapper.Column.APPOINTMENT_ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.SERVICE_ID;
 
 public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> implements AppointmentItemDao {
 
@@ -26,7 +29,8 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
 
     @Override
     public int create(AppointmentItem entity) throws DaoException {
-        String query = INSERT + tableName + " (appointment_id, service_id)" + VALUES + "(?,?)";
+
+        String query = new QueryBuilder().insert(tableName, APPOINTMENT_ID, SERVICE_ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setItemStatement(entity, statement);
             statement.executeUpdate();
@@ -55,6 +59,6 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
 
     @Override
     public List<AppointmentItem> getByAppointmentId(Integer appointmentId) throws DaoException {
-        return findAllByParam(appointmentId, Column.APPOINTMENT_ID);
+        return findAllByParam(appointmentId, APPOINTMENT_ID);
     }
 }

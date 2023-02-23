@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.FeedbackDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.Feedback;
@@ -13,8 +14,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.model.dao.mapper.Column.APPOINTMENT_ID;
-import static ua.vspelykh.salon.model.dao.mapper.Column.DATE;
+import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENTS;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDao {
 
@@ -26,7 +27,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
 
     @Override
     public int create(Feedback entity) throws DaoException {
-        String query = INSERT + tableName + " (appointment_id, mark, comment, date)" + VALUES + "(?,?,?,?)";
+        String query = new QueryBuilder().insert(tableName, APPOINTMENT_ID, MARK, COMMENT, DATE).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setMarkStatement(entity, statement);
             statement.executeUpdate();
@@ -96,7 +97,8 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
         return findByParam(appointmentId, APPOINTMENT_ID);
     }
 
-    private class MarkQueryBuilder {
+    private class MarkQueryBuilder extends QueryBuilder {
+
         private int page;
 
         public MarkQueryBuilder(int page) {
@@ -108,27 +110,16 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
         }
 
         public String buildQuery() {
-            StringBuilder query = new StringBuilder(SELECT).append(tableName).append(WHERE).append(APPOINTMENT_ID);
-            query.append(" IN(SELECT id FROM appointments WHERE master_id=?)");
-            query.append(ORDER_BY).append(DATE).append(" DESC");
-            return setPagingParamsAndGetQuery(query);
-        }
-
-        private String setPagingParamsAndGetQuery(StringBuilder query) {
-            int offset;
-            if (page == 1) {
-                offset = 0;
-            } else {
-                offset = (page - 1) * 5;
-            }
-            query.append(LIMIT).append(5);
-            query.append(OFFSET).append(offset);
-            return query.toString();
+            select(tableName);
+            whereInCondition(APPOINTMENT_ID, new QueryBuilder().selectFields(APPOINTMENTS, ID).where(MASTER_ID).build());
+            orderBy(DATE).desc();
+            pagination(page, 5);
+            return build();
         }
 
         public String buildCountQuery() {
-            return "SELECT COUNT(1) FROM " + tableName + WHERE + APPOINTMENT_ID +
-                    " IN(SELECT id FROM appointments WHERE master_id=?)";
+            String condition = new QueryBuilder().selectFields(APPOINTMENTS, ID).where(MASTER_ID).build();
+            return count(tableName).whereInCondition(APPOINTMENT_ID, condition).build();
         }
     }
 }

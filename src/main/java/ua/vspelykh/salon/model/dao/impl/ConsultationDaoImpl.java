@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.ConsultationDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.Consultation;
@@ -13,6 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import static ua.vspelykh.salon.model.dao.mapper.Column.NAME;
+import static ua.vspelykh.salon.model.dao.mapper.Column.NUMBER;
 
 public class ConsultationDaoImpl extends AbstractDao<Consultation> implements ConsultationDao {
 
@@ -24,7 +28,7 @@ public class ConsultationDaoImpl extends AbstractDao<Consultation> implements Co
 
     @Override
     public int create(Consultation entity) throws DaoException {
-        String query = INSERT + tableName + " (name, number)" + VALUES + "(?,?)";
+        String query = new QueryBuilder().insert(tableName, NAME, NUMBER).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(entity, statement);
             statement.executeUpdate();

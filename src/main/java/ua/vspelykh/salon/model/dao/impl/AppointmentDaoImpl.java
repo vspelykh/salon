@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.AppointmentDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
@@ -129,8 +130,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public int create(Appointment entity) throws DaoException {
-        String query = INSERT + tableName + " (master_id, client_id, continuance, date, price, discount, status," +
-                " payment_status)" + VALUES + "(?,?,?,?,?,?,?,?)";
+        String query = new QueryBuilder().insert(tableName, MASTER_ID, CLIENT_ID, CONTINUANCE, DATE,
+                PRICE, DISCOUNT, STATUS, PAYMENT_STATUS).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setAppointmentStatement(entity, statement);
             statement.executeUpdate();
@@ -148,8 +149,8 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
 
     @Override
     public void update(Appointment entity) throws DaoException {
-        String query = "UPDATE appointments SET master_id = ?, client_id = ?, continuance = ?, date = ?" +
-                ", price = ?, discount = ?, status = ?, payment_status = ? WHERE id = ?";
+        String query = new QueryBuilder().update(tableName).set(MASTER_ID, CLIENT_ID, CONTINUANCE, DATE, PRICE,
+                DISCOUNT, STATUS, PAYMENT_STATUS).where(ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(setAppointmentStatement(entity, statement), entity.getId());
             int key = statement.executeUpdate();
@@ -175,9 +176,9 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         return ++k;
     }
 
-    private class AppointmentQueryBuilder {
+    private class AppointmentQueryBuilder extends QueryBuilder {
 
-        private final String dateQuery = SELECT + tableName + WHERE + "DATE(date)" + EQUAL;
+        private final String dateQuery = new QueryBuilder().select(tableName).where("DATE(date)").build();
         private LocalDate date;
         private Integer entityId;
         private String columnName;
@@ -220,7 +221,23 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
         public String buildQuery() {
-            return dateQuery + AND + columnName + EQUAL + AND + STATUS + NOT_EQUAL + ORDER_BY + DATE;
+            return append(dateQuery).and(columnName).andNotEqual(STATUS).orderBy(DATE).build();
+        }
+
+        public String buildAppointmentsForEmailQuery() {
+            return dateQuery;
+        }
+
+        public String buildFilteredQuery() {
+            select(tableName);
+            appendingFilteredParams();
+            appendPagingAndOrderParams();
+            return build();
+        }
+
+        public String buildCountQuery() {
+            count(tableName);
+            return appendingFilteredParams();
         }
 
         public void setParams(PreparedStatement preparedStatement) throws SQLException {
@@ -228,6 +245,10 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             preparedStatement.setTimestamp(++k, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
             preparedStatement.setInt(++k, entityId);
             preparedStatement.setString(++k, AppointmentStatus.CANCELLED.name());
+        }
+
+        public void setParamsForEmailQuery(PreparedStatement preparedStatement) throws SQLException {
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
         }
 
         public void setFilteredParams(PreparedStatement preparedStatement) throws SQLException {
@@ -249,56 +270,28 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             }
         }
 
-        public String buildAppointmentsForEmailQuery() {
-            return dateQuery;
-        }
-
-        public void setParamsForEmailQuery(PreparedStatement preparedStatement) throws SQLException {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)));
-        }
-
-        public String buildFilteredQuery() {
-            StringBuilder query = new StringBuilder(SELECT).append(tableName);
-            appendingFilteredParams(query);
-            return appendPagingAndOrderParams(query);
-        }
-
-        public String buildCountQuery() {
-            StringBuilder query = new StringBuilder("SELECT COUNT(1) FROM ");
-            query.append(tableName);
-            return appendingFilteredParams(query);
-        }
-
-        private String appendingFilteredParams(StringBuilder query) {
+        private String appendingFilteredParams() {
             if (isOneFilteredParamNotNull()) {
                 query.append(WHERE);
             }
             int count = 0;
-            count = appendMasterId(query, count);
-            count = appendStatus(query, count);
-            appendDates(query, count);
-            return query.toString();
+            count = appendMasterId(count);
+            count = appendStatus(count);
+            appendDates(count);
+            return build();
         }
 
         private boolean isOneFilteredParamNotNull() {
             return entityId != null || dateFrom != null || dateTo != null || status != null || paymentStatus != null;
         }
 
-        private String appendPagingAndOrderParams(StringBuilder query) {
-            query.append(ORDER_BY).append(DATE).append(" DESC");
-            int offset;
-            if (page == 1) {
-                offset = 0;
-            } else {
-                offset = (page - 1) * size;
-            }
-            query.append(LIMIT).append(size);
-            query.append(OFFSET).append(offset);
-            return query.toString();
+        private void appendPagingAndOrderParams() {
+            orderBy(DATE).desc();
+            pagination(page, size);
         }
 
 
-        private int appendMasterId(StringBuilder query, int count) {
+        private int appendMasterId(int count) {
             if (entityId != null) {
                 query.append(MASTER_ID).append(EQUAL);
                 count++;
@@ -306,7 +299,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
             return count;
         }
 
-        private int appendStatus(StringBuilder query, int count) {
+        private int appendStatus(int count) {
             if (status != null) {
                 appendAnd(query, count);
                 count++;
@@ -321,7 +314,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         }
 
 
-        private void appendDates(StringBuilder query, int count) {
+        private void appendDates(int count) {
             if (dateFrom != null && dateTo != null) {
                 appendAnd(query, count);
                 query.append("DATE(date) >= ?").append(AND).append("DATE(date) <= ?");

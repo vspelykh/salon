@@ -21,8 +21,6 @@ public interface UserDao extends Dao<User> {
     List<User> findFiltered(List<MastersLevel> levels, List<Integer> serviceIds,
                             List<Integer> categoriesIds, String search, int page, int size, MasterSort sort) throws DaoException;
 
-    List<User> findAdministrators() throws DaoException;
-
     int getCountOfMasters(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds, String search) throws DaoException;
 
     List<User> findBySearch(String search) throws DaoException;

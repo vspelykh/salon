@@ -7,7 +7,7 @@ import java.util.List;
 
 public enum MasterSort implements Serializable {
 
-    NAME_ASC("name asc"), NAME_DESC("name desc"), RATING_ASC("rating asc"), RATING_DESC("rating desc"),
+    NAME_ASC("name asc"), NAME_DESC("name DESC"), RATING_ASC("rating asc"), RATING_DESC("rating DESC"),
     FIRST_PRO("first experienced"), FIRST_YOUNG("first young");
 
     String text;

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.MasterServiceDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
@@ -16,6 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+
 public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements MasterServiceDao {
 
     private static final Logger LOG = LogManager.getLogger(MasterServiceDaoImpl.class);
@@ -26,7 +29,7 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
 
     @Override
     public int create(MasterService entity) throws DaoException {
-        String query = INSERT + tableName + " (master_id, base_service_id, continuance)" + VALUES + "(?,?,?)";
+        String query = new QueryBuilder().insert(tableName, MASTER_ID, BASE_SERVICE_ID, CONTINUANCE).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setServiceStatement(entity, statement);
             statement.executeUpdate();
@@ -51,7 +54,7 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
 
     @Override
     public void update(MasterService entity) throws DaoException {
-        String query = "UPDATE master_services SET master_id = ?, base_service_id = ?, continuance = ? WHERE id = ?";
+        String query = new QueryBuilder().update(tableName).set(MASTER_ID, BASE_SERVICE_ID, CONTINUANCE).where(ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(4, entity.getId());
             int key = statement.executeUpdate();
@@ -66,7 +69,7 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
 
     @Override
     public List<MasterService> getAllByUserId(Integer userId) throws DaoException {
-        return findAllByParam(userId, Column.MASTER_ID);
+        return findAllByParam(userId, MASTER_ID);
     }
 
     @Override

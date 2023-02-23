@@ -3,9 +3,9 @@ package ua.vspelykh.salon.model.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.WorkingDayDao;
-import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -16,8 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.model.dao.mapper.Column.DATE;
-import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.util.SalonUtils.getDate;
 
 public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements WorkingDayDao {
@@ -30,7 +29,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
 
     @Override
     public int create(WorkingDay entity) throws DaoException {
-        String query = INSERT + tableName + " (user_id, date, time_start, time_end)" + VALUES + "(?,?,?,?)";
+        String query = new QueryBuilder().insert(tableName, USER_ID, DATE, TIME_START, TIME_END).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setWorkingDayStatement(entity, statement);
             statement.executeUpdate();
@@ -93,7 +92,9 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
     @Override
     public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws DaoException {
         WorkingDay workingDay;
-        String query = SELECT + tableName + WHERE + USER_ID + EQUAL + AND + DATE + EQUAL;
+        QueryBuilder queryBuilder = new QueryBuilder();
+        queryBuilder.select(tableName).where(USER_ID).and(DATE);
+        String query = new QueryBuilder().select(tableName).where(USER_ID).and(DATE).build();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             setIdAndDataWorkingDayStatement(preparedStatement, userId, date);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -129,7 +130,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
         statement.setDate(++k, Date.valueOf(date));
     }
 
-    private class WorkingDayQueryBuilder {
+    private class WorkingDayQueryBuilder extends QueryBuilder {
         private final int userId;
         private final String[] datesArray;
         private Time timeStart;
@@ -147,31 +148,13 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
             this.timeEnd = timeEnd;
         }
 
-
         private String buildDeleteQuery() {
-            StringBuilder query = new StringBuilder(DELETE).append(tableName).append(WHERE).append(Column.DATE);
-            query.append(" IN(");
-            appendQuestionMarks(query, datesArray);
-            query.append(AND).append(USER_ID).append(EQUAL);
-            return query.toString();
+            return delete(tableName).whereIn(DATE, datesArray.length).and(USER_ID).build();
         }
 
         private String buildSaveQuery() {
-            StringBuilder query = new StringBuilder(INSERT).append(tableName);
-            query.append(" (user_id, date, time_start, time_end)").append(VALUES).append("(?,?,?,?), ".repeat(datesArray.length));
-            query.replace(query.length() - 2, query.length(), "");
-            query.append(ON_CONFLICT).append("(user_id, date)").append(DO_UPDATE);
-            query.append(SET).append(Column.TIME_START).append(EQUAL).append(", ").append(Column.TIME_END).append(EQUAL);
-            return query.toString();
-        }
-
-        private void appendQuestionMarks(StringBuilder query, String[] datesArray) {
-            for (int i = 0; i < datesArray.length; i++) {
-                query.append("?");
-                if (i != datesArray.length - 1)
-                    query.append(",");
-            }
-            query.append(")");
+            return insertRepeat(tableName, datesArray.length, USER_ID, DATE, TIME_START, TIME_END)
+                    .onConflict(USER_ID, DATE).doUpdate(TIME_START, TIME_END).build();
         }
 
         private void setParams(PreparedStatement preparedStatement) throws SQLException {

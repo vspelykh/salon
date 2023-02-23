@@ -3,7 +3,7 @@ package ua.vspelykh.salon.model.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
-import ua.vspelykh.salon.model.dao.Table;
+import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.UserLevelDao;
 import ua.vspelykh.salon.model.dao.mapper.Column;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
@@ -15,17 +15,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static ua.vspelykh.salon.model.dao.Table.USER_LEVEL;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+
 public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLevelDao {
 
     private static final Logger LOG = LogManager.getLogger(UserLevelDaoImpl.class);
 
     public UserLevelDaoImpl() {
-        super(RowMapperFactory.getUserLevelRowMapper(), Table.USER_LEVEL);
+        super(RowMapperFactory.getUserLevelRowMapper(), USER_LEVEL);
     }
 
     @Override
     public int create(UserLevel entity) throws DaoException {
-        String query = INSERT + tableName + " (id, level, active, about, about_ua)" + VALUES + "(?,?,?,?,?)";
+        String query = new QueryBuilder().insert(tableName, ID, LEVEL, ACTIVE, ABOUT, ABOUT + UA).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(statement, entity);
             statement.executeUpdate();
@@ -43,7 +46,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public void update(UserLevel entity) throws DaoException {
-        String query = "UPDATE user_level SET level=?, about=?, about_ua=?, active=? WHERE id = ?";
+        String query = new QueryBuilder().update(USER_LEVEL).set(LEVEL, ABOUT, ABOUT + UA, ACTIVE).where(ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             int k = 0;
             statement.setString(++k, entity.getLevel().toString());
@@ -77,7 +80,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
 
     @Override
     public boolean isExist(int userId) throws DaoException {
-        String query = "SELECT EXISTS (SELECT id FROM user_level WHERE id=?)";
+        String query = new QueryBuilder().exists(new QueryBuilder().selectFields(tableName, ID).where(ID).build()).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
