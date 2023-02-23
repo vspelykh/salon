@@ -46,7 +46,7 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void testSaveNewAppointment() throws DaoException, TransactionException, ServiceException {
+    void saveNewAppointment() throws DaoException, TransactionException, ServiceException {
         Appointment appointment = getTestAppointment();
         appointment.setId(null);
 
@@ -62,7 +62,7 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void testSaveExistingAppointment() throws DaoException, TransactionException, ServiceException {
+    void saveExistingAppointment() throws DaoException, TransactionException, ServiceException {
         Appointment appointment = getTestAppointment();
 
         doNothing().when(transaction).start();

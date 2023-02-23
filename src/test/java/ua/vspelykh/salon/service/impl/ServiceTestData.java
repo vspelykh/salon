@@ -1,9 +1,6 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.model.dto.AppointmentDto;
-import ua.vspelykh.salon.model.dto.BaseServiceDto;
-import ua.vspelykh.salon.model.dto.FeedbackDto;
-import ua.vspelykh.salon.model.dto.UserDto;
+import ua.vspelykh.salon.model.dto.*;
 import ua.vspelykh.salon.model.entity.*;
 
 import java.util.List;
@@ -60,7 +57,7 @@ public class ServiceTestData {
                 .build();
     }
 
-    public static ServiceCategory getTestCategory(){
+    public static ServiceCategory getTestCategory() {
         return ServiceCategory.builder()
                 .id(ID_VALUE)
                 .name(CATEGORY_VALUE)
@@ -68,11 +65,19 @@ public class ServiceTestData {
                 .build();
     }
 
-    public static BaseServiceDto getTestBaseServiceDto(){
+    public static BaseServiceDto getTestBaseServiceDto() {
         return new BaseServiceDto.BaseServiceDtoBuilder(getTestBaseService(), getTestCategory(), UA_LOCALE).build();
     }
 
-    public static FeedbackDto getTestFeedbackDto(){
+    public static FeedbackDto getTestFeedbackDto() {
         return new FeedbackDto.FeedbackDtoBuilder(getTestUser(), getTestFeedback()).build();
+    }
+
+    public static MasterServiceDto getTestMasterServiceDto() {
+        return MasterServiceDto.builder().id(ID_VALUE)
+                .masterId(ID_VALUE)
+                .service(getTestBaseServiceDto())
+                .continuance(CONTINUANCE_VALUE)
+                .build();
     }
 }
