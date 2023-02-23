@@ -160,9 +160,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public void updateRole(int userId, String action, Role role) throws DaoException {
         String query;
         if (ADD.equals(action)) {
-            query = ADD_ROLE_QUERY;
+            query = new QueryBuilder().insert(USER_ROLES, USER_ID, ROLE).build();
         } else if (REMOVE.equals(action)) {
-            query = UPDATE_ROLE_QUERY;
+            query = new QueryBuilder().delete(USER_ROLES).where(USER_ID).and(ROLE).build();
         } else throw new DaoException();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             setUserRoleStatement(statement, userId, role);
@@ -249,6 +249,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private class MasterFilteredQueryBuilder extends QueryBuilder {
 
+        private static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul " +
+                "ON u.id = ul.id";
+        private static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
+                "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN feedbacks m ON u.id=" +
+                "(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id)";
+
         private final List<MastersLevel> levels;
         private final List<Integer> serviceIds;
         private List<Integer> categoriesIds;
@@ -256,6 +262,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         private int size;
         private MasterSort sort;
         private final String search;
+
+        private boolean isSearch = false;
 
         public MasterFilteredQueryBuilder(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds,
                                           int page, int size, MasterSort sort, String search) {
@@ -280,6 +288,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             this.search = search;
             levels = Collections.emptyList();
             serviceIds = Collections.emptyList();
+            isSearch = true;
         }
 
         private String buildQuery() {
@@ -376,7 +385,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private void setParams(PreparedStatement preparedStatement) throws SQLException {
             int paramNum = 1;
-            if (MasterSort.RATING_ASC.equals(sort) || MasterSort.RATING_DESC.equals(sort)) {
+            if (isSearch){
+                setSearch(preparedStatement, paramNum);
+            } else if (MasterSort.RATING_ASC.equals(sort) || MasterSort.RATING_DESC.equals(sort)) {
                 paramNum = setServices(preparedStatement, paramNum);
                 paramNum = setCategories(preparedStatement, paramNum);
                 paramNum = setLevels(preparedStatement, paramNum);

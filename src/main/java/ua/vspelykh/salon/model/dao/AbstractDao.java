@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.model.dao.Table.USER_ROLES;
-
 public abstract class AbstractDao<T> implements Dao<T> {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -27,41 +25,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected static final String FAIL_FIND_LIST = "Fail to find entities ";
     protected static final String FAIL_DELETE = "Fail to delete";
     protected static final String NO_ID = "No id was generated in ";
-    protected static final String ACTIVE_PARAM = "ul.active='true'";
-
-    protected static final String SELECT = "SELECT * FROM ";
-    protected static final String INSERT = "INSERT INTO ";
-    protected static final String VALUES = " VALUES ";
-    @SuppressWarnings("SqlWithoutWhere")
-    protected static final String DELETE = "DELETE FROM ";
-    protected static final String WHERE = " WHERE ";
-    protected static final String EQUAL = "=?";
-    protected static final String NOT_EQUAL = "!=?";
-    protected static final String INNER_JOIN = " INNER JOIN ";
-    protected static final String LIMIT = " LIMIT ";
-    protected static final String OFFSET = " OFFSET ";
-    protected static final String ORDER_BY = " ORDER BY ";
-    protected static final String NAME_ASC = "name asc";
-    protected static final String NAME_DESC = "name desc";
-    protected static final String LEVEL_EXP = "level asc";
-    protected static final String LEVEL_YOUNG = "level desc";
-    protected static final String ILIKE = " ILIKE ";
-    protected static final String OR = " OR ";
-    protected static final String AND = " AND ";
-    protected static final String ON_CONFLICT = "  ON CONFLICT ";
-    protected static final String DO_UPDATE = "  DO UPDATE ";
-    protected static final String SET = "SET ";
-    protected static final String HAVING = " HAVING ";
-    protected static final String SEARCH_PATTERN = "'%%%s%%'";
-
-    protected static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
-            "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN feedbacks m ON u.id=" +
-            "(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id)";
-
-    protected static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul ON u.id = ul.id";
-    protected static final String COUNT_SERVICES_QUERY = "SELECT COUNT(1) FROM base_services";
-    protected static final String ADD_ROLE_QUERY = INSERT + USER_ROLES + " VALUES (?,?)";
-    protected static final String UPDATE_ROLE_QUERY = DELETE + USER_ROLES + WHERE + Column.USER_ID + EQUAL + AND + Column.ROLE + EQUAL;
 
     private Connection connection;
     protected RowMapper<T> rowMapper;

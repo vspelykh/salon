@@ -73,7 +73,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
 
     @Override
     public List<WorkingDay> getWorkingDaysByUserId(Integer userId) throws DaoException {
-        String query = SELECT + tableName + WHERE + USER_ID + EQUAL;
+        String query = new QueryBuilder().select(tableName).where(USER_ID).build();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();

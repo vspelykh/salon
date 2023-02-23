@@ -49,7 +49,7 @@ public interface SqlConstants {
                 "GROUP BY ms.master_id) AS q ON q.master_id = u.id WHERE name ILIKE ? OR surname ILIKE ? AND active=?";
         String SELECT_USER_BY_SEARCH = "SELECT * FROM users WHERE number ILIKE ? " +
                 "OR email ILIKE ?";
-        String INSERT_USER_ROLE = "INSERT INTO user_roles VALUES (?,?)";
+        String INSERT_USER_ROLE = "INSERT INTO user_roles (user_id, role) VALUES (?,?)";
     }
 
     interface Appointment {
