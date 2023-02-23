@@ -14,7 +14,7 @@ public interface ServiceFactory extends AutoCloseable {
     BaseServiceService getBaseServiceService() throws ServiceException;
     ConsultationService getConsultationService() throws ServiceException;
     InvitationService getInvitationService() throws ServiceException;
-    MarkService getMarkService() throws ServiceException;
+    FeedbackService getMarkService() throws ServiceException;
     AppointmentItemService getOrderingService() throws ServiceException;
     ServiceCategoryService getServiceCategoryService() throws ServiceException;
     MasterServiceService getServiceService() throws ServiceException;

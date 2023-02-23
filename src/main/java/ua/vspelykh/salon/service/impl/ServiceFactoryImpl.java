@@ -60,9 +60,9 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public MarkService getMarkService() throws ServiceException {
-        MarkServiceImpl markService = new MarkServiceImpl();
-        markService.setMarkDao(getMarkDao());
+    public FeedbackService getMarkService() throws ServiceException {
+        FeedbackServiceImpl markService = new FeedbackServiceImpl();
+        markService.setFeedbackDao(getMarkDao());
         markService.setAppointmentDao(getAppointmentDao());
         markService.setUserDao(getUserDao());
         markService.setTransaction(getTransaction());

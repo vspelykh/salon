@@ -8,7 +8,7 @@ import ua.vspelykh.salon.model.dao.UserDao;
 import ua.vspelykh.salon.model.dto.FeedbackDto;
 import ua.vspelykh.salon.model.entity.Feedback;
 import ua.vspelykh.salon.model.entity.User;
-import ua.vspelykh.salon.service.MarkService;
+import ua.vspelykh.salon.service.FeedbackService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -17,9 +17,9 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MarkServiceImpl implements MarkService {
+public class FeedbackServiceImpl implements FeedbackService {
 
-    private static final Logger LOG = LogManager.getLogger(MarkServiceImpl.class);
+    private static final Logger LOG = LogManager.getLogger(FeedbackServiceImpl.class);
 
     private FeedbackDao feedbackDao;
     private AppointmentDao appointmentDao;
@@ -27,10 +27,13 @@ public class MarkServiceImpl implements MarkService {
     private Transaction transaction;
 
     @Override
-    public void save(Feedback mark) throws ServiceException {
+    public void save(Feedback feedback) throws ServiceException {
         try {
+            if (!feedback.isNew()){
+                throw new ServiceException("Edit feedback is forbidden operation!");
+            }
             transaction.start();
-            feedbackDao.create(mark);
+            feedbackDao.create(feedback);
             transaction.commit();
         } catch (DaoException | TransactionException e) {
             try {
@@ -38,18 +41,18 @@ public class MarkServiceImpl implements MarkService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            LOG.error("Error to save mark");
+            LOG.error("Error to save feedback");
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<FeedbackDto> getMarksByMasterId(Integer masterId, int page) throws ServiceException {
+    public List<FeedbackDto> getFeedbacksByMasterId(Integer masterId, int page) throws ServiceException {
         try {
             transaction.start();
-            List<Feedback> marks = feedbackDao.getFeedbacksByMasterId(masterId, page);
+            List<Feedback> feedbacks = feedbackDao.getFeedbacksByMasterId(masterId, page);
             transaction.commit();
-            return toDTOs(marks);
+            return toDTOs(feedbacks);
         } catch (DaoException | TransactionException e) {
             try {
                 transaction.rollback();
@@ -61,17 +64,17 @@ public class MarkServiceImpl implements MarkService {
         }
     }
 
-    private List<FeedbackDto> toDTOs(List<Feedback> marks) throws DaoException {
+    private List<FeedbackDto> toDTOs(List<Feedback> feedbacks) throws DaoException {
         List<FeedbackDto> dtos = new ArrayList<>();
-        for (Feedback mark : marks) {
-            dtos.add(toDTO(mark));
+        for (Feedback feedback : feedbacks) {
+            dtos.add(toDTO(feedback));
         }
         return dtos;
     }
 
-    private FeedbackDto toDTO(Feedback mark) throws DaoException {
-        User client = userDao.findById(appointmentDao.findById(mark.getAppointmentId()).getClientId());
-        return new FeedbackDto.FeedbackDtoBuilder(client, mark).build();
+    private FeedbackDto toDTO(Feedback feedback) throws DaoException {
+        User client = userDao.findById(appointmentDao.findById(feedback.getAppointmentId()).getClientId());
+        return new FeedbackDto.FeedbackDtoBuilder(client, feedback).build();
     }
 
     @Override
@@ -86,13 +89,13 @@ public class MarkServiceImpl implements MarkService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            LOG.error("Error to delete mark");
+            LOG.error("Error to delete feedback");
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public int countMarksByMasterId(Integer masterID) throws ServiceException {
+    public int countFeedbacksByMasterId(Integer masterID) throws ServiceException {
         try {
             return feedbackDao.countFeedbacksByMasterId(masterID);
         } catch (DaoException e) {
@@ -101,7 +104,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public Feedback getMarkByAppointmentId(Integer appointmentId) {
+    public Feedback getFeedbackByAppointmentId(Integer appointmentId) {
         try {
             return feedbackDao.findByAppointmentId(appointmentId);
         } catch (DaoException e) {
@@ -109,7 +112,7 @@ public class MarkServiceImpl implements MarkService {
         }
     }
 
-    public void setMarkDao(FeedbackDao feedbackDao) {
+    public void setFeedbackDao(FeedbackDao feedbackDao) {
         this.feedbackDao = feedbackDao;
     }
 

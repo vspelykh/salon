@@ -2,6 +2,7 @@ package ua.vspelykh.salon.service.impl;
 
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.dto.BaseServiceDto;
+import ua.vspelykh.salon.model.dto.FeedbackDto;
 import ua.vspelykh.salon.model.dto.UserDto;
 import ua.vspelykh.salon.model.entity.*;
 
@@ -9,8 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointmentItem;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestBaseService;
+import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 public class ServiceTestData {
@@ -70,5 +70,9 @@ public class ServiceTestData {
 
     public static BaseServiceDto getTestBaseServiceDto(){
         return new BaseServiceDto.BaseServiceDtoBuilder(getTestBaseService(), getTestCategory(), UA_LOCALE).build();
+    }
+
+    public static FeedbackDto getTestFeedbackDto(){
+        return new FeedbackDto.FeedbackDtoBuilder(getTestUser(), getTestFeedback()).build();
     }
 }

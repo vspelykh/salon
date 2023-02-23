@@ -33,7 +33,7 @@ public class FeedbackCommand extends Command {
         Integer appointmentId = Integer.valueOf(request.getParameter(ID));
         Appointment appointment = serviceFactory.getAppointmentService().findById(appointmentId);
         User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
-        Feedback mark = getServiceFactory().getMarkService().getMarkByAppointmentId(appointmentId);
+        Feedback mark = getServiceFactory().getMarkService().getFeedbackByAppointmentId(appointmentId);
         if (mark != null){
             request.getSession().setAttribute(MESSAGE, MESSAGE + DOT + FEEDBACK + ".exist");
             redirect(SUCCESS_REDIRECT);

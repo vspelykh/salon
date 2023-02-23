@@ -80,11 +80,11 @@ public class CalendarCommand extends Command {
 
     private void setFeedbacksAttrs() throws ServiceException {
         int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
-        List<FeedbackDto> marks = serviceFactory.getMarkService().getMarksByMasterId(Integer.valueOf(request.getParameter(ID)),
+        List<FeedbackDto> marks = serviceFactory.getMarkService().getFeedbacksByMasterId(Integer.valueOf(request.getParameter(ID)),
                 page);
         request.setAttribute(FEEDBACKS, marks);
         request.setAttribute(PAGE + CHECKED, page);
-        int countOfItems = serviceFactory.getMarkService().countMarksByMasterId(Integer.valueOf(request.getParameter(ID)));
+        int countOfItems = serviceFactory.getMarkService().countFeedbacksByMasterId(Integer.valueOf(request.getParameter(ID)));
         countAndSet(5, countOfItems);
     }
 }
