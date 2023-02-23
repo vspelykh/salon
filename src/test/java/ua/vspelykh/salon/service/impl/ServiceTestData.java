@@ -1,17 +1,17 @@
 package ua.vspelykh.salon.service.impl;
 
 import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.dto.BaseServiceDto;
 import ua.vspelykh.salon.model.dto.UserDto;
-import ua.vspelykh.salon.model.entity.AppointmentStatus;
-import ua.vspelykh.salon.model.entity.PaymentStatus;
-import ua.vspelykh.salon.model.entity.Role;
-import ua.vspelykh.salon.model.entity.User;
+import ua.vspelykh.salon.model.entity.*;
 
 import java.util.List;
 import java.util.Set;
 
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointmentItem;
+import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestBaseService;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 public class ServiceTestData {
 
@@ -58,5 +58,17 @@ public class ServiceTestData {
                 .number(NUMBER_VALUE)
                 .roles(ROLES_VALUE)
                 .build();
+    }
+
+    public static ServiceCategory getTestCategory(){
+        return ServiceCategory.builder()
+                .id(ID_VALUE)
+                .name(CATEGORY_VALUE)
+                .nameUa(CATEGORY_UA_VALUE)
+                .build();
+    }
+
+    public static BaseServiceDto getTestBaseServiceDto(){
+        return new BaseServiceDto.BaseServiceDtoBuilder(getTestBaseService(), getTestCategory(), UA_LOCALE).build();
     }
 }

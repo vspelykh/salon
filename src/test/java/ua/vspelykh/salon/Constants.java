@@ -36,4 +36,7 @@ public interface Constants {
     LocalTime START_TIME_VALUE = LocalTime.of(8, 0);
     LocalTime END_TIME_VALUE = LocalTime.of(20, 0);
     String DATE_PATTERN = "dd-MM-yyyy";
+
+    String CATEGORY_VALUE = "category";
+    String CATEGORY_UA_VALUE = "категорія";
 }

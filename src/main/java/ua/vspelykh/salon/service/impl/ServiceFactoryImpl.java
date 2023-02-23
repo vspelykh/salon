@@ -38,7 +38,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public BaseServiceService getBaseServiceService() throws ServiceException {
         BaseServiceServiceImpl baseServiceService = new BaseServiceServiceImpl();
         baseServiceService.setBaseServiceDao(getBaseServiceDao());
-        baseServiceService.setServiceCategoryService(getServiceCategoryService());
+        baseServiceService.setServiceCategoryDao(getServiceCategoryDao());
         baseServiceService.setTransaction(getTransaction());
         return baseServiceService;
     }
@@ -209,7 +209,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         }
     }
 
-    public static ServiceFactory getServiceFactory(){
+    public static ServiceFactory getServiceFactory() {
         return new ServiceFactoryImpl();
     }
 }

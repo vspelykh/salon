@@ -40,7 +40,7 @@ class AppointmentItemServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void testSaveThrowsException() throws DaoException, TransactionException {
+    void saveThrowsException() throws DaoException, TransactionException {
         AppointmentItem appointmentItem = new AppointmentItem();
         doThrow(new DaoException()).when(appointmentItemDao).create(appointmentItem);
         assertThrows(ServiceException.class, () -> {
@@ -51,7 +51,7 @@ class AppointmentItemServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void testGetByAppointmentId() throws DaoException, ServiceException {
+    void getByAppointmentId() throws DaoException, ServiceException {
         List<AppointmentItem> appointmentItemList = List.of(getTestAppointmentItem());
         when(appointmentItemDao.getByAppointmentId(ID_VALUE)).thenReturn(appointmentItemList);
         List<AppointmentItem> result = appointmentItemService.getByAppointmentId(ID_VALUE);
@@ -60,7 +60,7 @@ class AppointmentItemServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void testGetByAppointmentIdThrowsException() throws DaoException {
+    void getByAppointmentIdThrowsException() throws DaoException {
         when(appointmentItemDao.getByAppointmentId(ID_VALUE)).thenThrow(new DaoException());
         Assertions.assertThrows(ServiceException.class, () -> {
             appointmentItemService.getByAppointmentId(ID_VALUE);
