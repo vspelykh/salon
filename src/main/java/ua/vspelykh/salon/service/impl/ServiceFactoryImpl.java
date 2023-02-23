@@ -72,7 +72,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public AppointmentItemService getOrderingService() throws ServiceException {
         AppointmentItemServiceImpl orderingService = new AppointmentItemServiceImpl();
-        orderingService.setOrderingDao(getOrderingDao());
+        orderingService.setAppointmentItemDao(getOrderingDao());
         orderingService.setTransaction(getTransaction());
         return orderingService;
     }

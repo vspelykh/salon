@@ -1,7 +1,6 @@
 package ua.vspelykh.salon.model.dao.impl;
 
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import ua.vspelykh.salon.AbstractSalonTest;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,8 +10,7 @@ import java.sql.Statement;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public abstract class AbstractDaoTest {
+abstract class AbstractDaoTest extends AbstractSalonTest {
 
     protected Connection mockConnection;
     protected ResultSet mockResultSet;

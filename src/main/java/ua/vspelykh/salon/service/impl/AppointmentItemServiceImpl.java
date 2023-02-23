@@ -41,12 +41,14 @@ public class AppointmentItemServiceImpl implements AppointmentItemService {
         try {
             return appointmentItemDao.getByAppointmentId(appointmentId);
         } catch (DaoException e) {
-            LOG.error("Error to find orderings by appointment id");
+            LOG.error("Error to find appointment items by appointment id");
             throw new ServiceException(e);
         }
     }
 
-    public void setOrderingDao(AppointmentItemDao appointmentItemDao) {
+
+
+    public void setAppointmentItemDao(AppointmentItemDao appointmentItemDao) {
         this.appointmentItemDao = appointmentItemDao;
     }
 

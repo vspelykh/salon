@@ -1,15 +1,15 @@
 package ua.vspelykh.salon.model.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ua.vspelykh.salon.model.entity.Role;
 
 import java.util.Set;
 
 @Data
 @RequiredArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Builder
 public class UserDto {
 
     private final int id;
