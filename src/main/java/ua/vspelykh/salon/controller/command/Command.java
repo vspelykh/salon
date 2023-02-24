@@ -35,7 +35,7 @@ public abstract class Command {
 
     protected void forward(String target) throws ServletException, IOException {
         target = String.format(JSP_PATTERN, target);
-        RequestDispatcher dispatcher = context.getRequestDispatcher(target);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(target);
         dispatcher.forward(request, response);
     }
 
@@ -70,7 +70,6 @@ public abstract class Command {
     }
 
     public ServiceFactory getServiceFactory() {
-
         return serviceFactory;
     }
 }
