@@ -62,7 +62,10 @@ public class UserServiceImpl implements UserService {
             if (passwordEncryptor.checkPassword(password, user.getPassword())) {
                 transaction.commit();
                 return user;
-            } else throw new ServiceException("Incorrect username or password");
+            } else {
+                transaction.rollback();
+                throw new ServiceException("Incorrect username or password");
+            }
         } catch (DaoException | TransactionException e) {
             try {
                 transaction.rollback();
@@ -180,7 +183,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public UserLevel getUserLevelByUserId(Integer userId) throws ServiceException {
         try {
@@ -214,13 +216,12 @@ public class UserServiceImpl implements UserService {
                                              List<Integer> categoriesIds, String search, int page, int size, MasterSort sort, String locale) throws ServiceException {
         try {
             transaction.start();
-            List<UserMasterDTO> dtos = new ArrayList<>();
             List<User> masters = userDao.findFiltered(levels, serviceIds, categoriesIds, search, page, size, sort);
-
+            List<UserMasterDTO> dtos = new ArrayList<>();
             for (User currentMaster : masters) {
-                List<Feedback> marks = feedbackDao.getFeedbacksByMasterId(currentMaster.getId(), page);
+                List<Feedback> feedbacks = feedbackDao.getFeedbacksByMasterId(currentMaster.getId());
                 UserLevel userLevel = userLevelDao.getUserLevelByUserId(currentMaster.getId());
-                dtos.add(UserMasterDTO.build(currentMaster, userLevel, countRating(marks), locale));
+                dtos.add(UserMasterDTO.build(currentMaster, userLevel, countRating(feedbacks), locale));
             }
             transaction.commit();
             return dtos;
@@ -295,13 +296,13 @@ public class UserServiceImpl implements UserService {
                 userLevelDao.update(userLevel);
             }
         } else if (action.equals(REMOVE) && role == Role.HAIRDRESSER) {
-            UserLevel level = userLevelDao.getUserLevelByUserId(userId);
+            UserLevel level = userLevelDao.findById(userId);
             level.setActive(false);
             userLevelDao.update(level);
         }
     }
 
-    private boolean isNewHairdresser(String action, Role role)  {
+    private boolean isNewHairdresser(String action, Role role) {
         return (action.equals(ADD) && role == Role.HAIRDRESSER);
     }
 

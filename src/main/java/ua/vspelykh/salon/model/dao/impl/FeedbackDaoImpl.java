@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.FeedbackDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
-import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
 import ua.vspelykh.salon.model.entity.Feedback;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENTS;
+import static ua.vspelykh.salon.model.dao.Table.FEEDBACKS;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDao {
@@ -22,7 +22,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
     private static final Logger LOG = LogManager.getLogger(FeedbackDaoImpl.class);
 
     public FeedbackDaoImpl() {
-        super(RowMapperFactory.getMarkRowMapper(), Table.FEEDBACKS);
+        super(RowMapperFactory.getMarkRowMapper(), FEEDBACKS);
     }
 
     @Override
@@ -57,8 +57,12 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
     }
 
     @Override
-    public List<Feedback> getFeedbacksByMasterId(Integer masterId, int page) throws DaoException {
-        String query = new MarkQueryBuilder(page).buildQuery();
+    public List<Feedback> getFeedbacksByMasterId(Integer masterId) throws DaoException {
+        String query = new QueryBuilder().select(FEEDBACKS).where(MASTER_ID).build();
+        return getFeedbacks(query, masterId);
+    }
+
+    private List<Feedback> getFeedbacks(String query, Integer masterId) throws DaoException {
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, masterId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -72,6 +76,12 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
             LOG.error(String.format("%s%s by masterId. Issue: %s", FAIL_FIND_LIST, tableName, e.getMessage()));
             throw new DaoException(e);
         }
+    }
+
+    @Override
+    public List<Feedback> getFeedbacksByMasterId(Integer masterId, int page) throws DaoException {
+        String query = new MarkQueryBuilder(page).buildQuery();
+        return getFeedbacks(query, masterId);
     }
 
     @Override

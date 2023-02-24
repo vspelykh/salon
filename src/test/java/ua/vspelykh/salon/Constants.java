@@ -39,4 +39,6 @@ public interface Constants {
 
     String CATEGORY_VALUE = "category";
     String CATEGORY_UA_VALUE = "категорія";
+
+    String KEY_VALUE = "keyForRegistration1";
 }

@@ -80,4 +80,17 @@ public class ServiceTestData {
                 .continuance(CONTINUANCE_VALUE)
                 .build();
     }
+
+    public static Invitation getTestInvitation() {
+        return Invitation.builder().id(ID_VALUE)
+                .email(EMAIL_VALUE)
+                .date(DATE_VALUE.toLocalDate())
+                .role(Role.ADMINISTRATOR)
+                .key(KEY_VALUE)
+                .build();
+    }
+
+    public static UserMasterDTO getTestUserMasterDto(){
+        return UserMasterDTO.build(getTestMaster(), getTestUserLevel(), MARK_VALUE, UA_LOCALE);
+    }
 }
