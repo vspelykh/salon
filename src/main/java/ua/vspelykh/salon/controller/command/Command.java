@@ -54,7 +54,7 @@ public abstract class Command {
         }
         request.setAttribute(LAST_PAGE, pages.length);
         request.setAttribute(PAGES_ARRAY, pages);
-        request.setAttribute(NUMBER_OF_PAGES, Math.ceil(countOfItems * 1.0 / size));
+        request.setAttribute(NUMBER_OF_PAGES, (int) Math.ceil(countOfItems * 1.0 / size));
         String path = "?" + request.getQueryString().replaceAll("&page=[0-9]*", "");
         request.setAttribute(PATH_STR, path);
     }

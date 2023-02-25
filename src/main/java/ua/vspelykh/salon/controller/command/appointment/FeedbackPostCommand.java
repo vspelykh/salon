@@ -22,7 +22,7 @@ public class FeedbackPostCommand extends Command {
         mark.setAppointmentId(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
         mark.setDate(LocalDateTime.now());
         try {
-            getServiceFactory().getMarkService().save(mark);
+            getServiceFactory().getFeedbackService().save(mark);
         } catch (ServiceException e) {
             response.sendError(500);
         }

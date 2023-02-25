@@ -60,7 +60,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public FeedbackService getMarkService() throws ServiceException {
+    public FeedbackService getFeedbackService() throws ServiceException {
         FeedbackServiceImpl markService = new FeedbackServiceImpl();
         markService.setFeedbackDao(getMarkDao());
         markService.setAppointmentDao(getAppointmentDao());

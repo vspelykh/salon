@@ -1,9 +1,6 @@
 package ua.vspelykh.salon.model.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -14,6 +11,7 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(of = {"date"})
 public class WorkingDay extends AbstractBaseEntity {
 
     private Integer userId;

@@ -19,7 +19,6 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.PRICING;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
-import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
 
 class PricingCommandTest extends AbstractCommandTest {
 
@@ -34,7 +33,7 @@ class PricingCommandTest extends AbstractCommandTest {
     private final int size = 5;
 
     @BeforeEach
-    void setUp() throws ServiceException {
+    protected void setUp() throws ServiceException {
         super.setUp();
         initCommand(new PricingCommand());
         when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
@@ -45,7 +44,8 @@ class PricingCommandTest extends AbstractCommandTest {
     void pricingProcess() throws ServletException, IOException, ServiceException {
         prepareMocks();
         command.process();
-        verifyAttrsAndDispatcher();
+        verifyAttributes();
+        verifyForward(PRICING);
     }
 
     @Test
@@ -53,7 +53,7 @@ class PricingCommandTest extends AbstractCommandTest {
         prepareMocks();
         when(serviceCategoryService.findAll(anyString())).thenThrow(ServiceException.class);
         command.process();
-        verify(response).sendError(500);
+        verifyError500();
     }
 
     protected void prepareMocks() throws ServiceException {
@@ -73,14 +73,12 @@ class PricingCommandTest extends AbstractCommandTest {
                 .thenReturn(Collections.emptyList());
     }
 
-    protected void verifyAttrsAndDispatcher() throws ServletException, IOException {
+    protected void verifyAttributes() {
         verify(request).setAttribute(eq(CATEGORIES), any());
         verify(request).setAttribute(eq(SERVICES), any());
         verify(request).setAttribute(eq(SIZES), any());
         verify(request).setAttribute(PAGE + CHECKED, page);
         verify(request).setAttribute(SIZE + CHECKED, size);
         verify(request).setAttribute(CATEGORIES + CHECKED, Collections.emptyList());
-        verify(request).getRequestDispatcher(String.format(JSP_PATTERN, PRICING));
-        verify(dispatcher).forward(request, response);
     }
 }

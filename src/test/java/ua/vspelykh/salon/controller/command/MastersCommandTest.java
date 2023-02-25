@@ -24,7 +24,6 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
-import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
 
 class MastersCommandTest extends AbstractCommandTest {
 
@@ -46,33 +45,32 @@ class MastersCommandTest extends AbstractCommandTest {
     private final String search = NAME_VALUE;
 
     @BeforeEach
-    void setUp() throws ServiceException {
+    protected void setUp() throws ServiceException {
         super.setUp();
         initCommand(new MastersCommand());
-        when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
-        when(serviceFactory.getUserService()).thenReturn(userService);
-        when(serviceFactory.getServiceCategoryService()).thenReturn(serviceCategoryService);
-        when(request.getSession().getAttribute(ROLES)).thenReturn(ROLES_VALUE);
+        prepareMocks();
     }
 
     @Test
     void mastersProcess() throws ServletException, IOException, ServiceException {
-        prepareMocks();
-        command.init(servletContext, request, response, serviceFactory);
         command.process();
-        verifyAttrsAndDispatcher();
+        verifyAttributes();
+        verifyForward(MASTERS);
     }
 
     @Test
     void mastersProcessErrorPage() throws ServiceException, ServletException, IOException {
-        prepareMocks();
         when(baseServiceService.findAll(anyString())).thenThrow(ServiceException.class);
         command.process();
-        verify(response).sendError(404);
+        verifyError404();
     }
 
     protected void prepareMocks() throws ServiceException {
         String locale = UA_LOCALE;
+        when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
+        when(serviceFactory.getUserService()).thenReturn(userService);
+        when(serviceFactory.getServiceCategoryService()).thenReturn(serviceCategoryService);
+        when(request.getSession().getAttribute(ROLES)).thenReturn(ROLES_VALUE);
         when(request.getSession().getAttribute(LANG)).thenReturn(locale);
         when(request.getParameter(PAGE)).thenReturn(String.valueOf(page));
         when(request.getParameter(SIZE)).thenReturn(String.valueOf(size));
@@ -96,7 +94,7 @@ class MastersCommandTest extends AbstractCommandTest {
         when(serviceFactory.getUserService().getCountOfMasters(levels, serviceIds, categoriesIds, search)).thenReturn(0);
     }
 
-    protected void verifyAttrsAndDispatcher() throws ServletException, IOException {
+    protected void verifyAttributes() {
         verify(request).setAttribute(LEVELS, MastersLevel.list());
         verify(request).setAttribute(eq(SERVICES), any());
         verify(request).setAttribute(eq(SIZES), any());
@@ -110,7 +108,5 @@ class MastersCommandTest extends AbstractCommandTest {
         verify(request).setAttribute(SORT + CHECKED, sort);
         verify(request).setAttribute(MASTERS, Collections.emptyList());
         verify(request).setAttribute(CATEGORIES, Collections.emptyList());
-        verify(request).getRequestDispatcher(String.format(JSP_PATTERN, MASTERS));
-        verify(dispatcher).forward(request, response);
     }
 }

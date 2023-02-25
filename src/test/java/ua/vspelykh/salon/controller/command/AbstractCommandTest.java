@@ -16,10 +16,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.controller.ControllerConstants.PATH_STR;
+import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
 
-abstract class AbstractCommandTest extends AbstractSalonTest {
+public abstract class AbstractCommandTest extends AbstractSalonTest {
 
     @Mock
     protected HttpServletRequest request;
@@ -42,9 +46,10 @@ abstract class AbstractCommandTest extends AbstractSalonTest {
     protected Command command;
 
     @BeforeEach
-    void setUp() throws ServiceException {
+    protected void setUp() throws ServiceException {
         MockitoAnnotations.openMocks(this);
         when(request.getSession()).thenReturn(session);
+        when(request.getSession().getAttribute(LANG)).thenReturn(UA_LOCALE);
         when(request.getQueryString()).thenReturn(PATH_STR);
         when(request.getRequestDispatcher(anyString())).thenReturn(dispatcher);
     }
@@ -54,7 +59,28 @@ abstract class AbstractCommandTest extends AbstractSalonTest {
         command.init(servletContext, request, response, serviceFactory);
     }
 
+    protected void verifyForward(String command) throws ServletException, IOException {
+        verify(request).getRequestDispatcher(String.format(JSP_PATTERN, command));
+        verify(dispatcher).forward(request, response);
+    }
+
+    protected void verifyRedirect(String target) throws IOException {
+        response.sendRedirect(target);
+    }
+
+    protected void verifyError500() throws IOException {
+        verify(response).sendError(500);
+    }
+
+    protected void verifyError404() throws IOException {
+        verify(response).sendError(404);
+    }
+
+    protected void verifyError403() throws IOException {
+        verify(response).sendError(403);
+    }
+
     protected abstract void prepareMocks() throws ServiceException;
 
-    protected abstract void verifyAttrsAndDispatcher() throws ServletException, IOException;
+    protected abstract void verifyAttributes();
 }
