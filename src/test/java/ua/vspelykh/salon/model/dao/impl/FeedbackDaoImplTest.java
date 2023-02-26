@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestFeedback;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Feedback.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Feedbacks.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class FeedbackDaoImplTest extends AbstractDaoTest {
@@ -74,6 +74,19 @@ class FeedbackDaoImplTest extends AbstractDaoTest {
 
     @Test
     void getFeedbacksByMasterId() throws SQLException, DaoException {
+        try (PreparedStatement statement = mockPrepareStatement()) {
+            when(statement.executeQuery()).thenReturn(mockResultSet);
+            mockResultSetIfPresent();
+            List<Feedback> feedbacks = mockFeedbackDao.getFeedbacksByMasterId(ID_VALUE);
+            verifyQuery(SELECT_FEEDBACKS_FOR_RATING);
+
+            assertEquals(1, feedbacks.size());
+            assertEquals(getTestFeedback(), feedbacks.get(0));
+        }
+    }
+
+    @Test
+    void getFeedbacksByMasterIdWithPagination() throws SQLException, DaoException {
         try (PreparedStatement statement = mockPrepareStatement()) {
             when(statement.executeQuery()).thenReturn(mockResultSet);
             mockResultSetIfPresent();

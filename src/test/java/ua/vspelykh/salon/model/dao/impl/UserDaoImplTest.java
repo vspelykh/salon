@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.User.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Users.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class UserDaoImplTest extends AbstractDaoTest {

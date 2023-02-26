@@ -57,8 +57,14 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
     }
 
     @Override
+    public List<Feedback> getFeedbacksByMasterId(Integer masterId, int page) throws DaoException {
+        String query = new MarkQueryBuilder(page).buildQuery();
+        return getFeedbacks(query, masterId);
+    }
+
+    @Override
     public List<Feedback> getFeedbacksByMasterId(Integer masterId) throws DaoException {
-        String query = new QueryBuilder().select(FEEDBACKS).where(MASTER_ID).build();
+        String query = new MarkQueryBuilder().buildQuery();
         return getFeedbacks(query, masterId);
     }
 
@@ -79,12 +85,6 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
     }
 
     @Override
-    public List<Feedback> getFeedbacksByMasterId(Integer masterId, int page) throws DaoException {
-        String query = new MarkQueryBuilder(page).buildQuery();
-        return getFeedbacks(query, masterId);
-    }
-
-    @Override
     public int countFeedbacksByMasterId(Integer masterId) throws DaoException {
         String query = new MarkQueryBuilder().buildCountQuery();
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
@@ -93,7 +93,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             } else {
-                LOG.error(FAIL_COUNT + tableName);
+                LOG.error(String.format("%s%s", FAIL_COUNT, tableName));
                 throw new DaoException(FAIL_COUNT + tableName);
             }
         } catch (SQLException e) {
@@ -109,7 +109,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
 
     private class MarkQueryBuilder extends QueryBuilder {
 
-        private int page;
+        private Integer page;
 
         public MarkQueryBuilder(int page) {
             this.page = page;
@@ -123,7 +123,9 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
             select(tableName);
             whereInCondition(APPOINTMENT_ID, new QueryBuilder().selectFields(APPOINTMENTS, ID).where(MASTER_ID).build());
             orderBy(DATE).desc();
-            pagination(page, 5);
+            if (page != null) {
+                pagination(page, 5);
+            }
             return build();
         }
 

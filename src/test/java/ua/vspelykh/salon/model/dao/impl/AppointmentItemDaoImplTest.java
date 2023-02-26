@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointmentItem;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.AppointmentItem.INSERT_APPOINTMENT_ITEM;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.AppointmentItems.INSERT_APPOINTMENT_ITEM;
 
 class AppointmentItemDaoImplTest extends AbstractDaoTest {
 

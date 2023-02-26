@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestMasterService;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.MasterService.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.MasterServices.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class MasterServiceDaoImplTest extends AbstractDaoTest {

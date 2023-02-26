@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestDates;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestWorkingDay;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.WorkingDay.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.WorkingDays.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.util.SalonUtils.getDate;
 

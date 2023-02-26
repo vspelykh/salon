@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUserLevel;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.UserLevel.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.UserLevels.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 

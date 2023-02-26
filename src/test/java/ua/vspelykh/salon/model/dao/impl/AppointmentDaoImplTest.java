@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointment;
-import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Appointment.*;
+import static ua.vspelykh.salon.model.dao.impl.SqlConstants.Appointments.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class AppointmentDaoImplTest extends AbstractDaoTest {
