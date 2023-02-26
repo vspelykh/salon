@@ -52,7 +52,7 @@ public class MastersCommand extends Command {
         request.setAttribute(LEVELS, MastersLevel.list());
         request.setAttribute(SERVICES, getServiceFactory().getBaseServiceService().
                 findAll(String.valueOf(request.getSession().getAttribute(LANG))));
-        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(SIZES, SIZE_LIST);
         request.setAttribute(SORTS, MasterSort.list());
     }
 

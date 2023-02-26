@@ -48,7 +48,7 @@ public class PricingCommand extends Command {
     }
 
     private void setPaginationParams(int page, int size, int countOfItems) {
-        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(SIZES, SIZE_LIST);
         request.setAttribute(PAGE + CHECKED, page);
         request.setAttribute(SIZE + CHECKED, size);
         countAndSet(size, countOfItems);

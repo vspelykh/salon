@@ -63,7 +63,7 @@ public class OrdersCommand extends Command {
     }
 
     private void setFilterAttributes() throws ServiceException {
-        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(SIZES, SIZE_LIST);
         request.setAttribute(MASTERS, getServiceFactory().getUserService().findMasters(true));
     }
 }

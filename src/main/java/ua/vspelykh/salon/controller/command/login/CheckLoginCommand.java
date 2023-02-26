@@ -39,6 +39,8 @@ public class CheckLoginCommand extends Command {
                 request.setAttribute(INS_PASSWORD, password);
                 redirect(HOME_REDIRECT + COMMAND_PARAM + LOGIN);
             }
+        } else {
+            response.sendError(500);
         }
     }
 }
