@@ -43,6 +43,9 @@ public class EditAppointmentCommand extends Command {
     }
 
     private void setPaymentStatus(Appointment appointment) {
+        if (appointment.getStatus().equals(AppointmentStatus.CANCELLED)){
+            return;
+        }
         if (isAdmin() && checkNullParam(request.getParameter(PAYMENT_STATUS))) {
             appointment.setPaymentStatus(PaymentStatus.valueOf(request.getParameter(PAYMENT_STATUS)));
         }
@@ -58,17 +61,18 @@ public class EditAppointmentCommand extends Command {
     private void setStatus(Appointment appointment) {
         if (checkNullParam(request.getParameter(STATUS))) {
             String status = request.getParameter(STATUS);
-            if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()){
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;
             }
             appointment.setStatus(AppointmentStatus.valueOf(status));
-            if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID){
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID) {
                 appointment.setPaymentStatus(PaymentStatus.RETURNED);
             }
         }
     }
+
     @SuppressWarnings("unchecked")
-    private boolean isAdmin(){
+    private boolean isAdmin() {
         Set<Role> roles = (Set<Role>) request.getSession().getAttribute(ROLES);
         return roles.contains(Role.ADMINISTRATOR);
     }

@@ -86,8 +86,16 @@ class CalendarCommandTest extends AbstractCommandTest {
         verify(request).setAttribute("placeholder", "Виберіть дату");
     }
 
+    @Test
+    void processError() throws ServletException, IOException, ServiceException {
+        when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
+        when(workingDayService.findDaysByUserId(ID_VALUE_2)).thenThrow(ServiceException.class);
+        command.process();
+        verifyError404();
+    }
+
     @ParameterizedTest
-    @MethodSource("timeSlotData")
+    @MethodSource("getTimeSlotData")
     void testTimeSlotCount(List<Appointment> appointments, List<LocalTime> expectedTimeSlots) throws ServiceException, ServletException, IOException {
         WorkingDay testWorkingDay = getTestWorkingDay();
         testWorkingDay.setDate(DATE_VALUE.plusDays(1).toLocalDate());
@@ -112,7 +120,7 @@ class CalendarCommandTest extends AbstractCommandTest {
     }
 
     @Parameterized.Parameters
-    private static Collection<Object[]> timeSlotData() {
+    private static Collection<Object[]> getTimeSlotData() {
         Appointment appointment = getTestAppointment();
         appointment.setDate(appointment.getDate().plusDays(1));
         appointment.setContinuance(60);
@@ -171,7 +179,7 @@ class CalendarCommandTest extends AbstractCommandTest {
     }
 
     @ParameterizedTest
-    @MethodSource("paginationData")
+    @MethodSource("getPaginationData")
     void testPaginationCountAndAttrs(int countOfItems, int expectedNumberOfPage) throws ServletException, IOException, ServiceException {
         when(feedbackService.countFeedbacksByMasterId(ID_VALUE_2)).thenReturn(countOfItems);
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
@@ -180,7 +188,7 @@ class CalendarCommandTest extends AbstractCommandTest {
     }
 
     @Parameterized.Parameters
-    private static Collection<Object[]> paginationData() {
+    private static Collection<Object[]> getPaginationData() {
         return Arrays.asList(new Object[][]{
                 {5, 1}, {10, 2}, {15, 3}, {22, 5}, {34, 7}, {47, 10}
         });

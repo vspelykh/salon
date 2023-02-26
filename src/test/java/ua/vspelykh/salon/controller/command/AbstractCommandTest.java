@@ -65,7 +65,11 @@ public abstract class AbstractCommandTest extends AbstractSalonTest {
     }
 
     protected void verifyRedirect(String target) throws IOException {
-        response.sendRedirect(target);
+        verify(response).sendRedirect(target);
+    }
+
+    protected void verifyRedirectAnyString() throws IOException {
+        verify(response).sendRedirect(anyString());
     }
 
     protected void verifyError500() throws IOException {

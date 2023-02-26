@@ -25,8 +25,7 @@ public class CreateAppointmentCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         try {
-            List<MasterService> masterServices = new ArrayList<>();
-            parseServices(masterServices);
+            List<MasterService> masterServices = parseServices();
             validateAndSaveAppointment(masterServices);
             request.getSession().setAttribute(MESSAGE, APPOINTMENT + DOT + SUCCESS);
             redirect(SUCCESS_REDIRECT);
@@ -35,13 +34,15 @@ public class CreateAppointmentCommand extends Command {
         }
     }
 
-    private void parseServices(List<MasterService> masterServices) throws ServiceException {
+    private List<MasterService> parseServices() throws ServiceException {
+        List<MasterService> masterServices = new ArrayList<>();
         if (checkNullParam(SERVICES)) {
             for (String service : request.getParameterValues(SERVICES)) {
                 int serviceId = Integer.parseInt(service.split("[|]")[3]);
                 masterServices.add(getServiceFactory().getServiceService().findById(serviceId));
             }
         }
+        return masterServices;
     }
 
     private void validateAndSaveAppointment(List<MasterService> masterServices) throws ServiceException {
@@ -94,7 +95,7 @@ public class CreateAppointmentCommand extends Command {
         return totalContinuance;
     }
 
-    private void setErrorMessageAndRedirectToCalendarPage() throws ServletException, IOException {
+    private void setErrorMessageAndRedirectToCalendarPage() throws IOException {
         request.getSession().setAttribute(ERROR, HAS_ERROR);
         redirect(request.getContextPath() + HOME_REDIRECT + "?command=calendar&day=" + request.getParameter(DAY)
                 + "&id=" + request.getParameter(MASTER_ID));

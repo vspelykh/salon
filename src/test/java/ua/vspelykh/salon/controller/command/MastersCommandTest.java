@@ -52,7 +52,7 @@ class MastersCommandTest extends AbstractCommandTest {
     }
 
     @Test
-    void mastersProcess() throws ServletException, IOException, ServiceException {
+    void mastersProcess() throws ServletException, IOException {
         command.process();
         verifyAttributes();
         verifyForward(MASTERS);
@@ -63,6 +63,15 @@ class MastersCommandTest extends AbstractCommandTest {
         when(baseServiceService.findAll(anyString())).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
+    }
+
+    @Test
+    void mastersProcessEmptyParams() throws ServletException, IOException {
+        when(request.getParameter(LEVELS)).thenReturn(null);
+        when(request.getParameter(SERVICES)).thenReturn(null);
+        when(request.getParameter(CATEGORIES)).thenReturn(null);
+        command.process();
+        verifyForward(MASTERS);
     }
 
     protected void prepareMocks() throws ServiceException {

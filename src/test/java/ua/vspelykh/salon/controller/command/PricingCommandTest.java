@@ -45,6 +45,17 @@ class PricingCommandTest extends AbstractCommandTest {
         prepareMocks();
         command.process();
         verifyAttributes();
+        verify(request).setAttribute(CATEGORIES + CHECKED, List.of(1));
+        verifyForward(PRICING);
+    }
+
+    @Test
+    void pricingProcessEmptyList() throws ServletException, IOException, ServiceException {
+        prepareMocks();
+        when(request.getParameter(CATEGORIES)).thenReturn(null);
+        command.process();
+        verifyAttributes();
+        verify(request).setAttribute(CATEGORIES + CHECKED, Collections.emptyList());
         verifyForward(PRICING);
     }
 
@@ -61,7 +72,8 @@ class PricingCommandTest extends AbstractCommandTest {
         when(request.getSession().getAttribute(LANG)).thenReturn(locale);
         when(request.getParameter(PAGE)).thenReturn(String.valueOf(page));
         when(request.getParameter(SIZE)).thenReturn(String.valueOf(size));
-        when(request.getParameter(CATEGORIES)).thenReturn(anyString());
+        when(request.getParameter(CATEGORIES)).thenReturn("1");
+        when(request.getParameterValues(CATEGORIES)).thenReturn(new String[]{"1"});
         when(request.getParameterValues(CATEGORIES))
                 .thenReturn(new String[]{String.valueOf(categoriesIds.get(0))});
         when(serviceFactory.getBaseServiceService().findByFilter(
@@ -79,6 +91,5 @@ class PricingCommandTest extends AbstractCommandTest {
         verify(request).setAttribute(eq(SIZES), any());
         verify(request).setAttribute(PAGE + CHECKED, page);
         verify(request).setAttribute(SIZE + CHECKED, size);
-        verify(request).setAttribute(CATEGORIES + CHECKED, Collections.emptyList());
     }
 }
