@@ -3,6 +3,7 @@ package ua.vspelykh.salon.controller.command.user;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.USER;
@@ -17,7 +18,7 @@ public class LookScheduleCommand extends AbstractScheduleCommand {
             setCurrentWorkingDays();
             request.setAttribute(USER, getServiceFactory().getUserService().findById(Integer.valueOf(request.getParameter(ID))));
         } catch (ServiceException e) {
-            response.sendError(404);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
         forward(LOOK_SCHEDULE);
     }

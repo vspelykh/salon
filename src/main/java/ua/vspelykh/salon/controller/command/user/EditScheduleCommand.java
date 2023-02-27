@@ -24,6 +24,8 @@ public class EditScheduleCommand extends AbstractScheduleCommand {
                 getServiceFactory().getWorkingDayService().save(userId, datesArray, timeStart, timeEnd);
             } else if (DELETE.equals(request.getParameter(ACTION))) {
                 getServiceFactory().getWorkingDayService().deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
+            } else {
+                response.sendError(404);
             }
         } catch (ServiceException e) {
             response.sendError(500);

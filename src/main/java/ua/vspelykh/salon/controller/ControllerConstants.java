@@ -59,6 +59,9 @@ public class ControllerConstants {
     public static final String NUMBER = "number";
     public static final String PASSWORD_REPEAT = "passwordRepeat";
 
+    public static final String FREE_SLOTS_MAP = "free_slots_map";
+
+
     private ControllerConstants() {
 
     }

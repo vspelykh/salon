@@ -9,6 +9,7 @@ import ua.vspelykh.salon.util.ScheduleItem;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,8 +25,6 @@ import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
 
 public class GetScheduleCommand extends AbstractScheduleCommand {
 
-    private static final String FREE_SLOTS_MAP = "free_slots_map";
-
     @Override
     public void process() throws ServletException, IOException {
         try {
@@ -37,10 +36,9 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
 
             buildSchedule(userId, datesArray, mapOfSchedules, freeSlots, locale);
             setAttrs(userId, mapOfSchedules, freeSlots);
-
             forward(GET_SCHEDULE);
         } catch (ServiceException e) {
-            response.sendError(404);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
