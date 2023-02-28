@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import static ua.vspelykh.salon.controller.Controller.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
@@ -33,6 +36,10 @@ public class SecurityFilter implements Filter {
         if (logoutIfUserIsBanned(req, res)) return;
 
         Set<Role> roles = getPermittedRoles(command);
+        if (roles == null) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         HttpSession session = req.getSession();
         if (session != null) {
@@ -102,9 +109,14 @@ public class SecurityFilter implements Filter {
     private boolean checkIfSessionHasRolesAttr(HttpServletRequest req) {
         HttpSession session = req.getSession();
         User currentUser = (User) session.getAttribute(CURRENT_USER);
+        if (currentUser == null) {
+            currentUser = User.builder().build();
+        }
         Set<Role> rolesInSession = currentUser.getRoles();
         if (Objects.isNull(rolesInSession)) {
-            currentUser.setRoles(new HashSet<>(List.of(Role.GUEST)));
+            Set<Role> roles = new HashSet<>();
+            roles.add(Role.GUEST);
+            currentUser.setRoles(roles);
             session.setAttribute(CURRENT_USER, currentUser);
             return true;
         }

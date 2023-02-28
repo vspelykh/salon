@@ -38,6 +38,21 @@ class SecurityFilterTest extends AbstractFilterTest {
     }
 
     @Test
+    void testCommandIsWrong() throws ServletException, IOException {
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());
+        when(request.getParameter(COMMAND)).thenReturn(COMMAND);
+        doFilter();
+        verify(chain).doFilter(request, response);
+    }
+
+    @Test
+    void testCurrentUserIsNull() throws ServletException, IOException {
+        when(session.getAttribute(CURRENT_USER)).thenReturn(null).thenReturn(getTestUser());
+        doFilter();
+        verify(chain).doFilter(request, response);
+    }
+
+    @Test
     void testSetGuestRoleIfRolesIsEmpty() throws ServletException, IOException {
         User actualUser = User.builder().roles(null).build();
         User userForSet = User.builder().roles(Set.of(Role.GUEST)).build();

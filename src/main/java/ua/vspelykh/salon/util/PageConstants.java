@@ -57,16 +57,17 @@ public class PageConstants {
         put(INVITATION, admin);
         put(ROLES, admin);
         put(EDIT_MASTER, admin);
+        put(ABOUT, all);
     }
 
-    public static Set<Role> getPermittedRoles(String command){
+    public static Set<Role> getPermittedRoles(String command) {
         if (command == null || command.isEmpty()) {
             command = HOME_REDIRECT;
         }
         return permissions.get(command);
     }
 
-    private static void put(String command, Set<Role> roles){
+    private static void put(String command, Set<Role> roles) {
         permissions.put(command, roles);
     }
 
