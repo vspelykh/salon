@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.util.validation;
 
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class Validation {
 

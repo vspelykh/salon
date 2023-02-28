@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 
-<%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.dto.AppointmentDto" %>
+<%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.model.dto.AppointmentDto" %>
 
 <head>
     <title>Change status of appointment</title>

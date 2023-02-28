@@ -1,8 +1,8 @@
 package ua.vspelykh.salon.service.impl;
 
-import ua.vspelykh.salon.dao.*;
-import ua.vspelykh.salon.dao.connection.DBCPDataSource;
-import ua.vspelykh.salon.dao.impl.*;
+import ua.vspelykh.salon.model.dao.*;
+import ua.vspelykh.salon.model.dao.connection.DBCPDataSource;
+import ua.vspelykh.salon.model.dao.impl.*;
 import ua.vspelykh.salon.service.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -38,7 +38,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public BaseServiceService getBaseServiceService() throws ServiceException {
         BaseServiceServiceImpl baseServiceService = new BaseServiceServiceImpl();
         baseServiceService.setBaseServiceDao(getBaseServiceDao());
-        baseServiceService.setServiceCategoryService(getServiceCategoryService());
+        baseServiceService.setServiceCategoryDao(getServiceCategoryDao());
         baseServiceService.setTransaction(getTransaction());
         return baseServiceService;
     }
@@ -60,9 +60,9 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public MarkService getMarkService() throws ServiceException {
-        MarkServiceImpl markService = new MarkServiceImpl();
-        markService.setMarkDao(getMarkDao());
+    public FeedbackService getFeedbackService() throws ServiceException {
+        FeedbackServiceImpl markService = new FeedbackServiceImpl();
+        markService.setFeedbackDao(getMarkDao());
         markService.setAppointmentDao(getAppointmentDao());
         markService.setUserDao(getUserDao());
         markService.setTransaction(getTransaction());
@@ -70,9 +70,9 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public OrderingService getOrderingService() throws ServiceException {
-        OrderingServiceImpl orderingService = new OrderingServiceImpl();
-        orderingService.setOrderingDao(getOrderingDao());
+    public AppointmentItemService getOrderingService() throws ServiceException {
+        AppointmentItemServiceImpl orderingService = new AppointmentItemServiceImpl();
+        orderingService.setAppointmentItemDao(getOrderingDao());
         orderingService.setTransaction(getTransaction());
         return orderingService;
     }
@@ -86,8 +86,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public ServiceService getServiceService() throws ServiceException {
-        ServiceServiceImpl serviceService = new ServiceServiceImpl();
+    public MasterServiceService getServiceService() throws ServiceException {
+        MasterServiceServiceImpl serviceService = new MasterServiceServiceImpl();
         serviceService.setMsDao(getMasterServiceDao());
         serviceService.setBaseServiceDao(getBaseServiceDao());
         serviceService.setServiceCategoryDao(getServiceCategoryDao());
@@ -134,7 +134,6 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public MasterServiceDao getMasterServiceDao() throws ServiceException {
         MasterServiceDaoImpl msDao = new MasterServiceDaoImpl();
-        msDao.setBaseServiceDao(getBaseServiceDao());
         msDao.setConnection(getConnection());
         return msDao;
     }
@@ -147,15 +146,15 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public OrderingDao getOrderingDao() throws ServiceException {
-        OrderingDaoImpl orderingDao = new OrderingDaoImpl();
+    public AppointmentItemDao getOrderingDao() throws ServiceException {
+        AppointmentItemDaoImpl orderingDao = new AppointmentItemDaoImpl();
         orderingDao.setConnection(getConnection());
         return orderingDao;
     }
 
     @Override
-    public MarkDao getMarkDao() throws ServiceException {
-        MarkDaoImpl markDao = new MarkDaoImpl();
+    public FeedbackDao getMarkDao() throws ServiceException {
+        FeedbackDaoImpl markDao = new FeedbackDaoImpl();
         markDao.setConnection(getConnection());
         return markDao;
     }
@@ -210,7 +209,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         }
     }
 
-    public static ServiceFactory getServiceFactory(){
+    public static ServiceFactory getServiceFactory() {
         return new ServiceFactoryImpl();
     }
 }

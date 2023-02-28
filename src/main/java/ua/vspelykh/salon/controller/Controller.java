@@ -7,11 +7,12 @@ import ua.vspelykh.salon.controller.command.CommandFactory;
 import ua.vspelykh.salon.service.ServiceFactory;
 import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
 
 
 public class Controller extends HttpServlet {
@@ -20,22 +21,27 @@ public class Controller extends HttpServlet {
 
     private static final Logger LOG = LogManager.getLogger(Controller.class);
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         process(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         process(req, resp);
     }
 
-    private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void process(HttpServletRequest request, HttpServletResponse response) {
         Command command = CommandFactory.getCommand(request);
-        try(ServiceFactory serviceFactory = getServiceFactory()){
+        try (ServiceFactory serviceFactory = getServiceFactory()) {
             command.init(getServletContext(), request, response, serviceFactory);
             command.process();
         } catch (Exception e) {
-            throw new ServletException(e);
+            try {
+                response.sendRedirect(String.format(JSP_PATTERN, "500"));
+            } catch (IOException ex) {
+                LOG.error("Error in FrontController");
+            }
         }
     }
 

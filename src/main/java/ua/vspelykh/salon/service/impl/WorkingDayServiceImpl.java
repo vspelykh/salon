@@ -2,8 +2,8 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.WorkingDayDao;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.dao.WorkingDayDao;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.service.WorkingDayService;
 import ua.vspelykh.salon.util.exception.DaoException;
@@ -26,7 +26,6 @@ public class WorkingDayServiceImpl implements WorkingDayService {
         try {
             return workingDayDao.getWorkingDaysByUserId(userId);
         } catch (DaoException e) {
-            //TODO
             throw new ServiceException(e);
         }
     }
@@ -60,8 +59,6 @@ public class WorkingDayServiceImpl implements WorkingDayService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
         }
     }
 
@@ -83,7 +80,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     }
 
     @Override
-    public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws ServiceException {
+    public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) {
         try {
             return workingDayDao.getDayByUserIdAndDate(userId, date);
         } catch (DaoException e) {
@@ -92,7 +89,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     }
 
     @Override
-    public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) {
+    public void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray) throws ServiceException {
         try {
             transaction.start();
             workingDayDao.deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
@@ -103,7 +100,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            e.printStackTrace();
+            throw new ServiceException(e);
         }
     }
 

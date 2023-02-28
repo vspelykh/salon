@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.model.Consultation;
+import ua.vspelykh.salon.model.entity.Consultation;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.util.List;

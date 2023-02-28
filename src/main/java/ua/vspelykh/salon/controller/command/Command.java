@@ -1,10 +1,6 @@
 package ua.vspelykh.salon.controller.command;
 
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.WorkingDay;
 import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.util.TimeSlotsUtils;
-import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -13,16 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
-import static ua.vspelykh.salon.util.SalonUtils.getTime;
 import static ua.vspelykh.salon.util.SalonUtils.parseLocalDate;
-import static ua.vspelykh.salon.util.TimeSlotsUtils.countAllowedMinutes;
-import static ua.vspelykh.salon.util.TimeSlotsUtils.removeOccupiedSlots;
 
 public abstract class Command {
 
@@ -45,11 +35,11 @@ public abstract class Command {
 
     protected void forward(String target) throws ServletException, IOException {
         target = String.format(JSP_PATTERN, target);
-        RequestDispatcher dispatcher = context.getRequestDispatcher(target);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(target);
         dispatcher.forward(request, response);
     }
 
-    protected void redirect(String target) throws ServletException, IOException {
+    protected void redirect(String target) throws IOException {
         response.sendRedirect(target);
     }
 
@@ -64,7 +54,7 @@ public abstract class Command {
         }
         request.setAttribute(LAST_PAGE, pages.length);
         request.setAttribute(PAGES_ARRAY, pages);
-        request.setAttribute(NUMBER_OF_PAGES, Math.ceil(countOfItems * 1.0 / size));
+        request.setAttribute(NUMBER_OF_PAGES, (int) Math.ceil(countOfItems * 1.0 / size));
         String path = "?" + request.getQueryString().replaceAll("&page=[0-9]*", "");
         request.setAttribute(PATH_STR, path);
     }
@@ -81,14 +71,5 @@ public abstract class Command {
 
     public ServiceFactory getServiceFactory() {
         return serviceFactory;
-    }
-    public boolean validateAppointment(Appointment appointment) throws ServiceException /*throws ValidationException*/ {
-        WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(appointment.getMasterId(), appointment.getDate().toLocalDate());
-        List<LocalTime> slots = TimeSlotsUtils.getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
-        List<Appointment> appointments = getServiceFactory().getAppointmentService().getByDateAndMasterId(day.getDate(), day.getUserId());
-        removeOccupiedSlots(slots, appointments, INTERVAL);
-        return countAllowedMinutes(getTime(String.valueOf(appointment.getDate().toLocalTime())), appointments, day)
-                >= appointment.getContinuance() && slots.contains(appointment.getDate().toLocalTime());
-
     }
 }

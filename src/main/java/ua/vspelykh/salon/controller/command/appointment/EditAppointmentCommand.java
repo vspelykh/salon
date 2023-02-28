@@ -1,24 +1,22 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.PaymentStatus;
-import ua.vspelykh.salon.model.Role;
+import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class EditAppointmentCommand extends Command {
+
+    private static final String REDIRECT = "redirect";
 
     @Override
     public void process() throws ServletException, IOException {
@@ -29,7 +27,7 @@ public class EditAppointmentCommand extends Command {
             setNewTimeSlot(appointment);
             getServiceFactory().getAppointmentService().save(appointment);
             String masterId = request.getParameter(ID);
-            if (request.getParameter("redirect") != null && request.getParameter("redirect").equals("redirect")) {
+            if (request.getParameter(REDIRECT) != null && request.getParameter(REDIRECT).equals(REDIRECT)) {
                 redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);
             } else {
                 redirect(String.format("%s%s%s&%s=%s&%s=%s", HOME_REDIRECT, COMMAND_PARAM, GET_SCHEDULE, ID, masterId,
@@ -41,6 +39,9 @@ public class EditAppointmentCommand extends Command {
     }
 
     private void setPaymentStatus(Appointment appointment) {
+        if (appointment.getStatus().equals(AppointmentStatus.CANCELLED)) {
+            return;
+        }
         if (isAdmin() && checkNullParam(request.getParameter(PAYMENT_STATUS))) {
             appointment.setPaymentStatus(PaymentStatus.valueOf(request.getParameter(PAYMENT_STATUS)));
         }
@@ -56,18 +57,18 @@ public class EditAppointmentCommand extends Command {
     private void setStatus(Appointment appointment) {
         if (checkNullParam(request.getParameter(STATUS))) {
             String status = request.getParameter(STATUS);
-            if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()){
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;
             }
             appointment.setStatus(AppointmentStatus.valueOf(status));
-            if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID){
+            if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID) {
                 appointment.setPaymentStatus(PaymentStatus.RETURNED);
             }
         }
     }
-    @SuppressWarnings("unchecked")
-    private boolean isAdmin(){
-        Set<Role> roles = (Set<Role>) request.getSession().getAttribute(ROLES);
-        return roles.contains(Role.ADMINISTRATOR);
+
+    private boolean isAdmin() {
+        User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
+        return currentUser.getRoles().contains(Role.ADMINISTRATOR);
     }
 }

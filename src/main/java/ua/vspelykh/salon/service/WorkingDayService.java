@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Time;
@@ -19,6 +19,6 @@ public interface WorkingDayService {
 
     WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws ServiceException;
 
-    void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray);
+    void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray)throws ServiceException;
 
 }

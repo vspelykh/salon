@@ -1,7 +1,7 @@
 package ua.vspelykh.salon.controller.command.login;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.User;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -12,13 +12,10 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 
 public class CheckLoginCommand extends Command {
 
-    private String login;
-    private String password;
-
     @Override
     public void process() throws ServletException, IOException {
-        login = request.getParameter(LOGIN);
-        password = request.getParameter(PASSWORD);
+        String login = request.getParameter(LOGIN);
+        String password = request.getParameter(PASSWORD);
 
         if (login != null && password != null) {
             try {
@@ -26,7 +23,6 @@ public class CheckLoginCommand extends Command {
                 if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute(CURRENT_USER, user);
-                    session.setAttribute(ROLES, user.getRoles());
                     session.setAttribute(IS_LOGGED, true);
                     if (session.getAttribute(LAST_PAGE) != null) {
                         String path = (String) session.getAttribute(LAST_PAGE);
@@ -42,6 +38,8 @@ public class CheckLoginCommand extends Command {
                 request.setAttribute(INS_PASSWORD, password);
                 redirect(HOME_REDIRECT + COMMAND_PARAM + LOGIN);
             }
+        } else {
+            response.sendError(500);
         }
     }
 }

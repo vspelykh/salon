@@ -1,10 +1,10 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dto.UserMasterDTO;
-import ua.vspelykh.salon.model.MastersLevel;
-import ua.vspelykh.salon.model.Role;
-import ua.vspelykh.salon.model.User;
-import ua.vspelykh.salon.model.UserLevel;
+import ua.vspelykh.salon.model.dto.UserMasterDTO;
+import ua.vspelykh.salon.model.entity.MastersLevel;
+import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
+import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -16,17 +16,9 @@ public interface UserService {
 
     User findByEmailAndPassword(String email, String password) throws ServiceException;
 
-    User findByNumber(String number) throws ServiceException;
-
     List<User> findAll() throws ServiceException;
 
-    List<User> findClients() throws ServiceException;
-
     List<User> findMasters(boolean isActive) throws ServiceException;
-
-    List<User> findAdministrators() throws ServiceException;
-
-    List<User> getUsersByLevel(UserLevel userLevel, boolean isActive) throws ServiceException;
 
     void save(User user) throws ServiceException;
 

@@ -1,8 +1,8 @@
 package ua.vspelykh.salon.util;
 
-import ua.vspelykh.salon.dto.AppointmentDto;
-import ua.vspelykh.salon.model.Appointment;
-import ua.vspelykh.salon.model.WorkingDay;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Time;

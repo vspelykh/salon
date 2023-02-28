@@ -1,5 +1,7 @@
 package ua.vspelykh.salon.controller;
 
+import java.util.List;
+
 public class ControllerConstants {
 
     public static final String SIGN_UP = "sign-up";
@@ -8,7 +10,6 @@ public class ControllerConstants {
     public static final String HOME_PAGE = "index";
     public static final String HOME_REDIRECT = "/salon";
     public static final String PROFILE = "profile";
-    public static final String ABOUT = "about";
     public static final String COMMAND_PARAM = "?command=";
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
@@ -32,7 +33,7 @@ public class ControllerConstants {
     public static final String SIZE = "size";
     public static final String SEARCH = "search";
     public static final String SIZES = "sizes";
-    public static final int[] SIZE_ARRAY = new int[]{1, 2, 5, 10};
+    public static final List<Integer> SIZE_LIST = List.of(1, 2, 5, 10);
     public static final String SORTS = "sorts";
     public static final String SORT = "sort";
     public static final String PAGE = "page";
@@ -51,4 +52,17 @@ public class ControllerConstants {
     public static final String EMPTY_STRING = "";
     public static final String DOT = ".";
     public static final String PAYMENT = "payment";
+
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String EMAIL = "email";
+    public static final String NUMBER = "number";
+    public static final String PASSWORD_REPEAT = "passwordRepeat";
+
+    public static final String FREE_SLOTS_MAP = "free_slots_map";
+
+
+    private ControllerConstants() {
+
+    }
 }

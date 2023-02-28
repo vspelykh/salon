@@ -1,6 +1,6 @@
 package ua.vspelykh.salon.service;
 
-import ua.vspelykh.salon.dao.*;
+import ua.vspelykh.salon.model.dao.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import java.sql.Connection;
@@ -14,10 +14,10 @@ public interface ServiceFactory extends AutoCloseable {
     BaseServiceService getBaseServiceService() throws ServiceException;
     ConsultationService getConsultationService() throws ServiceException;
     InvitationService getInvitationService() throws ServiceException;
-    MarkService getMarkService() throws ServiceException;
-    OrderingService getOrderingService() throws ServiceException;
+    FeedbackService getFeedbackService() throws ServiceException;
+    AppointmentItemService getOrderingService() throws ServiceException;
     ServiceCategoryService getServiceCategoryService() throws ServiceException;
-    ServiceService getServiceService() throws ServiceException;
+    MasterServiceService getServiceService() throws ServiceException;
     WorkingDayService getWorkingDayService() throws ServiceException;
 
     Transaction getTransaction() throws ServiceException;
@@ -27,8 +27,8 @@ public interface ServiceFactory extends AutoCloseable {
     BaseServiceDao getBaseServiceDao() throws ServiceException;
     MasterServiceDao getMasterServiceDao() throws ServiceException;
     AppointmentDao getAppointmentDao() throws ServiceException;
-    OrderingDao getOrderingDao() throws ServiceException;
-    MarkDao getMarkDao() throws ServiceException;
+    AppointmentItemDao getOrderingDao() throws ServiceException;
+    FeedbackDao getMarkDao() throws ServiceException;
     ConsultationDao getConsultationDao() throws ServiceException;
     WorkingDayDao getWorkingDayDao() throws ServiceException;
 

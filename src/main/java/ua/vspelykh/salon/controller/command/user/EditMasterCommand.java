@@ -1,15 +1,15 @@
 package ua.vspelykh.salon.controller.command.user;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.MastersLevel;
-import ua.vspelykh.salon.model.UserLevel;
+import ua.vspelykh.salon.model.entity.MastersLevel;
+import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class EditMasterCommand extends Command {
     @Override

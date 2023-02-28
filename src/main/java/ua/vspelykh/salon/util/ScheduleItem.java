@@ -1,16 +1,21 @@
 package ua.vspelykh.salon.util;
 
-import ua.vspelykh.salon.dto.AppointmentDto;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
 
-import java.io.Serializable;
 import java.time.LocalTime;
 
-public class ScheduleItem implements Serializable {
+@Getter
+@Builder
+@EqualsAndHashCode
+public class ScheduleItem {
 
     private AppointmentDto appointment;
-    private LocalTime start;
-    private LocalTime end;
-    private String info;
+    private final LocalTime start;
+    private final LocalTime end;
+    private final String info;
 
     public ScheduleItem(LocalTime start, LocalTime end, String info) {
         this.start = start;
@@ -23,22 +28,6 @@ public class ScheduleItem implements Serializable {
         this.start = start;
         this.end = end;
         this.info = info;
-    }
-
-    public AppointmentDto getAppointment() {
-        return appointment;
-    }
-
-    public LocalTime getStart() {
-        return start;
-    }
-
-    public LocalTime getEnd() {
-        return end;
-    }
-
-    public String getInfo() {
-        return info;
     }
 
     @Override

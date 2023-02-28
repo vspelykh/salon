@@ -2,12 +2,12 @@ package ua.vspelykh.salon.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.vspelykh.salon.dao.BaseServiceDao;
-import ua.vspelykh.salon.dto.BaseServiceDto;
-import ua.vspelykh.salon.model.BaseService;
-import ua.vspelykh.salon.model.ServiceCategory;
+import ua.vspelykh.salon.model.dao.BaseServiceDao;
+import ua.vspelykh.salon.model.dao.ServiceCategoryDao;
+import ua.vspelykh.salon.model.dto.BaseServiceDto;
+import ua.vspelykh.salon.model.entity.BaseService;
+import ua.vspelykh.salon.model.entity.ServiceCategory;
 import ua.vspelykh.salon.service.BaseServiceService;
-import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ua.vspelykh.salon.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 public class BaseServiceServiceImpl implements BaseServiceService {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceServiceImpl.class);
 
-    private ServiceCategoryService serviceCategoryService;
+    private ServiceCategoryDao serviceCategoryDao;
     private BaseServiceDao baseServiceDao;
     private Transaction transaction;
 
@@ -105,8 +105,6 @@ public class BaseServiceServiceImpl implements BaseServiceService {
             } catch (TransactionException ex) {
                 /*ignore*/
             }
-            //TODO
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
@@ -114,14 +112,13 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     @Override
     public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException {
         try {
-            return baseServiceDao.getCountOfCategories(categoriesIds, page, size);
+            return baseServiceDao.getCountOfCategories(categoriesIds);
         } catch (DaoException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         }
     }
 
-    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws ServiceException {
+    private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws DaoException {
         List<BaseServiceDto> dtos = new ArrayList<>();
         for (BaseService baseService : baseServices) {
             dtos.add(toDto(baseService, locale));
@@ -129,9 +126,9 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         return dtos;
     }
 
-    private BaseServiceDto toDto(BaseService baseService, String locale) throws ServiceException {
+    private BaseServiceDto toDto(BaseService baseService, String locale) throws DaoException {
         BaseServiceDto dto = new BaseServiceDto();
-        ServiceCategory category = serviceCategoryService.findById(baseService.getCategoryId());
+        ServiceCategory category = serviceCategoryDao.findById(baseService.getCategoryId());
         dto.setId(baseService.getId());
         if (Objects.equals(locale, UA_LOCALE)) {
             dto.setService(baseService.getServiceUa());
@@ -144,8 +141,8 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         return dto;
     }
 
-    public void setServiceCategoryService(ServiceCategoryService serviceCategoryService) {
-        this.serviceCategoryService = serviceCategoryService;
+    public void setServiceCategoryDao(ServiceCategoryDao serviceCategoryDao) {
+        this.serviceCategoryDao = serviceCategoryDao;
     }
 
     public void setBaseServiceDao(BaseServiceDao baseServiceDao) {

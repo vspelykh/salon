@@ -1,9 +1,9 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.dto.AppointmentDto;
-import ua.vspelykh.salon.model.AppointmentStatus;
-import ua.vspelykh.salon.model.PaymentStatus;
+import ua.vspelykh.salon.model.dto.AppointmentDto;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.PaymentStatus;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -14,7 +14,7 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENTS;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
-import static ua.vspelykh.salon.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 public class OrdersCommand extends Command {
 
@@ -63,7 +63,7 @@ public class OrdersCommand extends Command {
     }
 
     private void setFilterAttributes() throws ServiceException {
-        request.setAttribute(SIZES, SIZE_ARRAY);
+        request.setAttribute(SIZES, SIZE_LIST);
         request.setAttribute(MASTERS, getServiceFactory().getUserService().findMasters(true));
     }
 }
