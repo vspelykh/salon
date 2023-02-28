@@ -23,7 +23,6 @@ public class CheckLoginCommand extends Command {
                 if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute(CURRENT_USER, user);
-                    session.setAttribute(ROLES, user.getRoles());
                     session.setAttribute(IS_LOGGED, true);
                     if (session.getAttribute(LAST_PAGE) != null) {
                         String path = (String) session.getAttribute(LAST_PAGE);

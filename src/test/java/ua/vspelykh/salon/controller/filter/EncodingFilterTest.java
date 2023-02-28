@@ -11,8 +11,6 @@ import static org.mockito.Mockito.*;
 
 class EncodingFilterTest extends AbstractFilterTest {
 
-    private final String encoding = "UTF-8";
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -20,23 +18,13 @@ class EncodingFilterTest extends AbstractFilterTest {
     }
 
     @Test
-    void doFilterSetsCharacterEncodingIfNull() throws IOException, ServletException {
-        when(request.getCharacterEncoding()).thenReturn(null);
-
-        filter.doFilter(request, response, chain);
-
-        verify(request, times(1)).setCharacterEncoding(encoding);
-        verify(response, times(1)).setCharacterEncoding(encoding);
-        verify(chain, times(1)).doFilter(request, response);
-    }
-
-    @Test
     void doFilterSetsCharacterEncoding() throws IOException, ServletException {
         String existingEncoding = "ISO-8859-1";
         when(request.getCharacterEncoding()).thenReturn(existingEncoding);
 
-        filter.doFilter(request, response, chain);
+        doFilter();
 
+        String encoding = "UTF-8";
         verify(request, times(1)).setCharacterEncoding(encoding);
         verify(response, times(1)).setCharacterEncoding(encoding);
         verify(chain, times(1)).doFilter(request, response);

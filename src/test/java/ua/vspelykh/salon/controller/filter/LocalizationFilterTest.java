@@ -29,7 +29,7 @@ class LocalizationFilterTest extends AbstractFilterTest {
         when(request.getParameter(LANG)).thenReturn(lang);
         when(request.getQueryString()).thenReturn("");
 
-        filter.doFilter(request, response, chain);
+        doFilter();
 
         verify(session).setAttribute(LANG, lang);
         verify(response).sendRedirect(HOME_REDIRECT);
@@ -43,7 +43,7 @@ class LocalizationFilterTest extends AbstractFilterTest {
         when(request.getParameter(LANG)).thenReturn(lang);
         when(request.getQueryString()).thenReturn("command=masters");
 
-        filter.doFilter(request, response, chain);
+        doFilter();
 
         verify(session).setAttribute(LANG, lang);
         verify(response).sendRedirect(MASTERS_REDIRECT);
@@ -58,7 +58,7 @@ class LocalizationFilterTest extends AbstractFilterTest {
         when(request.getContextPath()).thenReturn("");
         when(request.getSession()).thenReturn(session);
 
-        filter.doFilter(request, response, chain);
+        doFilter();
 
         verify(session).setAttribute(LANG, lang);
         verify(response).sendRedirect(HOME_REDIRECT);
@@ -68,7 +68,7 @@ class LocalizationFilterTest extends AbstractFilterTest {
     void filterLocalizationNoParam() throws IOException, ServletException {
         when(request.getSession()).thenReturn(session);
 
-        filter.doFilter(request, response, chain);
+        doFilter();
 
         verify(session).getAttribute(LANG);
         verify(session).setAttribute(LANG, UA_LOCALE);

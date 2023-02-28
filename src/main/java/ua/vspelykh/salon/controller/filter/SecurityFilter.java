@@ -23,7 +23,6 @@ import static ua.vspelykh.salon.util.PageConstants.getPermittedRoles;
 public class SecurityFilter implements Filter {
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
@@ -35,22 +34,18 @@ public class SecurityFilter implements Filter {
 
         Set<Role> roles = getPermittedRoles(command);
 
-        if (roles != null) {
-            HttpSession session = req.getSession();
-            if (session != null) {
-                Set<Role> rolesInSession = (Set<Role>) session.getAttribute(ROLES);
-                if (rolesInSession != null && checkUserContainsAnyPermissionRole(rolesInSession, roles)) {
-                    if (checkAccessForMasterToSchedulePages(req, res, command)) return;
-                    chain.doFilter(request, response);
-                    return;
-                }
-                if (!Objects.requireNonNull(rolesInSession).contains(Role.GUEST)) {
-                    userIsGuest = false;
-                }
+        HttpSession session = req.getSession();
+        if (session != null) {
+            User currentUser = (User) session.getAttribute(CURRENT_USER);
+            Set<Role> rolesInSession = currentUser.getRoles();
+            if (rolesInSession != null && checkUserContainsAnyPermissionRole(rolesInSession, roles)) {
+                if (checkAccessForMasterToSchedulePages(req, res, command)) return;
+                chain.doFilter(request, response);
+                return;
             }
-        } else {
-            chain.doFilter(request, response);
-            return;
+            if (!Objects.requireNonNull(rolesInSession).contains(Role.GUEST)) {
+                userIsGuest = false;
+            }
         }
         isUserIsGuest(req, res, userIsGuest, command);
     }
@@ -73,20 +68,20 @@ public class SecurityFilter implements Filter {
     }
 
     private void logout(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        req.getSession().removeAttribute(ROLES);
         req.getSession().removeAttribute(IS_LOGGED);
         req.getSession().removeAttribute(CURRENT_USER);
         HashSet<Role> roles = new HashSet<>();
         roles.add(Role.GUEST);
-        req.getSession().setAttribute(ROLES, roles);
+        User guestUser = User.builder().roles(roles).build();
+        req.getSession().setAttribute(CURRENT_USER, guestUser);
         res.sendRedirect(req.getServletContext().getContextPath() + HOME_REDIRECT);
     }
 
     private boolean isUserBanned(HttpServletRequest req) {
-        if (req.getSession().getAttribute(CURRENT_USER) == null) {
+        User user = (User) req.getSession().getAttribute(CURRENT_USER);
+        if (user.getRoles().contains(Role.GUEST)) {
             return false;
         }
-        User user = (User) req.getSession().getAttribute(CURRENT_USER);
         return user.getRoles().isEmpty();
     }
 
@@ -104,16 +99,16 @@ public class SecurityFilter implements Filter {
         return !Collections.disjoint(rolesInSession, roles);
     }
 
-    @SuppressWarnings("unchecked")
     private boolean checkIfSessionHasRolesAttr(HttpServletRequest req) {
         HttpSession session = req.getSession();
-        Set<Role> userRoles = (Set<Role>) session.getAttribute(ROLES);
-        if (Objects.isNull(userRoles)) {
-            userRoles = new HashSet<>(List.of(Role.GUEST));
-            session.setAttribute(ROLES, userRoles);
+        User currentUser = (User) session.getAttribute(CURRENT_USER);
+        Set<Role> rolesInSession = currentUser.getRoles();
+        if (Objects.isNull(rolesInSession)) {
+            currentUser.setRoles(new HashSet<>(List.of(Role.GUEST)));
+            session.setAttribute(CURRENT_USER, currentUser);
             return true;
         }
-        return userRoles.contains(Role.GUEST);
+        return rolesInSession.contains(Role.GUEST);
     }
 
     private void isUserIsGuest(HttpServletRequest req, HttpServletResponse res, boolean userIsGuest, String command) throws IOException {

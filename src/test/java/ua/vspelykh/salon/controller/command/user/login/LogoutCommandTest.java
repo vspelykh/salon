@@ -1,9 +1,11 @@
-package ua.vspelykh.salon.controller.command.login;
+package ua.vspelykh.salon.controller.command.user.login;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
+import ua.vspelykh.salon.controller.command.login.LogoutCommand;
 import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -30,7 +32,8 @@ class LogoutCommandTest extends AbstractCommandTest {
         command.process();
         verifyAttributes();
         Set<Role> expectedRoles = Set.of(Role.GUEST);
-        verify(session).setAttribute(ROLES, expectedRoles);
+        User expectedUser = User.builder().roles(expectedRoles).build();
+        verify(session).setAttribute(CURRENT_USER, expectedUser);
         verifyRedirectAnyString();
     }
 
@@ -43,7 +46,6 @@ class LogoutCommandTest extends AbstractCommandTest {
 
     @Override
     protected void verifyAttributes() {
-        verify(session).removeAttribute(ROLES);
         verify(session).removeAttribute(IS_LOGGED);
         verify(session).removeAttribute(CURRENT_USER);
     }

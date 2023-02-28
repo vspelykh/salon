@@ -1,9 +1,10 @@
-package ua.vspelykh.salon.controller.command.login;
+package ua.vspelykh.salon.controller.command.user.login;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
+import ua.vspelykh.salon.controller.command.login.CheckLoginCommand;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -88,7 +89,6 @@ class CheckLoginCommandTest extends AbstractCommandTest {
     @Override
     protected void verifyAttributes() {
         verify(session).setAttribute(CURRENT_USER, getTestUser());
-        verify(session).setAttribute(ROLES, getTestUser().getRoles());
         verify(session).setAttribute(IS_LOGGED, true);
     }
 }

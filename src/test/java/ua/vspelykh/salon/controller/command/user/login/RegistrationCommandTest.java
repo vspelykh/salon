@@ -1,9 +1,10 @@
-package ua.vspelykh.salon.controller.command.login;
+package ua.vspelykh.salon.controller.command.user.login;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
+import ua.vspelykh.salon.controller.command.login.RegistrationCommand;
 import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.util.exception.ServiceException;
