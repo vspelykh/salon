@@ -19,10 +19,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.NAME_VALUE;
-import static ua.vspelykh.salon.Constants.ROLES_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
+import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 class MastersCommandTest extends AbstractCommandTest {
@@ -79,7 +79,7 @@ class MastersCommandTest extends AbstractCommandTest {
         when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
         when(serviceFactory.getUserService()).thenReturn(userService);
         when(serviceFactory.getServiceCategoryService()).thenReturn(serviceCategoryService);
-        when(request.getSession().getAttribute(ROLES)).thenReturn(ROLES_VALUE);
+        when(request.getSession().getAttribute(CURRENT_USER)).thenReturn(getTestUser());
         when(request.getSession().getAttribute(LANG)).thenReturn(locale);
         when(request.getParameter(PAGE)).thenReturn(String.valueOf(page));
         when(request.getParameter(SIZE)).thenReturn(String.valueOf(size));

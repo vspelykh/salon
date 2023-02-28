@@ -144,7 +144,7 @@ class GetScheduleCommandTest extends AbstractCommandTest {
         when(workingDayService.getDayByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
         when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
         when(baseServiceService.findById(ID_VALUE)).thenReturn(getTestBaseService());
-        when(session.getAttribute(ROLES)).thenReturn(ROLES_VALUE);
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());
     }
 
     @Override

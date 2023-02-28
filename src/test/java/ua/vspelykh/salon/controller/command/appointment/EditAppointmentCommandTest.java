@@ -4,10 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
-import ua.vspelykh.salon.model.entity.Appointment;
-import ua.vspelykh.salon.model.entity.AppointmentStatus;
-import ua.vspelykh.salon.model.entity.PaymentStatus;
-import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -22,8 +19,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.DATE_VALUE;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.ControllerConstants.ROLES;
+import static ua.vspelykh.salon.controller.ControllerConstants.CURRENT_USER;
+import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointment;
+import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class EditAppointmentCommandTest extends AbstractCommandTest {
@@ -43,7 +42,9 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processIsAdmin() throws ServletException, IOException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.ADMINISTRATOR));
+        User user = getTestUser();
+        user.setRoles(Set.of(Role.ADMINISTRATOR));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(user);
         command.process();
         assertEquals(AppointmentStatus.SUCCESS, appointment.getStatus());
         assertEquals(PaymentStatus.PAID_BY_CARD, appointment.getPaymentStatus());
@@ -53,7 +54,9 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processIsMaster() throws ServletException, IOException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.HAIRDRESSER));
+        User user = getTestUser();
+        user.setRoles(Set.of(Role.HAIRDRESSER));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(user);
         when(request.getParameter("redirect")).thenReturn(null);
         command.process();
         assertEquals(AppointmentStatus.SUCCESS, appointment.getStatus());
@@ -64,7 +67,9 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processIsMasterAndStatusIsCancelled() throws ServletException, IOException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.HAIRDRESSER));
+        User user = getTestUser();
+        user.setRoles(Set.of(Role.HAIRDRESSER));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(user);
         when(request.getParameter(STATUS)).thenReturn(AppointmentStatus.CANCELLED.name());
         command.process();
         assertNotEquals(AppointmentStatus.CANCELLED, appointment.getStatus());
@@ -72,7 +77,9 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processStatusCancelledAndPaid() throws ServletException, IOException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.ADMINISTRATOR));
+        User user = getTestUser();
+        user.setRoles(Set.of(Role.ADMINISTRATOR));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(user);
         when(request.getParameter(STATUS)).thenReturn(AppointmentStatus.CANCELLED.name());
         appointment.setPaymentStatus(PaymentStatus.PAID_BY_CARD);
         command.process();
@@ -82,7 +89,9 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processIsHairdresserAndStatusIsCancelled() throws ServletException, IOException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.ADMINISTRATOR));
+        User user = getTestUser();
+        user.setRoles(Set.of(Role.ADMINISTRATOR));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(user);
         when(request.getParameter(STATUS)).thenReturn(AppointmentStatus.CANCELLED.name());
         appointment.setPaymentStatus(PaymentStatus.PAID_BY_CARD);
         command.process();
@@ -92,7 +101,7 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void processError() throws IOException, ServiceException, ServletException {
-        when(session.getAttribute(ROLES)).thenReturn(Set.of(Role.HAIRDRESSER));
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestMaster());
         when(appointmentService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
         verifyError500();
