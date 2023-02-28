@@ -3,6 +3,7 @@ package ua.vspelykh.salon.controller.command.user;
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
 import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.ScheduleBuilder;
 import ua.vspelykh.salon.util.ScheduleItem;
@@ -54,13 +55,12 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void setAttrs(int userId, Map<LocalDate, List<ScheduleItem>> mapOfSchedules, Map<Integer, List<LocalTime>> freeSlots) throws ServiceException {
         request.setAttribute(FREE_SLOTS_MAP, freeSlots);
         request.setAttribute(STATUS, AppointmentStatus.values());
         request.setAttribute(SCHEDULE, mapOfSchedules);
         request.setAttribute(USER, serviceFactory.getUserService().findById(userId));
-        Set<Role> roles = (Set<Role>) request.getSession().getAttribute("roles");
-        request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
+        User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
+        request.setAttribute(IS_ADMIN, currentUser.getRoles().contains(Role.ADMINISTRATOR));
     }
 }

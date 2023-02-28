@@ -3,6 +3,7 @@ package ua.vspelykh.salon.controller.command;
 import ua.vspelykh.salon.model.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
@@ -20,7 +20,6 @@ import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 public class MastersCommand extends Command {
 
     @Override
-    @SuppressWarnings("unchecked")
     public void process() throws ServletException, IOException {
         try {
             setFilterAttributes();
@@ -40,8 +39,8 @@ public class MastersCommand extends Command {
             request.setAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(locale));
             int countOfItems = getServiceFactory().getUserService().getCountOfMasters(levels, serviceIds, categoriesIds, search);
             setPaginationParams(page, size, countOfItems, sort);
-            Set<Role> roles = (Set<Role>) request.getSession().getAttribute("roles");
-            request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
+            User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
+            request.setAttribute(IS_ADMIN, currentUser.getRoles().contains(Role.ADMINISTRATOR));
             forward(MASTERS);
         } catch (ServiceException e) {
             response.sendError(404);
