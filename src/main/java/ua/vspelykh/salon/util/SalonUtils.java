@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
+import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
+
 public class SalonUtils {
 
     private static final Random random = new Random();
@@ -25,6 +27,10 @@ public class SalonUtils {
 
     public static LocalDate parseLocalDate(String date) {
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public static String getStringDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
     }
 
     public static String generateKeyString() {

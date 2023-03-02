@@ -20,13 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.Constants.DATE_VALUE;
+import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.MASTER_ID;
 
@@ -96,7 +95,7 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
         when(serviceFactory.getWorkingDayService()).thenReturn(workingDayService);
         WorkingDay testWorkingDay = getTestWorkingDay();
         testWorkingDay.setDate(testWorkingDay.getDate().plusDays(1));
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE_2, date)).thenReturn(testWorkingDay);
+        when(workingDayService.getByUserIdAndDate(ID_VALUE_2, date)).thenReturn(testWorkingDay);
         when(serviceFactory.getAppointmentService()).thenReturn(appointmentService);
         Appointment testAppointment = getTestAppointment();
         testAppointment.setDate(LocalDateTime.of(date, DATE_VALUE.toLocalTime()));

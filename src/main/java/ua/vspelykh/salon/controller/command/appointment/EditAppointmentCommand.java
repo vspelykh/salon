@@ -1,62 +1,92 @@
 package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.model.entity.*;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.AppointmentStatus;
+import ua.vspelykh.salon.model.entity.PaymentStatus;
+import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
+/**
+ * The EditAppointmentCommand class extends the Command class and handles the edit operation for an appointment.
+ * It updates the appointment status, payment status, and time slot based on the request parameters.
+ *
+ * @version 1.0
+ */
 public class EditAppointmentCommand extends Command {
 
-    private static final String REDIRECT = "redirect";
-
+    /**
+     * This method is responsible for processing the request and updating the appointment object based on the
+     * request parameters. It first retrieves the appointment object by its ID using the AppointmentService.
+     * Then, it calls several methods to update the appointment's status, payment status, and time slot based
+     * on the request parameters.
+     * Finally, it saves the appointment object using the AppointmentService and redirects the user to the appropriate page.
+     *
+     * @throws ServletException if the servlet cannot handle the request for some reason
+     * @throws IOException      if an I/O error occurs during the processing of the request
+     */
     @Override
     public void process() throws ServletException, IOException {
         try {
-            Appointment appointment = getServiceFactory().getAppointmentService().findById(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
+            Appointment appointment = getServiceFactory().getAppointmentService().findById(getParameterInt(APPOINTMENT_ID));
             setStatus(appointment);
             setPaymentStatus(appointment);
             setNewTimeSlot(appointment);
             getServiceFactory().getAppointmentService().save(appointment);
-            String masterId = request.getParameter(ID);
-            if (request.getParameter(REDIRECT) != null && request.getParameter(REDIRECT).equals(REDIRECT)) {
-                redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);
-            } else {
-                redirect(String.format("%s%s%s&%s=%s&%s=%s", HOME_REDIRECT, COMMAND_PARAM, GET_SCHEDULE, ID, masterId,
-                        DAYS, request.getParameter(DAYS)));
-            }
+            redirectByMasterId(getParameter(ID));
         } catch (ServiceException e) {
-            response.sendError(500);
+            sendError500();
         }
     }
 
+    /**
+     * This method updates the payment status of the appointment based on the request parameter.
+     * If the appointment is already cancelled, the payment status is not updated.
+     * If the user is an admin and the payment status request parameter is not null, the payment status is updated.
+     *
+     * @param appointment the appointment object to be updated
+     */
     private void setPaymentStatus(Appointment appointment) {
         if (appointment.getStatus().equals(AppointmentStatus.CANCELLED)) {
             return;
         }
-        if (isAdmin() && checkNullParam(request.getParameter(PAYMENT_STATUS))) {
-            appointment.setPaymentStatus(PaymentStatus.valueOf(request.getParameter(PAYMENT_STATUS)));
+        if (isAdmin() && isParameterNotNull(PAYMENT_STATUS)) {
+            appointment.setPaymentStatus(PaymentStatus.valueOf(getParameter(PAYMENT_STATUS)));
         }
     }
 
+    /**
+     * This method updates the time slot of the appointment based on the request parameter.
+     * If the user is an admin and the new time slot request parameter is not null, the time slot is updated.
+     *
+     * @param appointment the appointment object to be updated
+     */
     private void setNewTimeSlot(Appointment appointment) {
-        if (isAdmin() && checkNullParam(request.getParameter("new_slot"))) {
-            appointment.setDate(LocalDateTime.of(appointment.getDate().toLocalDate(),
-                    LocalTime.parse(request.getParameter("new_slot"))));
+        if (isAdmin() && isParameterNotNull(getParameter(NEW_SLOT))) {
+            appointment.setDate(LocalDateTime.of(appointment.getDate().toLocalDate(), getParameterLocalTime(NEW_SLOT)));
         }
     }
 
+    /**
+     * This method updates the status and payment status of the appointment based on the request parameters.
+     * If the status request parameter is null, nothing is updated.
+     * If the status is cancelled and the user is not an admin, nothing is updated.
+     * If the status is cancelled and the payment status is not 'NOT_PAID', the payment status is updated to 'RETURNED'.
+     *
+     * @param appointment the appointment object to be updated
+     */
     private void setStatus(Appointment appointment) {
-        if (checkNullParam(request.getParameter(STATUS))) {
-            String status = request.getParameter(STATUS);
+        if (isParameterNotNull(getParameter(STATUS))) {
+            String status = getParameter(STATUS);
             if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;
             }
@@ -67,8 +97,30 @@ public class EditAppointmentCommand extends Command {
         }
     }
 
+    /**
+     * This method checks if the current user is an admin.
+     *
+     * @return true if the current user is an admin.
+     */
     private boolean isAdmin() {
-        User currentUser = (User) request.getSession().getAttribute(CURRENT_USER);
-        return currentUser.getRoles().contains(Role.ADMINISTRATOR);
+        return getCurrentUser().getRoles().contains(Role.ADMINISTRATOR);
+    }
+
+    /**
+     * Redirects the user to a specific page based on the given master ID and the specified parameters.
+     * If the "redirect" parameter is equal to "redirect", the user is redirected to the homepage.
+     * Otherwise, the user is redirected to a specific appointment schedule page based on the given master ID
+     * and the specified parameters.
+     *
+     * @param masterId the ID of the master associated with the appointment schedule
+     * @throws IOException if an I/O error occurs during the processing of the request
+     */
+    private void redirectByMasterId(String masterId) throws IOException {
+        if (getParameter(REDIRECT) != null && getParameter(REDIRECT).equals(REDIRECT)) {
+            redirect(HOME_REDIRECT + COMMAND_PARAM + ORDERS);
+        } else {
+            redirect(String.format(APPOINTMENT_REDIRECT_PATTERN, HOME_REDIRECT, COMMAND_PARAM, GET_SCHEDULE, ID, masterId,
+                    DAYS, getParameter(DAYS)));
+        }
     }
 }

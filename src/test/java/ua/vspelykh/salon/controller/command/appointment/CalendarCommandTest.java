@@ -33,8 +33,6 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 import static ua.vspelykh.salon.model.dao.Table.FEEDBACKS;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
@@ -198,7 +196,7 @@ class CalendarCommandTest extends AbstractCommandTest {
         prepareMocks();
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
         when(request.getParameter(DAY)).thenReturn(DATE_VALUE.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE_2, DATE_VALUE.toLocalDate())).thenReturn(workingDay);
+        when(workingDayService.getByUserIdAndDate(ID_VALUE_2, DATE_VALUE.toLocalDate())).thenReturn(workingDay);
         when(appointmentService.getByDateAndMasterId(workingDay.getDate(), ID_VALUE_2)).thenReturn(appointments);
     }
 

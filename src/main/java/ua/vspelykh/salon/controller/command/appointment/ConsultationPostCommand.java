@@ -11,16 +11,28 @@ import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS_REDIRECT;
 import static ua.vspelykh.salon.model.dao.mapper.Column.NAME;
 import static ua.vspelykh.salon.model.dao.mapper.Column.NUMBER;
 
+/**
+ * A Command implementation for handling POST requests to create a new consultation.
+ *
+ * @version 1.0
+ */
 public class ConsultationPostCommand extends Command {
 
+    /**
+     * Processes the POST request, creates a new consultation object using the request parameters,
+     * and saves it using the ConsultationService. Upon success, redirects the user to a success page.
+     *
+     * @throws ServletException if there is an error in the servlet or its configuration
+     * @throws IOException      if an input or output error is detected when the servlet handles the POST request
+     */
     @Override
     public void process() throws ServletException, IOException {
-        Consultation consultation = new Consultation(null, request.getParameter(NAME), request.getParameter(NUMBER));
+        Consultation consultation = Consultation.builder().name(getParameter(NAME)).number(getParameter(NUMBER)).build();
         try {
             getServiceFactory().getConsultationService().save(consultation);
         } catch (ServiceException e) {
-            response.sendError(500);
+            sendError500();
         }
-        redirect(context.getContextPath() + SUCCESS_REDIRECT);
+        redirect(SUCCESS_REDIRECT);
     }
 }

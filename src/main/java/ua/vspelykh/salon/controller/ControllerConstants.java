@@ -6,6 +6,14 @@ public class ControllerConstants {
 
     public static final String SIGN_UP = "sign-up";
     public static final String SUCCESS_REDIRECT = "/salon?command=success";
+    public static final String CONSULTATION_REDIRECT = "/salon?command=consultations";
+    public static final String APPOINTMENT_REDIRECT_PATTERN = "%s%s%s&%s=%s&%s=%s";
+    public static final String DATE_FROM = "dateFrom";
+    public static final String DATE_TO = "dateTo";
+    public static final String CALENDAR_REDIRECT = "?command=calendar&day=";
+    public static final String ID_PARAM_REDIRECT = "&id=";
+    public static final String REDIRECT = "redirect";
+    public static final String NEW_SLOT = "new_slot";
     public static final String SUCCESS = "success";
     public static final String HOME_PAGE = "index";
     public static final String HOME_REDIRECT = "/salon";
@@ -48,6 +56,7 @@ public class ControllerConstants {
     public static final String SCHEDULE_REDIRECT = "/salon?command=schedule&id=";
     public static final String FIRST = "first";
     public static final String ERROR = "error";
+    //TODO: REFACTOR!
     public static final String HAS_ERROR = "y";
     public static final String EMPTY_STRING = "";
     public static final String DOT = ".";
@@ -58,9 +67,24 @@ public class ControllerConstants {
     public static final String EMAIL = "email";
     public static final String NUMBER = "number";
     public static final String PASSWORD_REPEAT = "passwordRepeat";
-
+    public static final String PAGE_PARAM_REGEX = "&page=[0-9]*";
     public static final String FREE_SLOTS_MAP = "free_slots_map";
+    public static final String PARAMETER = "Parameter ";
 
+    public static final String MASTER = "master";
+    public static final String ALLOWED_TIME = "allowedTime";
+    public static final int DEFAULT_SIZE = 5;
+    public static final int DEFAULT_PAGE = 1;
+    public static final int DEFAULT_DISCOUNT = 1;
+    public static final String PLACEHOLDER_EN = "Pick A Date";
+    public static final String PLACEHOLDER_UA = "Виберіть дату";
+    public static final String DAY = "day";
+    public static final String TIME = "time";
+    public static final String FEEDBACKS = "feedbacks";
+    public static final String DATE_PATTERN = "dd-MM-yyyy";
+    public static final String SLOTS = "slots";
+    public static final String PLACEHOLDER = "placeholder";
+    public static final int INTERVAL = 30;
 
     private ControllerConstants() {
 

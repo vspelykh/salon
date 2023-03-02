@@ -32,7 +32,6 @@ import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
@@ -141,7 +140,7 @@ class GetScheduleCommandTest extends AbstractCommandTest {
         when(appointmentService.getDTOsByDateAndMasterId(DATE_VALUE.toLocalDate(), ID_VALUE))
                 .thenReturn(List.of(getTestAppointmentDto()));
         when(serviceFactory.getWorkingDayService()).thenReturn(workingDayService);
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
+        when(workingDayService.getByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
         when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
         when(baseServiceService.findById(ID_VALUE)).thenReturn(getTestBaseService());
         when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());

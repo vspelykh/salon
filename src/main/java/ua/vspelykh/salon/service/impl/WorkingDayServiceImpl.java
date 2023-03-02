@@ -80,7 +80,7 @@ public class WorkingDayServiceImpl implements WorkingDayService {
     }
 
     @Override
-    public WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) {
+    public WorkingDay getByUserIdAndDate(Integer userId, LocalDate date) {
         try {
             return workingDayDao.getDayByUserIdAndDate(userId, date);
         } catch (DaoException e) {

@@ -30,8 +30,6 @@ import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
@@ -131,7 +129,7 @@ class AppointmentCommandTest extends AbstractCommandTest {
         when(userService.findById(ID_VALUE)).thenReturn(master);
         when(userService.getUserLevelByUserId(ID_VALUE)).thenReturn(getTestUserLevel());
 
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
+        when(workingDayService.getByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
 
         dtos = List.of(getTestMasterServiceDto());
         when(masterServiceService.getDTOsByMasterId(ID_VALUE, UA_LOCALE)).thenReturn(dtos);

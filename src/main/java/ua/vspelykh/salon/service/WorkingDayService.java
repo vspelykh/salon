@@ -17,7 +17,7 @@ public interface WorkingDayService {
 
     void delete(Integer id) throws ServiceException;
 
-    WorkingDay getDayByUserIdAndDate(Integer userId, LocalDate date) throws ServiceException;
+    WorkingDay getByUserIdAndDate(Integer userId, LocalDate date) throws ServiceException;
 
     void deleteWorkingDaysByUserIdAndDatesArray(int userId, String[] datesArray)throws ServiceException;
 
