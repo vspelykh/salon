@@ -10,35 +10,59 @@ import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.PRICING;
-import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 
+/**
+ * The PricingCommand class extends the abstract Command class and is responsible for processing pricing page requests.
+ *
+ * @version 1.0
+ */
 public class PricingCommand extends Command {
 
+    /**
+     * This method is responsible for processing the pricing page request.
+     * It retrieves the list of available categories from the service layer and populates the request attribute with this data.
+     * It also retrieves the list of services based on the specified filters and populates the request attribute with this data.
+     * Additionally, it sets pagination parameters and checked lists for the filters.
+     * <p>
+     * If any exception occurs, it sends a 500 error response.
+     *
+     * @throws ServletException if the servlet cannot handle the request for some reason
+     * @throws IOException      if an I/O error occurs during the processing of the request
+     */
     @Override
     public void process() throws ServletException, IOException {
         try {
-            String locale = String.valueOf(request.getSession().getAttribute(LANG));
-            request.setAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(locale));
+            setRequestAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(getLocale()));
             List<Integer> categoriesIds = setCategoriesIds();
-            int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
-            int size = request.getParameter(SIZE) == null ? 5 : Integer.parseInt(request.getParameter(SIZE));
-
-            request.setAttribute(SERVICES, getServiceFactory().getBaseServiceService().findByFilter(categoriesIds, page, size, locale));
+            int page = getPageParameter();
+            int size = getSizeParameter();
+            setRequestAttribute(SERVICES, getServiceFactory().getBaseServiceService().findByFilter(categoriesIds, page, size, getLocale()));
             int countOfItems = getServiceFactory().getBaseServiceService().getCountOfCategories(categoriesIds, page, size);
             setPaginationParams(page, size, countOfItems);
             setCheckedList(categoriesIds);
             forward(PRICING);
         } catch (ServiceException e) {
-            response.sendError(500);
+            sendError500();
         }
     }
 
+    /**
+     * Method sets the checked categories list in the request attribute.
+     *
+     * @param categoriesIds the list of checked category IDs
+     */
     private void setCheckedList(List<Integer> categoriesIds) {
-        request.setAttribute(CATEGORIES + CHECKED, categoriesIds);
+        setRequestAttribute(CATEGORIES + CHECKED, categoriesIds);
     }
 
+    /**
+     * Method retrieves the selected category IDs from the request parameter and returns them in a list.
+     * If no categories are selected, an empty list is returned.
+     *
+     * @return the list of selected category IDs, or an empty list if none are selected
+     */
     private List<Integer> setCategoriesIds() {
-        if (checkNullParam(request.getParameter(CATEGORIES))) {
+        if (isParameterNotNull(CATEGORIES)) {
             List<Integer> categoriesIds = new ArrayList<>();
             for (String categories : request.getParameterValues(CATEGORIES)) {
                 categoriesIds.add(Integer.valueOf(categories));
@@ -47,11 +71,17 @@ public class PricingCommand extends Command {
         } else return Collections.emptyList();
     }
 
+    /**
+     * Method sets the pagination parameters in the request attribute.
+     *
+     * @param page         the current page number
+     * @param size         the number of items per page
+     * @param countOfItems the total number of items
+     */
     private void setPaginationParams(int page, int size, int countOfItems) {
-        request.setAttribute(SIZES, SIZE_LIST);
-        request.setAttribute(PAGE + CHECKED, page);
-        request.setAttribute(SIZE + CHECKED, size);
-        countAndSet(size, countOfItems);
+        setRequestAttribute(SIZES, SIZE_LIST);
+        setRequestAttribute(PAGE + CHECKED, page);
+        setRequestAttribute(SIZE + CHECKED, size);
+        setPaginationAttrs(size, countOfItems);
     }
-
 }

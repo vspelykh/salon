@@ -47,7 +47,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
         for (String date : datesArray) {
             List<AppointmentDto> appointments =
                     getServiceFactory().getAppointmentService().getDTOsByDateAndMasterId(getLocalDate(date), userId);
-            WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(userId, getLocalDate(date));
+            WorkingDay day = getServiceFactory().getWorkingDayService().getByUserIdAndDate(userId, getLocalDate(date));
             ScheduleBuilder builder = new ScheduleBuilder(appointments, day, locale, serviceFactory);
             List<ScheduleItem> schedule = builder.build();
             mapOfSchedules.put(getLocalDate(date), schedule);

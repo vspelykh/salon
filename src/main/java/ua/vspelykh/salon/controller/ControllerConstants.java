@@ -7,6 +7,8 @@ public class ControllerConstants {
     public static final String SIGN_UP = "sign-up";
     public static final String SUCCESS_REDIRECT = "/salon?command=success";
     public static final String CONSULTATION_REDIRECT = "/salon?command=consultations";
+    public static final String LOGIN_REDIRECT = "/salon?command=login";
+
     public static final String APPOINTMENT_REDIRECT_PATTERN = "%s%s%s&%s=%s&%s=%s";
     public static final String DATE_FROM = "dateFrom";
     public static final String DATE_TO = "dateTo";

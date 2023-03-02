@@ -13,11 +13,23 @@ import static ua.vspelykh.salon.controller.Controller.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.ROLES;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
 
+/**
+ * The CommandFactory class is a factory that provides a command object based on the HTTP request parameter
+ * "command". It holds a map of commands and initializes it with the available commands in the application.
+ *
+ * @version 1.0
+ */
 public class CommandFactory {
 
+    /**
+     * A private constructor to prevent the instantiation of this class from external classes.
+     */
     private CommandFactory() {
     }
 
+    /**
+     * A map of command names and their corresponding Command objects.
+     */
     private static final Map<String, Command> commands = new HashMap<>();
 
     static {
@@ -55,10 +67,23 @@ public class CommandFactory {
         put(EDIT_MASTER, new EditMasterCommand());
     }
 
-    private static void put(String commandName, Command command){
+    /**
+     * A private method that puts a command into the commands map.
+     *
+     * @param commandName the name of the command
+     * @param command     the corresponding command object
+     */
+    private static void put(String commandName, Command command) {
         commands.put(commandName, command);
     }
 
+    /**
+     * Returns a Command object based on the HTTP request parameter "command". If the parameter does not exist
+     * or is not mapped to any command, the HOME command is returned.
+     *
+     * @param request the HTTP request object
+     * @return the corresponding Command object
+     */
     public static Command getCommand(HttpServletRequest request) {
         return Optional.ofNullable(commands.get(request.getParameter(COMMAND))).orElse(commands.get(HOME));
     }
