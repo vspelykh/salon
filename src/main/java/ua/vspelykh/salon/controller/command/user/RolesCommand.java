@@ -11,20 +11,29 @@ import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 
+/**
+ * This command is responsible for handling requests related to user roles.
+ */
 public class RolesCommand extends Command {
 
+    /**
+     * If the "search" parameter is not null, searches for users whose email contains the search string
+     * and displays their roles in the view. Otherwise, simply displays the view.
+     *
+     * @throws ServletException if there is an error while processing the request
+     * @throws IOException      if there is an error while sending the response
+     */
     @Override
     public void process() throws ServletException, IOException {
-        String search = request.getParameter(SEARCH);
-        if (checkNullParam(search)) {
+        if (isParameterNotNull(SEARCH)) {
             try {
-                request.setAttribute("master", Role.HAIRDRESSER);
-                request.setAttribute("admin", Role.ADMINISTRATOR);
-                request.setAttribute("client", Role.CLIENT);
-                List<User> users = getServiceFactory().getUserService().findBySearch(search);
-                request.setAttribute(USERS, users);
+                setRequestAttribute(MASTER, Role.HAIRDRESSER);
+                setRequestAttribute(ADMIN, Role.ADMINISTRATOR);
+                setRequestAttribute(CLIENT, Role.CLIENT);
+                List<User> users = getServiceFactory().getUserService().findBySearch(getParameter(SEARCH));
+                setRequestAttribute(USERS, users);
             } catch (ServiceException e) {
-                response.sendError(500);
+                sendError500();
             }
         }
         forward(ROLES);

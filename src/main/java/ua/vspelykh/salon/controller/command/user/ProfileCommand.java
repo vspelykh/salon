@@ -11,22 +11,34 @@ import java.util.Set;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 
+/**
+ * Command for displaying user profile page.
+ * <p>
+ * This command retrieves the current user from the session and sets request attributes for the user's
+ * roles and user level (if the user is a hairdresser).
+ */
 public class ProfileCommand extends Command {
 
+    /**
+     * Processes the request and sets the necessary request attributes for the user profile page.
+     *
+     * @throws ServletException If there is a servlet-related problem
+     * @throws IOException      If there is an I/O problem
+     */
     @Override
     public void process() throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute(CURRENT_USER);
+        User user = getCurrentUser();
         request.setAttribute(USER, user);
         Set<Role> roles = user.getRoles();
-        request.setAttribute(ROLES, roles);
-        request.setAttribute(IS_MASTER, roles.contains(Role.HAIRDRESSER));
-        request.setAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
-        request.setAttribute(IS_CLIENT, roles.contains(Role.CLIENT));
+        setRequestAttribute(ROLES, roles);
+        setRequestAttribute(IS_MASTER, roles.contains(Role.HAIRDRESSER));
+        setRequestAttribute(IS_ADMIN, roles.contains(Role.ADMINISTRATOR));
+        setRequestAttribute(IS_CLIENT, roles.contains(Role.CLIENT));
         if (roles.contains(Role.HAIRDRESSER)) {
             try {
-                request.setAttribute(USER_LEVEL, getServiceFactory().getUserService().getUserLevelByUserId(user.getId()));
+                setRequestAttribute(USER_LEVEL, getServiceFactory().getUserService().getUserLevelByUserId(user.getId()));
             } catch (ServiceException e) {
-                response.sendError(500);
+                sendError500();
             }
         }
         forward(PROFILE);

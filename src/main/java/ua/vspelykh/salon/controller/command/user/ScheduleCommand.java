@@ -11,18 +11,30 @@ import static ua.vspelykh.salon.controller.ControllerConstants.USER_LEVEL;
 import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 
+/**
+ * This command is responsible for displaying the schedule of a hairdresser. It extends the AbstractScheduleCommand
+ * class that contains common methods used for manipulating the schedule.
+ */
 public class ScheduleCommand extends AbstractScheduleCommand {
 
+    /**
+     * Processes the request by setting the current working days, retrieving the user and user level objects,
+     * and forwarding the request to the schedule page. If any service exception occurs, it sends an HTTP error
+     * 404 response.
+     *
+     * @throws ServletException if any servlet exception occurs
+     * @throws IOException      if any I/O exception occurs
+     */
     @Override
     public void process() throws ServletException, IOException {
         try {
             setCurrentWorkingDays();
-            int masterId = Integer.parseInt(request.getParameter(ID));
-            request.setAttribute(USER, getServiceFactory().getUserService().findById(masterId));
+            int masterId = getParameterInt(ID);
+            setRequestAttribute(USER, getServiceFactory().getUserService().findById(masterId));
             UserLevel userLevel = serviceFactory.getUserService().getUserLevelByUserId(masterId);
-            request.setAttribute(USER_LEVEL, userLevel);
+            setRequestAttribute(USER_LEVEL, userLevel);
         } catch (ServiceException e) {
-            response.sendError(404);
+            sendError404();
         }
         forward(SCHEDULE);
     }

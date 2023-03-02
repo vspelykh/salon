@@ -74,6 +74,8 @@ public class ControllerConstants {
     public static final String PARAMETER = "Parameter ";
 
     public static final String MASTER = "master";
+    public static final String CLIENT = "client";
+    public static final String ADMIN = "admin";
     public static final String ALLOWED_TIME = "allowedTime";
     public static final int DEFAULT_SIZE = 5;
     public static final int DEFAULT_PAGE = 1;
@@ -87,6 +89,9 @@ public class ControllerConstants {
     public static final String SLOTS = "slots";
     public static final String PLACEHOLDER = "placeholder";
     public static final int INTERVAL = 30;
+
+    public static final String REMOVE = "remove";
+    public static final String ADD = "add";
 
     private ControllerConstants() {
 
