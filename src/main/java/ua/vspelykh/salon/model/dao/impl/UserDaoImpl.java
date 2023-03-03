@@ -22,8 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
+import static ua.vspelykh.salon.controller.ControllerConstants.ADD;
+import static ua.vspelykh.salon.controller.ControllerConstants.REMOVE;
 import static ua.vspelykh.salon.model.dao.Table.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.util.validation.Validation.checkPassword;
@@ -385,7 +385,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private void setParams(PreparedStatement preparedStatement) throws SQLException {
             int paramNum = 1;
-            if (isSearch){
+            if (isSearch) {
                 setSearch(preparedStatement, paramNum);
             } else if (MasterSort.RATING_ASC.equals(sort) || MasterSort.RATING_DESC.equals(sort)) {
                 paramNum = setServices(preparedStatement, paramNum);

@@ -59,7 +59,7 @@ public class CreateAppointmentCommand extends Command {
      */
     private List<MasterService> parseServices() throws ServiceException {
         List<MasterService> masterServices = new ArrayList<>();
-        if (isParameterNotNull(SERVICES)) {
+        if (!isParameterNull(SERVICES)) {
             for (String service : request.getParameterValues(SERVICES)) {
                 int serviceId = Integer.parseInt(service.split("[|]")[3]);
                 masterServices.add(getServiceFactory().getServiceService().findById(serviceId));
@@ -99,6 +99,9 @@ public class CreateAppointmentCommand extends Command {
      * @throws ServiceException If the appointment is not valid.
      */
     private void validateAppointment(LocalTime time, Appointment appointment, int id, LocalDate date) throws ServiceException {
+        if (appointment.getContinuance() == 0) {
+            throw new ServiceException(MESSAGE_APPOINTMENT_FAIL);
+        }
         WorkingDay day = getServiceFactory().getWorkingDayService().getByUserIdAndDate(id, date);
         List<Appointment> appointments = getServiceFactory().getAppointmentService().getByDateAndMasterId(date, id);
         List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
@@ -174,7 +177,7 @@ public class CreateAppointmentCommand extends Command {
      * @throws IOException if an I/O error occurs while processing the request.
      */
     private void setErrorMessageAndRedirect() throws IOException {
-        request.getSession().setAttribute(ERROR, HAS_ERROR);
-        redirect(CALENDAR_REDIRECT + request.getParameter(DAY) + ID_PARAM_REDIRECT + getParameterInt(MASTER_ID));
+        setSessionAttribute(ERROR, MESSAGE_APPOINTMENT_FAIL);
+        redirect(CALENDAR_REDIRECT + getParameter(DAY) + ID_PARAM_REDIRECT + getParameterInt(MASTER_ID));
     }
 }

@@ -62,7 +62,7 @@ public class PricingCommand extends Command {
      * @return the list of selected category IDs, or an empty list if none are selected
      */
     private List<Integer> setCategoriesIds() {
-        if (isParameterNotNull(CATEGORIES)) {
+        if (!isParameterNull(CATEGORIES)) {
             List<Integer> categoriesIds = new ArrayList<>();
             for (String categories : request.getParameterValues(CATEGORIES)) {
                 categoriesIds.add(Integer.valueOf(categories));

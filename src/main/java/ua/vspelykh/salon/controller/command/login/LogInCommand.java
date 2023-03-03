@@ -1,10 +1,11 @@
 package ua.vspelykh.salon.controller.command.login;
 
 import ua.vspelykh.salon.controller.command.Command;
-import ua.vspelykh.salon.controller.command.CommandNames;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+
+import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
 
 /**
  * The LogInCommand class extends the abstract Command class and is responsible for processing login page requests.
@@ -22,6 +23,6 @@ public class LogInCommand extends Command {
      */
     @Override
     public void process() throws ServletException, IOException {
-        forward(CommandNames.LOGIN);
+        forward(LOGIN);
     }
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static ua.vspelykh.salon.controller.ControllerConstants.EMPTY_STRING;
 import static ua.vspelykh.salon.controller.ControllerConstants.PATH_STR;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
@@ -52,6 +53,7 @@ public abstract class AbstractCommandTest extends AbstractSalonTest {
         when(request.getSession().getAttribute(LANG)).thenReturn(UA_LOCALE);
         when(request.getQueryString()).thenReturn(PATH_STR);
         when(request.getRequestDispatcher(anyString())).thenReturn(dispatcher);
+        when(servletContext.getContextPath()).thenReturn(EMPTY_STRING);
     }
 
     protected void initCommand(Command command) {

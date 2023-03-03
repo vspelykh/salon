@@ -13,10 +13,8 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.ControllerConstants.MESSAGE;
-import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.user.AbstractScheduleCommand.ACTION;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;

@@ -19,8 +19,8 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
+import static ua.vspelykh.salon.controller.ControllerConstants.ADD;
+import static ua.vspelykh.salon.controller.ControllerConstants.REMOVE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.KEY;
 import static ua.vspelykh.salon.util.validation.Validation.checkUser;
 

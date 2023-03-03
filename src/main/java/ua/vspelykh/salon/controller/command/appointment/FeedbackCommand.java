@@ -37,7 +37,7 @@ public class FeedbackCommand extends Command {
     @Override
     public void process() throws ServletException, IOException {
         try {
-            if (!isParameterNotNull(ID)) {
+            if (isParameterNull(ID)) {
                 sendError403();
                 return;
             }

@@ -16,7 +16,6 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.Controller.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;

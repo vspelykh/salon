@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
+import static ua.vspelykh.salon.controller.ControllerConstants.ADD;
+import static ua.vspelykh.salon.controller.ControllerConstants.REMOVE;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.*;
@@ -115,7 +115,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void saveThrowsException() throws DaoException, TransactionException, ServiceException {
+    void saveThrowsException() throws DaoException, TransactionException {
         User testUser = getTestUser();
         testUser.setId(null);
 
@@ -157,7 +157,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void saveWithKeyThrowsException() throws DaoException, TransactionException, ServiceException {
+    void saveWithKeyThrowsException() throws DaoException, TransactionException {
         BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
         String fakeEncryptPassword = encryptor.encryptPassword(anyString());
         Invitation invitation = getTestInvitation();

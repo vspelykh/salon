@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static ua.vspelykh.salon.controller.Controller.COMMAND;
+import static ua.vspelykh.salon.controller.ControllerConstants.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.ROLES;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
 

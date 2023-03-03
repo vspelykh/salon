@@ -13,6 +13,7 @@ public final class Messages {
     public static final String MESSAGE_FEEDBACK_EXISTS = "message.feedback.exist";
     public static final String MESSAGE_FEEDBACK = "message.mark";
     public static final String MESSAGE_SUCCESS_INVITATION = "success.invitation";
+    public static final String CONTROLLER_ERROR = "Error in FrontController";
 
 
     private Messages() {

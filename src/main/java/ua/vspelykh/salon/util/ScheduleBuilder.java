@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
+import static ua.vspelykh.salon.controller.ControllerConstants.INTERVAL;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 

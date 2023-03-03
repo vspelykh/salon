@@ -20,6 +20,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
 import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_FEEDBACK_EXISTS;
 
 class FeedbackCommandTest extends AbstractCommandTest {
 
@@ -69,7 +70,8 @@ class FeedbackCommandTest extends AbstractCommandTest {
         verifyForward(FEEDBACK);
     }
 
-    @Test void processError() throws ServiceException, ServletException, IOException {
+    @Test
+    void processError() throws ServiceException, ServletException, IOException {
         when(appointmentService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
@@ -86,6 +88,6 @@ class FeedbackCommandTest extends AbstractCommandTest {
 
     @Override
     protected void verifyAttributes() {
-        verify(session).setAttribute(MESSAGE, "message.mark.exist");
+        verify(session).setAttribute(MESSAGE, MESSAGE_FEEDBACK_EXISTS);
     }
 }

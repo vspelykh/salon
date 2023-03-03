@@ -29,6 +29,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;

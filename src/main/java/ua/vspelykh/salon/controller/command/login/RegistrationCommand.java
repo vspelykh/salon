@@ -100,7 +100,7 @@ public class RegistrationCommand extends Command {
     }
 
     /**
-     * Sets request attributes for fields that fail validation.
+     * Sets request attributes for fields if registration failed.
      *
      * @param name       the name of the user
      * @param surname    the surname of the user
@@ -120,7 +120,7 @@ public class RegistrationCommand extends Command {
     }
 
     /**
-     * Saves a new user to the database or updates an existing one.
+     * Saves a new user to the database.
      *
      * @param user the user to save or update
      * @param key  key to obtain the master or administrator role, if null - obtain only client role.

@@ -87,15 +87,10 @@ public abstract class Command {
      * Retrieves the value of a request parameter with the provided name.
      *
      * @param param - name of the parameter.
-     * @return String value of the parameter.
-     * @throws MissingParameterException if the parameter is null or empty.
+     * @return String value of the parameter or null if parameter is absent.
      */
-    public String getParameter(String param) throws MissingParameterException {
-        String value = request.getParameter(param);
-        if (value == null || value.isBlank()) {
-            throw new MissingParameterException(PARAMETER + param + " is required and cannot be null or empty.");
-        }
-        return value;
+    public String getParameter(String param) {
+        return request.getParameter(param);
     }
 
     /**
@@ -109,46 +104,55 @@ public abstract class Command {
         return parameterValue != null && !parameterValue.isEmpty() ? parameterValue : null;
     }
 
-
     /**
      * Retrieves the value of a request parameter with the provided name.
      *
      * @param param - name of the parameter.
-     * @return int value of the parameter.
-     * @throws MissingParameterException if the parameter is null or empty.
+     * @return int value of the parameter or null if absent.
      */
-    protected int getParameterInt(String param) throws MissingParameterException {
-        String value = getParameter(param);
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new MissingParameterException(PARAMETER + param + " must be a valid integer.");
+    protected Integer getParameterInt(String param) throws MissingParameterException {
+        if (isParameterNull(param)) {
+            return null;
         }
+        String value = getParameter(param);
+        return Integer.parseInt(value);
+
     }
 
     /**
      * Retrieves the value of a request parameter with the provided name.
      *
      * @param param - name of the parameter.
-     * @return LocalDate value of the parameter.
-     * @throws MissingParameterException if the parameter is null or empty.
+     * @return LocalDate value of the parameter or null if absent.
      */
-    public LocalDate getParameterLocalDate(String param) throws MissingParameterException {
+    public LocalDate getParameterLocalDate(String param) {
+        if (isParameterNull(param)) {
+            return null;
+        }
         String value = getParameter(param);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         try {
             return LocalDate.parse(value, formatter);
         } catch (DateTimeParseException e) {
-            throw new MissingParameterException(PARAMETER + param + " must be a valid date in format.");
+            return LocalDate.parse(value);
         }
     }
 
-    public LocalTime getParameterLocalTime(String param) throws MissingParameterException {
+    /**
+     * Retrieves the value of a request parameter with the provided name.
+     *
+     * @param param - name of the parameter.
+     * @return LocalTime value of the parameter or null if absent.
+     */
+    public LocalTime getParameterLocalTime(String param) {
+        if (isParameterNull(param)) {
+            return null;
+        }
         String value = getParameter(param);
         try {
             return LocalTime.parse(value);
         } catch (DateTimeParseException e) {
-            throw new MissingParameterException(PARAMETER + param + " must be a valid local time in format.");
+            return null;
         }
     }
 
@@ -157,27 +161,29 @@ public abstract class Command {
      *
      * @param param - name of the parameter.
      * @return Time value of the parameter.
-     * @throws MissingParameterException if the parameter is null or empty.
      */
-    public Time getParameterTime(String param) throws MissingParameterException {
+    public Time getParameterTime(String param) {
         String value = getParameter(param);
-        try {
-            return Time.valueOf(LocalTime.parse(value));
-        } catch (Exception e) {
-            throw new MissingParameterException(PARAMETER + param + " must be a valid time in format.");
+        if (value == null || value.isEmpty()) {
+            return null;
         }
+        return Time.valueOf(LocalTime.parse(value));
     }
 
     /**
      * Retrieves the value of a request parameter with the provided name.
      *
      * @return int value of the page. Returns first page, if value is null.
-     * @throws MissingParameterException if the parameter is null or empty.
      */
     protected int getPageParameter() {
         return request.getParameter(PAGE) == null ? DEFAULT_PAGE : Integer.parseInt(request.getParameter(PAGE));
     }
 
+    /**
+     * Retrieves the value of a request parameter with the provided name.
+     *
+     * @return int value of the size. Returns default (5) value, if value is null.
+     */
     protected int getSizeParameter() {
         return request.getParameter(SIZE) == null ? DEFAULT_SIZE : Integer.parseInt(request.getParameter(SIZE));
     }
@@ -201,13 +207,13 @@ public abstract class Command {
     }
 
     /**
-     * Checks if the given request parameter is not null and not an empty string.
+     * Checks if the given request parameter is  null or an empty string.
      *
      * @param paramName the name of the request parameter to check
-     * @return true if the parameter is not null and not an empty string, false otherwise
+     * @return true if the parameter is null or an empty string, false otherwise
      */
-    protected boolean isParameterNotNull(String paramName) {
-        return getParameter(paramName) != null && !getParameter(paramName).isEmpty();
+    protected boolean isParameterNull(String paramName) {
+        return getParameter(paramName) == null || getParameter(paramName).isEmpty();
     }
 
     /**

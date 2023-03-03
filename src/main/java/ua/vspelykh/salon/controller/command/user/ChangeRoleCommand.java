@@ -20,8 +20,6 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
  */
 public class ChangeRoleCommand extends Command {
 
-    //TODO: message issue
-
     /**
      * This method handles the change of a user's role.
      * It retrieves the user ID, the new role, and the action (either 'save' or 'delete') from the request parameters.
@@ -40,8 +38,7 @@ public class ChangeRoleCommand extends Command {
             getServiceFactory().getUserService().updateRole(userId, action, role);
             User user = getServiceFactory().getUserService().findById(userId);
             setSessionAttribute(MESSAGE, SUCCESS);
-            redirect(context.getContextPath() + HOME_REDIRECT +
-                    "?command=roles&message=success&search=" + user.getEmail());
+            redirect(ROLES_REDIRECT + user.getEmail());
         } catch (ServiceException e) {
             sendError500();
         }

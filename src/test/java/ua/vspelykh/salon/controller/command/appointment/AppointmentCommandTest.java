@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;

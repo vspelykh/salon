@@ -74,7 +74,7 @@ public class MastersCommand extends Command {
      * @return the selected masters levels as a list.
      */
     private List<MastersLevel> setLevelsParam() {
-        if (isParameterNotNull(LEVELS)) {
+        if (!isParameterNull(LEVELS)) {
             List<MastersLevel> levels = new ArrayList<>();
             for (String level : request.getParameterValues(LEVELS)) {
                 levels.add(MastersLevel.valueOf(level));
@@ -89,7 +89,7 @@ public class MastersCommand extends Command {
      * @return the selected service IDs as a list.
      */
     private List<Integer> setServiceIds() {
-        if (isParameterNotNull(SERVICES)) {
+        if (!isParameterNull(SERVICES)) {
             List<Integer> serviceIds = new ArrayList<>();
             for (String service : request.getParameterValues(SERVICES)) {
                 serviceIds.add(Integer.valueOf(service));
@@ -105,7 +105,7 @@ public class MastersCommand extends Command {
      * @return the categoriesIds list.
      */
     private List<Integer> setCategoriesIds() {
-        if (isParameterNotNull(CATEGORIES)) {
+        if (!isParameterNull(CATEGORIES)) {
             List<Integer> categoriesIds = new ArrayList<>();
             for (String categories : request.getParameterValues(CATEGORIES)) {
                 categoriesIds.add(Integer.valueOf(categories));

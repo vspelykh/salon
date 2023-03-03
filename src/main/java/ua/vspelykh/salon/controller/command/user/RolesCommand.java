@@ -25,7 +25,7 @@ public class RolesCommand extends Command {
      */
     @Override
     public void process() throws ServletException, IOException {
-        if (isParameterNotNull(SEARCH)) {
+        if (!isParameterNull(SEARCH)) {
             try {
                 setRequestAttribute(MASTER, Role.HAIRDRESSER);
                 setRequestAttribute(ADMIN, Role.ADMINISTRATOR);
