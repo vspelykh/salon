@@ -6,8 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.MasterServiceDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.Column;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.MasterServiceRowMapper;
 import ua.vspelykh.salon.model.entity.MasterService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -34,7 +33,7 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
      * a new instance of MasterServiceDaoImpl.
      */
     public MasterServiceDaoImpl() {
-        super(RowMapperFactory.getMasterServiceRowMapper(), Table.MASTER_SERVICES);
+        super(new MasterServiceRowMapper(), Table.MASTER_SERVICES);
     }
 
     /**
@@ -107,17 +106,5 @@ public class MasterServiceDaoImpl extends AbstractDao<MasterService> implements 
     @Override
     public List<MasterService> getAllByUserId(Integer userId) throws DaoException {
         return findAllByParam(userId, MASTER_ID);
-    }
-
-    /**
-     * Finds all MasterService objects associated with a particular BaseService id in the database.
-     *
-     * @param baseServiceId an integer representing the BaseService id for which to retrieve MasterService objects.
-     * @return a list of MasterService objects associated with the given user id.
-     * @throws DaoException if there is an error while performing the find operation.
-     */
-    @Override
-    public List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws DaoException {
-        return findAllByParam(baseServiceId, Column.BASE_SERVICE_ID);
     }
 }

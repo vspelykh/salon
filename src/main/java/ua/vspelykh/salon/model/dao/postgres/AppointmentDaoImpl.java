@@ -8,7 +8,7 @@ import ua.vspelykh.salon.model.dao.AppointmentDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.Column;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.AppointmentRowMapper;
 import ua.vspelykh.salon.model.entity.Appointment;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
 import ua.vspelykh.salon.model.entity.PaymentStatus;
@@ -38,7 +38,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
      * Constructs a new AppointmentDaoImpl with the given row mapper and table name.
      */
     public AppointmentDaoImpl() {
-        super(RowMapperFactory.getAppointmentRowMapper(), Table.APPOINTMENT);
+        super(new AppointmentRowMapper(), Table.APPOINTMENT);
     }
 
     /**

@@ -6,7 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.InvitationDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.InvitationRowMapper;
 import ua.vspelykh.salon.model.entity.Invitation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -31,7 +31,7 @@ public class InvitationDaoImpl extends AbstractDao<Invitation> implements Invita
      * Constructs an InvitationDaoImpl object and sets rowMapper and table name to its superclass.
      */
     public InvitationDaoImpl() {
-        super(RowMapperFactory.getInvitationRowMapper(), Table.INVITATION);
+        super(new InvitationRowMapper(), Table.INVITATION);
     }
 
     /**

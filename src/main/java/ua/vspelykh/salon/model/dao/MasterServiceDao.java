@@ -20,13 +20,4 @@ public interface MasterServiceDao extends Dao<MasterService> {
      * @throws DaoException if there is an error accessing the database.
      */
     List<MasterService> getAllByUserId(Integer userId) throws DaoException;
-
-    /**
-     * Retrieves a list of all master services associated with a given base service ID.
-     *
-     * @param baseServiceId the ID of the base service to retrieve master services for.
-     * @return a list of all master services associated with the base service.
-     * @throws DaoException if there is an error accessing the database.
-     */
-    List<MasterService> getAllByBaseServiceId(Integer baseServiceId) throws DaoException;
 }

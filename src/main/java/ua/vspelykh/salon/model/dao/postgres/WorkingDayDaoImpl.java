@@ -6,7 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.WorkingDayDao;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.WorkingDayRowMapper;
 import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -34,7 +34,7 @@ public class WorkingDayDaoImpl extends AbstractDao<WorkingDay> implements Workin
      * the RowMapper and Table for the WorkingDay table.
      */
     public WorkingDayDaoImpl() {
-        super(RowMapperFactory.getWorkingDayRowMapper(), Table.WORKING_DAY);
+        super(new WorkingDayRowMapper(), Table.WORKING_DAY);
     }
 
 

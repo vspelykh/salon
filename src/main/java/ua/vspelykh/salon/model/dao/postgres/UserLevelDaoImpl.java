@@ -6,7 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.UserLevelDao;
 import ua.vspelykh.salon.model.dao.mapper.Column;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.UserLevelRowMapper;
 import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -33,7 +33,7 @@ public class UserLevelDaoImpl extends AbstractDao<UserLevel> implements UserLeve
      * It sets the RowMapper object and the table name for the user_level table.
      */
     public UserLevelDaoImpl() {
-        super(RowMapperFactory.getUserLevelRowMapper(), USER_LEVEL);
+        super(new UserLevelRowMapper(), USER_LEVEL);
     }
 
     /**

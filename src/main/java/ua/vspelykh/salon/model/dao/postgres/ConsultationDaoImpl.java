@@ -6,7 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.ConsultationDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.ConsultationRowMapper;
 import ua.vspelykh.salon.model.entity.Consultation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -33,7 +33,7 @@ public class ConsultationDaoImpl extends AbstractDao<Consultation> implements Co
      * Constructs a new ConsultationDaoImpl with a specific RowMapper and table name.
      */
     public ConsultationDaoImpl() {
-        super(RowMapperFactory.getConsultationRowMapper(), Table.CONSULTATION);
+        super(new ConsultationRowMapper(), Table.CONSULTATION);
     }
 
     /**

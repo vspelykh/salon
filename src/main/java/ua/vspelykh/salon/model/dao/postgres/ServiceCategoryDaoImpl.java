@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.ServiceCategoryDao;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.ServiceCategoryRowMapper;
 import ua.vspelykh.salon.model.entity.ServiceCategory;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -24,7 +24,7 @@ public class ServiceCategoryDaoImpl extends AbstractDao<ServiceCategory> impleme
      * and Table constants.
      */
     public ServiceCategoryDaoImpl() {
-        super(RowMapperFactory.getServiceCategoryRowMapper(), Table.SERVICE_CATEGORY);
+        super(new ServiceCategoryRowMapper(), Table.SERVICE_CATEGORY);
     }
 
 

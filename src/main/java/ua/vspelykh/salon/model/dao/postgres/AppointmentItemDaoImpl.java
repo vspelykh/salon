@@ -6,7 +6,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.AppointmentItemDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.AppointmentItemRowMapper;
 import ua.vspelykh.salon.model.entity.AppointmentItem;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -33,7 +33,7 @@ public class AppointmentItemDaoImpl extends AbstractDao<AppointmentItem> impleme
      * Constructor for the AppointmentItemDaoImpl class.
      */
     public AppointmentItemDaoImpl() {
-        super(RowMapperFactory.getAppointmentItemRowMapper(), Table.APPOINTMENT_ITEMS);
+        super(new AppointmentItemRowMapper(), Table.APPOINTMENT_ITEMS);
     }
 
     /**

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.FeedbackDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.FeedbackRowMapper;
 import ua.vspelykh.salon.model.entity.Feedback;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -33,7 +33,7 @@ public class FeedbackDaoImpl extends AbstractDao<Feedback> implements FeedbackDa
      * Sets the row mapper and table name for the super class.
      */
     public FeedbackDaoImpl() {
-        super(RowMapperFactory.getMarkRowMapper(), FEEDBACKS);
+        super(new FeedbackRowMapper(), FEEDBACKS);
     }
 
     /**

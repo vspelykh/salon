@@ -30,7 +30,7 @@ public class CommandFactory {
     /**
      * A map of command names and their corresponding Command objects.
      */
-    private static final Map<String, Command> commands = new HashMap<>();
+    private static final Map<String, Command> COMMANDS = new HashMap<>();
 
     static {
         put(HOME, new HomeCommand());
@@ -74,7 +74,7 @@ public class CommandFactory {
      * @param command     the corresponding command object
      */
     private static void put(String commandName, Command command) {
-        commands.put(commandName, command);
+        COMMANDS.put(commandName, command);
     }
 
     /**
@@ -85,6 +85,6 @@ public class CommandFactory {
      * @return the corresponding Command object
      */
     public static Command getCommand(HttpServletRequest request) {
-        return Optional.ofNullable(commands.get(request.getParameter(COMMAND))).orElse(commands.get(HOME));
+        return Optional.ofNullable(COMMANDS.get(request.getParameter(COMMAND))).orElse(COMMANDS.get(HOME));
     }
 }

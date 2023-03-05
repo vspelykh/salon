@@ -7,7 +7,7 @@ import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.BaseServiceDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.BaseServiceRowMapper;
 import ua.vspelykh.salon.model.entity.BaseService;
 import ua.vspelykh.salon.util.exception.DaoException;
 
@@ -34,7 +34,7 @@ public class BaseServiceDaoImpl extends AbstractDao<BaseService> implements Base
      * Constructs a new instance of the BaseServiceDaoImpl class with the Base Service RowMapper and the BASE_SERVICE table.
      */
     public BaseServiceDaoImpl() {
-        super(RowMapperFactory.getBaseServiceRowMapper(), Table.BASE_SERVICE);
+        super(new BaseServiceRowMapper(), Table.BASE_SERVICE);
     }
 
     /**

@@ -9,7 +9,7 @@ import ua.vspelykh.salon.model.dao.QueryBuilder;
 import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.UserDao;
 import ua.vspelykh.salon.model.dao.mapper.Column;
-import ua.vspelykh.salon.model.dao.mapper.RowMapperFactory;
+import ua.vspelykh.salon.model.dao.mapper.impl.UserRowMapper;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.model.entity.User;
@@ -44,7 +44,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      * Constructor which creates an instance of UserDaoImpl class using RowMapperFactory and Table constants.
      */
     public UserDaoImpl() {
-        super(RowMapperFactory.getUserRowMapper(), Table.USER);
+        super(new UserRowMapper(), Table.USER);
     }
 
     /**
