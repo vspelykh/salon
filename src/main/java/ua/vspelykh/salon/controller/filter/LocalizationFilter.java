@@ -11,6 +11,8 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
 /**
  * A filter that sets the user's language preference and ensures that the language query parameter is present and valid.
+ *
+ * @version 1.0
  */
 public class LocalizationFilter implements Filter {
     public static final String LANG = "lang";

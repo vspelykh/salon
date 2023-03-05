@@ -6,6 +6,7 @@ import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.ScheduleBuilder;
 import ua.vspelykh.salon.util.ScheduleItem;
+import ua.vspelykh.salon.util.exception.ScheduleBuilderException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -47,7 +48,7 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
             buildSchedule(userId, datesArray, mapOfSchedules, freeSlots, getLocale());
             setAttrs(userId, mapOfSchedules, freeSlots);
             forward(GET_SCHEDULE);
-        } catch (ServiceException e) {
+        } catch (ServiceException | ScheduleBuilderException e) {
             sendError500();
         }
     }
@@ -64,7 +65,8 @@ public class GetScheduleCommand extends AbstractScheduleCommand {
      * @param locale         the locale in which the schedule is to be built
      * @throws ServiceException if there is an error while retrieving data from the service layer
      */
-    private void buildSchedule(int userId, String[] datesArray, Map<LocalDate, List<ScheduleItem>> mapOfSchedules, Map<Integer, List<LocalTime>> freeSlots, String locale) throws ServiceException {
+    private void buildSchedule(int userId, String[] datesArray, Map<LocalDate, List<ScheduleItem>> mapOfSchedules,
+                               Map<Integer, List<LocalTime>> freeSlots, String locale) throws ServiceException, ScheduleBuilderException {
         for (String date : datesArray) {
             List<AppointmentDto> appointments =
                     getServiceFactory().getAppointmentService().getDTOsByDateAndMasterId(getLocalDate(date), userId);

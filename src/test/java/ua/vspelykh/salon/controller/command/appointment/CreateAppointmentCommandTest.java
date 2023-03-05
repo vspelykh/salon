@@ -25,8 +25,8 @@ import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.MASTER_ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_APPOINTMENT_SUCCESS;
 
 class CreateAppointmentCommandTest extends AbstractCommandTest {

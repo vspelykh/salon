@@ -19,9 +19,9 @@ import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.USER_LEVEL;
 import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUserLevel;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestWorkingDay;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUserLevel;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestWorkingDay;
 
 class ScheduleCommandTest extends AbstractCommandTest {
 
@@ -47,7 +47,7 @@ class ScheduleCommandTest extends AbstractCommandTest {
 
     @Test
     void processScheduleError() throws ServletException, IOException, ServiceException {
-        when(workingDayService.findDaysByUserId(ID_VALUE)).thenThrow(ServiceException.class);
+        when(workingDayService.findByUserId(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
     }
@@ -58,7 +58,7 @@ class ScheduleCommandTest extends AbstractCommandTest {
         when(serviceFactory.getWorkingDayService()).thenReturn(workingDayService);
         when(userService.getUserLevelByUserId(ID_VALUE)).thenReturn(getTestUserLevel());
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE));
-        when(workingDayService.findDaysByUserId(ID_VALUE)).thenReturn(List.of(getTestWorkingDay()));
+        when(workingDayService.findByUserId(ID_VALUE)).thenReturn(List.of(getTestWorkingDay()));
     }
 
     @Override

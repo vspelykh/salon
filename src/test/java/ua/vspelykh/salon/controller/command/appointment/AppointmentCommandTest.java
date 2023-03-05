@@ -32,9 +32,9 @@ import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestMasterServiceDto;
 
 class AppointmentCommandTest extends AbstractCommandTest {

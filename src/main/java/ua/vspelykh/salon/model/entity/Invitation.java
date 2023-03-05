@@ -8,6 +8,13 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
+/**
+ * This class represents an invitation sent to a user to join the system as an administrator or master.
+ * It extends the AbstractBaseEntity class and inherits its "id" field.
+ * The class uses Lombok annotations to generate getters, setters, no-args constructor,
+ * an implementation of the builder pattern, and an implementation of the equals and hashCode methods
+ * that only take into account the explicitly included fields.
+ */
 @SuperBuilder
 @Getter
 @Setter
@@ -24,13 +31,5 @@ public class Invitation extends AbstractBaseEntity {
         this.email = email;
         this.role = role;
         this.key = key;
-    }
-
-    public Invitation(Integer id, String email, Role role, String key, LocalDate date) {
-        super(id);
-        this.email = email;
-        this.role = role;
-        this.key = key;
-        this.date = date;
     }
 }

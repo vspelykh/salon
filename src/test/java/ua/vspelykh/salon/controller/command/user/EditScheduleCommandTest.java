@@ -23,7 +23,7 @@ class EditScheduleCommandTest extends AbstractCommandTest {
     @Mock
     private WorkingDayService workingDayService;
 
-    private String[] dates = new String[]{"2023-03-01", "2023-03-02"};
+    private final String[] dates = new String[]{"2023-03-01", "2023-03-02"};
 
     @BeforeEach
     protected void setUp() throws ServiceException {
@@ -44,7 +44,7 @@ class EditScheduleCommandTest extends AbstractCommandTest {
     void processEditScheduleDeleteDays() throws ServletException, IOException, ServiceException {
         when(request.getParameter(ACTION)).thenReturn(DELETE);
         command.process();
-        verify(workingDayService).deleteWorkingDaysByUserIdAndDatesArray(ID_VALUE, dates);
+        verify(workingDayService).deleteByUserIdAndDatesArray(ID_VALUE, dates);
         verifyRedirect(SCHEDULE_REDIRECT + ID_VALUE);
     }
 
@@ -57,7 +57,7 @@ class EditScheduleCommandTest extends AbstractCommandTest {
     @Test
     void processEditScheduleDBError() throws ServletException, IOException, ServiceException {
         when(request.getParameter(ACTION)).thenReturn(DELETE);
-        doThrow(ServiceException.class).when(workingDayService).deleteWorkingDaysByUserIdAndDatesArray(ID_VALUE, dates);
+        doThrow(ServiceException.class).when(workingDayService).deleteByUserIdAndDatesArray(ID_VALUE, dates);
         command.process();
         verifyError500();
     }

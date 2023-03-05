@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.EMAIL_VALUE;
 import static ua.vspelykh.salon.Constants.PASSWORD_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class CheckLoginCommandTest extends AbstractCommandTest {
 

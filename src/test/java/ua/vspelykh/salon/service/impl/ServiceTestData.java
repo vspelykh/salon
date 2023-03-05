@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 
 public class ServiceTestData {
 

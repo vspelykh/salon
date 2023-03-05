@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Represents data transfer object of the ServiceCategory entity.
+ */
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")

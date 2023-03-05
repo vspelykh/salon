@@ -8,6 +8,12 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * This class implements the Transaction interface and provides methods for managing transactions with
+ * a database connection.
+ *
+ * @version 1.0
+ */
 public class TransactionImpl implements Transaction {
 
     private Connection connection;
@@ -18,6 +24,11 @@ public class TransactionImpl implements Transaction {
         this.connection = connection;
     }
 
+    /**
+     * Start a new transaction by setting the database connection to auto-commit false.
+     *
+     * @throws TransactionException if there is an issue starting the transaction
+     */
     @Override
     public void start() throws TransactionException {
         try {
@@ -29,6 +40,11 @@ public class TransactionImpl implements Transaction {
         }
     }
 
+    /**
+     * Commit the current transaction by committing the database connection and setting auto-commit to true.
+     *
+     * @throws TransactionException if there is an issue committing the transaction
+     */
     @Override
     public void commit() throws TransactionException {
         try {
@@ -41,6 +57,11 @@ public class TransactionImpl implements Transaction {
         }
     }
 
+    /**
+     * Rollback the current transaction by rolling back the database connection and setting auto-commit to true.
+     *
+     * @throws TransactionException if there is an issue rolling back the transaction
+     */
     @Override
     public void rollback() throws TransactionException {
         try {

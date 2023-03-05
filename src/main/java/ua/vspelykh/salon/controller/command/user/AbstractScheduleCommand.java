@@ -35,7 +35,7 @@ public abstract class AbstractScheduleCommand extends Command {
      * @throws ServiceException if the service layer throws an exception
      */
     protected void setCurrentWorkingDays() throws ServiceException {
-        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().findDaysByUserId(getParameterInt(ID));
+        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().findByUserId(getParameterInt(ID));
         if (workingDays.isEmpty()) {
             setRequestAttribute(DAYS, EMPTY_STRING);
         } else {

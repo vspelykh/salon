@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUserLevel;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUserLevel;
 
 class ProfileCommandTest extends AbstractCommandTest {
 

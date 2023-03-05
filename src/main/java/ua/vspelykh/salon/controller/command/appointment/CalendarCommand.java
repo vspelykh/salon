@@ -62,7 +62,7 @@ public class CalendarCommand extends Command {
      * @throws ServiceException If there is an issue with the service layer
      */
     private void setMasterInfoAttrs(int requestedUserId) throws ServiceException {
-        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().findDaysByUserId(requestedUserId);
+        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().findByUserId(requestedUserId);
         setRequestAttribute(DAYS, workingDays);
         setRequestAttribute(USER, serviceFactory.getUserService().findById(requestedUserId));
     }
@@ -114,10 +114,10 @@ public class CalendarCommand extends Command {
      */
     private void setFeedbacksAttrs(int requestedUserId) throws ServiceException {
         int page = getPageParameter();
-        List<FeedbackDto> feedbacks = serviceFactory.getFeedbackService().getFeedbacksByMasterId(requestedUserId, page);
+        List<FeedbackDto> feedbacks = serviceFactory.getFeedbackService().getByMasterId(requestedUserId, page);
         setRequestAttribute(FEEDBACKS, feedbacks);
         setRequestAttribute(PAGE + CHECKED, page);
-        int countOfItems = serviceFactory.getFeedbackService().countFeedbacksByMasterId(requestedUserId);
+        int countOfItems = serviceFactory.getFeedbackService().countByMasterId(requestedUserId);
         setPaginationAttrs(DEFAULT_SIZE, countOfItems);
     }
 }

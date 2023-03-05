@@ -2,7 +2,6 @@ package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.service.ServiceFactory;
-import ua.vspelykh.salon.util.exception.MissingParameterException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -19,7 +18,7 @@ import java.time.format.DateTimeParseException;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
-import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
+import static ua.vspelykh.salon.util.RolePermissions.JSP_PATTERN;
 
 /**
  * This abstract class serves as a base for all the command classes used in the web application.
@@ -110,7 +109,7 @@ public abstract class Command {
      * @param param - name of the parameter.
      * @return int value of the parameter or null if absent.
      */
-    protected Integer getParameterInt(String param) throws MissingParameterException {
+    protected Integer getParameterInt(String param)  {
         if (isParameterNull(param)) {
             return null;
         }

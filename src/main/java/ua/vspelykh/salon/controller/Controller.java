@@ -68,6 +68,7 @@ public class Controller extends HttpServlet {
             command.process();
         } catch (Exception e) {
             try {
+                LOG.error(e.getMessage());
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (IOException ex) {
                 LOG.error(CONTROLLER_ERROR);

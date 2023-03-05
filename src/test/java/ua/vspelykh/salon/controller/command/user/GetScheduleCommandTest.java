@@ -13,6 +13,7 @@ import ua.vspelykh.salon.service.UserService;
 import ua.vspelykh.salon.service.WorkingDayService;
 import ua.vspelykh.salon.util.ScheduleBuilder;
 import ua.vspelykh.salon.util.ScheduleItem;
+import ua.vspelykh.salon.util.exception.ScheduleBuilderException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -34,8 +35,8 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.SCHEDULE;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestAppointmentDto;
 
 class GetScheduleCommandTest extends AbstractCommandTest {
@@ -78,7 +79,7 @@ class GetScheduleCommandTest extends AbstractCommandTest {
     }
 
     @Test
-    void testScheduleBuilder() throws ServiceException {
+    void testScheduleBuilder() throws ScheduleBuilderException {
         prepareScheduleBuilderData();
         WorkingDay testWorkingDay = getTestWorkingDay();
         testWorkingDay.setDate(DATE_VALUE.plusDays(1).toLocalDate());

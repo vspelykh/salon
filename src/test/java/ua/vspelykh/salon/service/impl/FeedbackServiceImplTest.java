@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestFeedbackDto;
 
 class FeedbackServiceImplTest extends AbstractServiceTest {
@@ -63,7 +63,7 @@ class FeedbackServiceImplTest extends AbstractServiceTest {
         when(feedbackDao.getFeedbacksByMasterId(ID_VALUE, 1)).thenReturn(List.of(getTestFeedback()));
         when(appointmentDao.findById(ID_VALUE)).thenReturn(getTestAppointment());
         when(userDao.findById(2)).thenReturn(client);
-        List<FeedbackDto> dtos = feedbackService.getFeedbacksByMasterId(ID_VALUE, 1);
+        List<FeedbackDto> dtos = feedbackService.getByMasterId(ID_VALUE, 1);
 
         assertEquals(getTestFeedbackDto(), dtos.get(0));
 

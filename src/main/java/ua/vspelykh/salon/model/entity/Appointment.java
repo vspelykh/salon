@@ -8,6 +8,14 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+/**
+ * The Appointment class represents an appointment entity in the application.
+ * It extends the AbstractBaseEntity class and includes additional fields for appointment details.
+ * <p>
+ * Use the builder pattern to create new instances of this class.
+ *
+ * @version 1.0
+ */
 @SuperBuilder
 @Getter
 @Setter
@@ -23,5 +31,4 @@ public class Appointment extends AbstractBaseEntity {
     private int discount;
     private AppointmentStatus status;
     private PaymentStatus paymentStatus;
-
 }

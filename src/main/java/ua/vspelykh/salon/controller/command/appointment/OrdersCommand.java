@@ -4,11 +4,11 @@ import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
 import ua.vspelykh.salon.model.entity.PaymentStatus;
+import ua.vspelykh.salon.util.AppointmentFilter;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
@@ -25,7 +25,6 @@ public class OrdersCommand extends Command {
 
     /**
      * Processes the request to retrieve filtered appointments and display them on the Orders page.
-     * Overrides the process() method of the Command class.
      *
      * @throws ServletException if the servlet cannot handle the request for some reason
      * @throws IOException      if an I/O error occurs during the processing of the request
@@ -34,20 +33,14 @@ public class OrdersCommand extends Command {
     public void process() throws ServletException, IOException {
         try {
             setFilterAttributes();
-            Integer masterId = getParameterInt(ID);
-            LocalDate dateFrom = getParameterLocalDate(DATE_FROM);
-            LocalDate dateTo = getParameterLocalDate(DATE_TO);
-            AppointmentStatus status = getParameterElseNull(STATUS) != null
-                    ? AppointmentStatus.valueOf(getParameterElseNull(STATUS)) : null;
-            PaymentStatus paymentStatus = getParameterElseNull(PAYMENT_STATUS) != null
-                    ? PaymentStatus.valueOf(getParameterElseNull(PAYMENT_STATUS)) : null;
+            AppointmentFilter filter = buildAppointmentFilter();
             List<AppointmentDto> appointments = getServiceFactory().getAppointmentService().
-                    getFiltered(masterId, dateFrom, dateTo, status, paymentStatus, getPageParameter(), getSizeParameter());
+                    getFiltered(filter, getPageParameter(), getSizeParameter());
 
             setRequestAttribute(APPOINTMENTS, appointments);
-            setCheckedAttrs(masterId, dateFrom, dateTo, status, paymentStatus);
+            setCheckedAttrs(filter);
             setPaginationParams(getPageParameter(), getSizeParameter(), getServiceFactory().getAppointmentService().
-                    getCountOfAppointments(masterId, dateFrom, dateTo, status, paymentStatus));
+                    getCountOfAppointments(filter));
             forward(ORDERS);
         } catch (ServiceException e) {
             sendError404();
@@ -55,23 +48,39 @@ public class OrdersCommand extends Command {
     }
 
     /**
-     * Sets the checked filter attributes in the request.
+     * Builds an AppointmentFilter object based on the query parameters of the current HTTP request.
      *
-     * @param masterId      the ID of the master to filter by.
-     * @param dateFrom      the start date to filter by.
-     * @param dateTo        the end date to filter by.
-     * @param status        the appointment status to filter by.
-     * @param paymentStatus the payment status to filter by.
+     * @return an AppointmentFilter object that contains the filter criteria for appointment
      */
-    private void setCheckedAttrs(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) {
-        setRequestAttribute(ID + CHECKED, masterId);
-        setRequestAttribute(DATE_FROM + CHECKED, dateFrom);
-        setRequestAttribute(DATE_TO + CHECKED, dateTo);
-        if (status != null) {
-            setRequestAttribute(STATUS + CHECKED, status.name());
+    private AppointmentFilter buildAppointmentFilter() {
+        AppointmentStatus status = getParameterElseNull(STATUS) != null
+                ? AppointmentStatus.valueOf(getParameterElseNull(STATUS)) : null;
+        PaymentStatus paymentStatus = getParameterElseNull(PAYMENT_STATUS) != null
+                ? PaymentStatus.valueOf(getParameterElseNull(PAYMENT_STATUS)) : null;
+        return AppointmentFilter.builder()
+                .masterId(getParameterInt(ID))
+                .dateFrom(getParameterLocalDate(DATE_FROM))
+                .dateTo(getParameterLocalDate(DATE_TO))
+                .status(status)
+                .paymentStatus(paymentStatus)
+                .build();
+    }
+
+    /**
+     * This method sets the checked filter attributes in the current request based on the provided AppointmentFilter object.
+     * The attributes are set with a CHECKED suffix to indicate that they should be pre-selected in the filter UI.
+     *
+     * @param filter the AppointmentFilter object containing the filter parameters to set in the request
+     */
+    private void setCheckedAttrs(AppointmentFilter filter) {
+        setRequestAttribute(ID + CHECKED, filter.getMasterId());
+        setRequestAttribute(DATE_FROM + CHECKED, filter.getDateFrom());
+        setRequestAttribute(DATE_TO + CHECKED, filter.getDateTo());
+        if (filter.getStatus() != null) {
+            setRequestAttribute(STATUS + CHECKED, filter.getStatus().name());
         }
-        if (paymentStatus != null) {
-            setRequestAttribute(PAYMENT_STATUS + CHECKED, paymentStatus.name());
+        if (filter.getPaymentStatus() != null) {
+            setRequestAttribute(PAYMENT_STATUS + CHECKED, filter.getPaymentStatus().name());
         }
         setRequestAttribute(STATUS, AppointmentStatus.values());
     }

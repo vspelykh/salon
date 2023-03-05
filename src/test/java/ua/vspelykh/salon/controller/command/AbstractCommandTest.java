@@ -22,7 +22,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.EMPTY_STRING;
 import static ua.vspelykh.salon.controller.ControllerConstants.PATH_STR;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
-import static ua.vspelykh.salon.util.PageConstants.JSP_PATTERN;
+import static ua.vspelykh.salon.util.RolePermissions.JSP_PATTERN;
 
 public abstract class AbstractCommandTest extends AbstractSalonTest {
 

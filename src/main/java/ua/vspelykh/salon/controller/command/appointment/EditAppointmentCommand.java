@@ -71,7 +71,7 @@ public class EditAppointmentCommand extends Command {
      * @param appointment the appointment object to be updated
      */
     private void setNewTimeSlot(Appointment appointment) {
-        if (isAdmin() && isParameterNull(getParameter(NEW_SLOT))) {
+        if (isAdmin() && !isParameterNull(NEW_SLOT)) {
             appointment.setDate(LocalDateTime.of(appointment.getDate().toLocalDate(), getParameterLocalTime(NEW_SLOT)));
         }
     }
@@ -85,7 +85,7 @@ public class EditAppointmentCommand extends Command {
      * @param appointment the appointment object to be updated
      */
     private void setStatus(Appointment appointment) {
-        if (isParameterNull(getParameter(STATUS))) {
+        if (!isParameterNull(STATUS)) {
             String status = getParameter(STATUS);
             if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;

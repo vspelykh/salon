@@ -6,6 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The ServiceCategory class represents a category of services offered in the salon.
+ * It extends the AbstractBaseEntity class and includes additional fields for category details.
+ * <p>
+ * Use the builder pattern to create new instances of this class.
+ *
+ * @version 1.0
+ */
 @SuperBuilder
 @Getter
 @Setter
@@ -15,15 +23,4 @@ public class ServiceCategory extends AbstractBaseEntity {
 
     private String name;
     private String nameUa;
-
-    public ServiceCategory(String name, String nameUa) {
-        this.name = name;
-        this.nameUa = nameUa;
-    }
-
-    public ServiceCategory(Integer id, String name, String nameUa) {
-        super(id);
-        this.name = name;
-        this.nameUa = nameUa;
-    }
 }

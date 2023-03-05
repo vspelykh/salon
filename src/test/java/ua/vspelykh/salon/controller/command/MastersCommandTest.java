@@ -7,6 +7,7 @@ import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceCategoryService;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.MasterFilter;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -22,8 +23,9 @@ import static ua.vspelykh.salon.Constants.NAME_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.createMasterFilter;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class MastersCommandTest extends AbstractCommandTest {
 
@@ -95,12 +97,13 @@ class MastersCommandTest extends AbstractCommandTest {
                 .thenReturn(Collections.emptyList());
         when(serviceFactory.getBaseServiceService().findAll(locale))
                 .thenReturn(Collections.emptyList());
+        MasterFilter filter = createMasterFilter(levels, serviceIds, categoriesIds, search);
         when(serviceFactory.getUserService().getMastersDto(
-                levels, serviceIds, categoriesIds, search, page, size, sort, locale))
+                filter, page, size, sort, locale))
                 .thenReturn(Collections.emptyList());
         when(serviceFactory.getServiceCategoryService().findAll(locale))
                 .thenReturn(Collections.emptyList());
-        when(serviceFactory.getUserService().getCountOfMasters(levels, serviceIds, categoriesIds, search)).thenReturn(0);
+        when(serviceFactory.getUserService().getCountOfMasters(filter)).thenReturn(0);
     }
 
     protected void verifyAttributes() {

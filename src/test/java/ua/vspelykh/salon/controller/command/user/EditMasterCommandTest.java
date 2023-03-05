@@ -15,8 +15,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUserLevel;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUserLevel;
 
 class EditMasterCommandTest extends AbstractCommandTest {
 

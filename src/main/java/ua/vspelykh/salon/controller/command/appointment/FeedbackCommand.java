@@ -66,7 +66,7 @@ public class FeedbackCommand extends Command {
      * @throws ServiceException if an error occurs while retrieving feedback information
      */
     private boolean isFeedbackExists(Appointment appointment) throws ServiceException {
-        Feedback feedback = getServiceFactory().getFeedbackService().getFeedbackByAppointmentId(appointment.getId());
+        Feedback feedback = getServiceFactory().getFeedbackService().getByAppointmentId(appointment.getId());
         return feedback != null;
     }
 

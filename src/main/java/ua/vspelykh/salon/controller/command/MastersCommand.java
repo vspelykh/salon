@@ -3,6 +3,7 @@ package ua.vspelykh.salon.controller.command;
 import ua.vspelykh.salon.model.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.model.entity.Role;
+import ua.vspelykh.salon.util.MasterFilter;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -39,17 +40,9 @@ public class MastersCommand extends Command {
             List<Integer> serviceIds = setServiceIds();
             List<Integer> categoriesIds = setCategoriesIds();
 
-            MasterSort sort = getParameter(SORT) == null ? MasterSort.NAME_ASC : MasterSort.valueOf(getParameter(SORT));
             String search = getParameter(SEARCH);
             setCheckedLists(levels, serviceIds, search, categoriesIds);
-            List<UserMasterDTO> mastersDto = getServiceFactory().getUserService().getMastersDto(levels, serviceIds, categoriesIds,
-                    search, getPageParameter(), getSizeParameter(), sort, getLocale());
-            setRequestAttribute(MASTERS, mastersDto);
-
-            setRequestAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(getLocale()));
-            int countOfItems = getServiceFactory().getUserService().getCountOfMasters(levels, serviceIds, categoriesIds, search);
-            setPaginationParams(getPageParameter(), getSizeParameter(), countOfItems, sort);
-            request.setAttribute(IS_ADMIN, getCurrentUser().getRoles().contains(Role.ADMINISTRATOR));
+            setTableParams(levels, serviceIds, categoriesIds, search);
             forward(MASTERS);
         } catch (ServiceException e) {
             sendError404();
@@ -142,5 +135,49 @@ public class MastersCommand extends Command {
         setRequestAttribute(SERVICES + CHECKED, serviceIds);
         setRequestAttribute(SEARCH + CHECKED, search);
         setRequestAttribute(CATEGORIES + CHECKED, categoriesIds);
+
+        setRequestAttribute(IS_ADMIN, getCurrentUser().getRoles().contains(Role.ADMINISTRATOR));
+    }
+
+    /**
+     * Sets the table parameters for the list of masters based on the query parameters of the current HTTP request.
+     *
+     * @param levels        A list of MastersLevel objects that represents the levels of the masters.
+     * @param serviceIds    A list of Integer objects that represents the IDs of the services.
+     * @param categoriesIds A list of Integer objects that represents the IDs of the categories.
+     * @param search        A String object that represents the search criteria.
+     * @throws ServiceException If an error occurs while retrieving the masters.
+     */
+    private void setTableParams(List<MastersLevel> levels, List<Integer> serviceIds, List<Integer> categoriesIds, String search) throws ServiceException {
+        MasterSort sort = getParameter(SORT) == null ? MasterSort.NAME_ASC : MasterSort.valueOf(getParameter(SORT));
+        MasterFilter filter = createMasterFilter(levels, serviceIds, categoriesIds, search);
+        List<UserMasterDTO> mastersDto = getServiceFactory().getUserService()
+                .getMastersDto(filter, getPageParameter(), getSizeParameter(), sort, getLocale());
+        setRequestAttribute(MASTERS, mastersDto);
+
+        int countOfItems = getServiceFactory().getUserService().getCountOfMasters(filter);
+        setPaginationParams(getPageParameter(), getSizeParameter(), countOfItems, sort);
+        setRequestAttribute(CATEGORIES, getServiceFactory().getServiceCategoryService().findAll(getLocale()));
+    }
+
+    /**
+     * Creates a MasterFilter object based on the input parameters.
+     *
+     * @param levels        A list of MastersLevel objects that represents the levels of the masters.
+     * @param serviceIds    A list of Integer objects that represents the IDs of the services.
+     * @param categoriesIds A list of Integer objects that represents the IDs of the categories.
+     * @param search        A String object that represents the search criteria.
+     * @return A {@link MasterFilter} object that represents the filter criteria
+     * markdown
+     * Copy code
+     * for the masters.
+     */
+    private MasterFilter createMasterFilter(List<MastersLevel> levels, List<Integer> serviceIds,
+                                            List<Integer> categoriesIds, String search) {
+        return MasterFilter.builder().levels(levels)
+                .serviceIds(serviceIds)
+                .categoriesIds(categoriesIds)
+                .search(search)
+                .build();
     }
 }

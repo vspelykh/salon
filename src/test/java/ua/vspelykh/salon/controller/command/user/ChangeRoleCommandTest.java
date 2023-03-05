@@ -15,9 +15,9 @@ import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.user.AbstractScheduleCommand.ACTION;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class ChangeRoleCommandTest extends AbstractCommandTest {
 

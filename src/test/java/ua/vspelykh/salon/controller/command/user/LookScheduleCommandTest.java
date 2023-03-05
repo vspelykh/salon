@@ -20,9 +20,9 @@ import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.USER;
 import static ua.vspelykh.salon.controller.command.CommandNames.LOOK_SCHEDULE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestWorkingDay;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestWorkingDay;
 
 class LookScheduleCommandTest extends AbstractCommandTest {
 
@@ -41,7 +41,7 @@ class LookScheduleCommandTest extends AbstractCommandTest {
 
     @Test
     void processLookScheduleError() throws ServiceException, ServletException, IOException {
-        when(workingDayService.findDaysByUserId(ID_VALUE)).thenThrow(ServiceException.class);
+        when(workingDayService.findByUserId(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
     }
@@ -58,7 +58,7 @@ class LookScheduleCommandTest extends AbstractCommandTest {
     void processLookScheduleDays() throws Exception {
         WorkingDay testWorkingDay = getTestWorkingDay();
         testWorkingDay.setDate(DATE_VALUE.plusDays(1).toLocalDate());
-        when(workingDayService.findDaysByUserId(ID_VALUE)).thenReturn(List.of(getTestWorkingDay(), testWorkingDay));
+        when(workingDayService.findByUserId(ID_VALUE)).thenReturn(List.of(getTestWorkingDay(), testWorkingDay));
         command.process();
         String dates = "\"" + DATE_VALUE.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)) + "\"" +
                 ", \"" + testWorkingDay.getDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)) + "\"";

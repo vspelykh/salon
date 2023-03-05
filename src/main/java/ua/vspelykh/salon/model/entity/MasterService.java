@@ -6,6 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The MasterService class This class represents a service that a master can provide, which includes
+ * the duration (continuance) of the service.
+ * It extends the AbstractBaseEntity class and includes additional fields for service details.
+ * <p>
+ * Use the builder pattern to create new instances of this class.
+ *
+ * @version 1.0
+ */
 @SuperBuilder
 @Getter
 @Setter
@@ -16,18 +25,4 @@ public class MasterService extends AbstractBaseEntity {
     private int masterId;
     private int baseServiceId;
     private int continuance;
-
-    public MasterService(int masterId, int baseServiceId, int continuance) {
-        this.masterId = masterId;
-        this.baseServiceId = baseServiceId;
-        this.continuance = continuance;
-    }
-
-    public MasterService(Integer id, int masterId, int baseServiceId, int continuance) {
-        super(id);
-        this.masterId = masterId;
-        this.baseServiceId = baseServiceId;
-        this.continuance = continuance;
-    }
-
 }

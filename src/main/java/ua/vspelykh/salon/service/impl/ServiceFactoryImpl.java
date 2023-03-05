@@ -2,7 +2,7 @@ package ua.vspelykh.salon.service.impl;
 
 import ua.vspelykh.salon.model.dao.*;
 import ua.vspelykh.salon.model.dao.connection.DBCPDataSource;
-import ua.vspelykh.salon.model.dao.impl.*;
+import ua.vspelykh.salon.model.dao.postgres.*;
 import ua.vspelykh.salon.service.*;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -17,7 +17,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public UserService getUserService() throws ServiceException {
         UserServiceImpl userService = new UserServiceImpl();
         userService.setUserDao(getUserDao());
-        userService.setMarkDao(getMarkDao());
+        userService.setFeedbackDao(getFeedbackDao());
         userService.setUserLevelDao(getUserLevelDao());
         userService.setInvitationDao(getInvitationDao());
         userService.setTransaction(getTransaction());
@@ -28,7 +28,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public AppointmentService getAppointmentService() throws ServiceException {
         AppointmentServiceImpl appointmentService = new AppointmentServiceImpl();
         appointmentService.setAppointmentDao(getAppointmentDao());
-        appointmentService.setOrderingDao(getOrderingDao());
+        appointmentService.setAppointmentItemDao(getOrderingDao());
         appointmentService.setUserDao(getUserDao());
         appointmentService.setTransaction(getTransaction());
         return appointmentService;
@@ -61,20 +61,12 @@ public class ServiceFactoryImpl implements ServiceFactory {
 
     @Override
     public FeedbackService getFeedbackService() throws ServiceException {
-        FeedbackServiceImpl markService = new FeedbackServiceImpl();
-        markService.setFeedbackDao(getMarkDao());
-        markService.setAppointmentDao(getAppointmentDao());
-        markService.setUserDao(getUserDao());
-        markService.setTransaction(getTransaction());
-        return markService;
-    }
-
-    @Override
-    public AppointmentItemService getOrderingService() throws ServiceException {
-        AppointmentItemServiceImpl orderingService = new AppointmentItemServiceImpl();
-        orderingService.setAppointmentItemDao(getOrderingDao());
-        orderingService.setTransaction(getTransaction());
-        return orderingService;
+        FeedbackServiceImpl feedbackService = new FeedbackServiceImpl();
+        feedbackService.setFeedbackDao(getFeedbackDao());
+        feedbackService.setAppointmentDao(getAppointmentDao());
+        feedbackService.setUserDao(getUserDao());
+        feedbackService.setTransaction(getTransaction());
+        return feedbackService;
     }
 
     @Override
@@ -88,7 +80,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public MasterServiceService getServiceService() throws ServiceException {
         MasterServiceServiceImpl serviceService = new MasterServiceServiceImpl();
-        serviceService.setMsDao(getMasterServiceDao());
+        serviceService.setMasterServiceDao(getMasterServiceDao());
         serviceService.setBaseServiceDao(getBaseServiceDao());
         serviceService.setServiceCategoryDao(getServiceCategoryDao());
         serviceService.setTransaction(getTransaction());
@@ -153,10 +145,10 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public FeedbackDao getMarkDao() throws ServiceException {
-        FeedbackDaoImpl markDao = new FeedbackDaoImpl();
-        markDao.setConnection(getConnection());
-        return markDao;
+    public FeedbackDao getFeedbackDao() throws ServiceException {
+        FeedbackDaoImpl feedbackDao = new FeedbackDaoImpl();
+        feedbackDao.setConnection(getConnection());
+        return feedbackDao;
     }
 
     @Override

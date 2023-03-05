@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestWorkingDay;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestWorkingDay;
 
 class WorkingDayServiceImplTest extends AbstractServiceTest {
 
@@ -62,9 +62,9 @@ class WorkingDayServiceImplTest extends AbstractServiceTest {
 
     @Test
     void deleteDaysArray() throws DaoException, ServiceException, TransactionException {
-        doNothing().when(workingDayDao).deleteWorkingDaysByUserIdAndDatesArray(ID_VALUE, date);
+        doNothing().when(workingDayDao).deleteByUserIdAndDatesArray(ID_VALUE, date);
 
-        workingDayService.deleteWorkingDaysByUserIdAndDatesArray(ID_VALUE, date);
+        workingDayService.deleteByUserIdAndDatesArray(ID_VALUE, date);
         verifyTransactionStart();
         verifyTransactionCommit();
     }

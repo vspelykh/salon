@@ -72,7 +72,7 @@ class OrdersCommandTest extends AbstractCommandTest {
         when(request.getParameter(PAYMENT_STATUS)).thenReturn(PaymentStatus.PAID_BY_CARD.name());
         when(request.getParameter(PAGE)).thenReturn(String.valueOf(DEFAULT_PAGE));
         when(request.getParameter(SIZE)).thenReturn(String.valueOf(DEFAULT_SIZE));
-        when(appointmentService.getFiltered(anyInt(), any(), any(), any(), any(), anyInt(), anyInt()))
+        when(appointmentService.getFiltered(any(), anyInt(), anyInt()))
                 .thenReturn(List.of(getTestAppointmentDto()));
     }
 

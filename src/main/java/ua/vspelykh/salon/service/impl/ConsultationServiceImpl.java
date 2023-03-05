@@ -10,11 +10,22 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 
 import java.util.List;
 
+/**
+ * Implementation of the ConsultationService interface.
+ *
+ * @version 1.0
+ */
 public class ConsultationServiceImpl implements ConsultationService {
 
     private ConsultationDao dao;
     private Transaction transaction;
 
+    /**
+     * Returns all consultations.
+     *
+     * @return a list of all consultations.
+     * @throws ServiceException if there is an error retrieving the consultations.
+     */
     @Override
     public List<Consultation> findAll() throws ServiceException {
         try {
@@ -24,6 +35,12 @@ public class ConsultationServiceImpl implements ConsultationService {
         }
     }
 
+    /**
+     * Saves a consultation.
+     *
+     * @param consultation the consultation to be saved.
+     * @throws ServiceException if there is an error creating the consultation.
+     */
     @Override
     public void save(Consultation consultation) throws ServiceException {
         try {
@@ -40,6 +57,12 @@ public class ConsultationServiceImpl implements ConsultationService {
         }
     }
 
+    /**
+     * Deletes a consultation with the specified ID.
+     *
+     * @param id the ID of the consultation to be deleted.
+     * @throws ServiceException if there is an error deleting the consultation.
+     */
     @Override
     public void delete(Integer id) throws ServiceException {
         try {

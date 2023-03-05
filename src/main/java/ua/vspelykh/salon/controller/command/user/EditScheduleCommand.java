@@ -42,7 +42,7 @@ public class EditScheduleCommand extends AbstractScheduleCommand {
                 Time timeEnd = getParameterTime(TIME_END);
                 getServiceFactory().getWorkingDayService().save(userId, datesArray, timeStart, timeEnd);
             } else if (DELETE.equals(getParameter(ACTION))) {
-                getServiceFactory().getWorkingDayService().deleteWorkingDaysByUserIdAndDatesArray(userId, datesArray);
+                getServiceFactory().getWorkingDayService().deleteByUserIdAndDatesArray(userId, datesArray);
             } else {
                 sendError404();
             }

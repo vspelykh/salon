@@ -21,9 +21,9 @@ import static ua.vspelykh.salon.Constants.DATE_VALUE;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointment;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointment;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class EditAppointmentCommandTest extends AbstractCommandTest {
 

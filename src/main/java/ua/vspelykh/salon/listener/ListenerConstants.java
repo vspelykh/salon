@@ -1,5 +1,12 @@
 package ua.vspelykh.salon.listener;
 
+/**
+ * The ListenerConstants class provides constant values that are commonly used by listener classes.
+ * <p>
+ * This class is a utility class and cannot be instantiated.
+ *
+ * @version 1.0
+ */
 public class ListenerConstants {
 
     private ListenerConstants() {

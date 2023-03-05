@@ -6,6 +6,8 @@ import java.io.IOException;
 /**
  * A filter that sets the character encoding of incoming requests and outgoing responses to UTF-8.
  * This is important for proper handling of non-ASCII characters in web applications.
+ *
+ * @version 1.0
  */
 public class EncodingFilter implements Filter {
 

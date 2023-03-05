@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestAppointmentDto;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestMaster;
 
@@ -95,9 +95,7 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
         doThrow(DaoException.class).when(appointmentDao).create(any(Appointment.class));
 
         assertThrows(ServiceException.class,
-                () -> {
-                    appointmentService.save(testAppointment, List.of(getTestMasterService()));
-                });
+                () -> appointmentService.save(testAppointment, List.of(getTestMasterService())));
 
         verify(appointmentDao).create(testAppointment);
         verify(appointmentDao, never()).update(testAppointment);
@@ -163,8 +161,7 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
     @Test
     void getFiltered() throws DaoException, ServiceException, TransactionException {
 
-        when(appointmentDao.getFiltered(ID_VALUE, DATE_VALUE.toLocalDate(), DATE_VALUE.toLocalDate(),
-                AppointmentStatus.SUCCESS, PaymentStatus.PAID_BY_CARD, 1, 5)).thenReturn(List.of(getTestAppointment()));
+        when(appointmentDao.getFiltered(getAppointmentFilter(), 1, 5)).thenReturn(List.of(getTestAppointment()));
 
         User master = getTestMaster();
         User client = getTestUser();
@@ -173,8 +170,7 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
         when(userDao.findById(1)).thenReturn(master);
         when(userDao.findById(2)).thenReturn(client);
 
-        List<AppointmentDto> actualAppointmentDtos = appointmentService.getFiltered(ID_VALUE, DATE_VALUE.toLocalDate(),
-                DATE_VALUE.toLocalDate(), AppointmentStatus.SUCCESS, PaymentStatus.PAID_BY_CARD, 1, 5);
+        List<AppointmentDto> actualAppointmentDtos = appointmentService.getFiltered(getAppointmentFilter(), 1, 5);
 
         assertEquals(List.of(getTestAppointmentDto()), actualAppointmentDtos);
         verifyTransactionStart();
@@ -182,12 +178,10 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void getFilteredThrowsException() throws DaoException, TransactionException, ServiceException {
-        when(appointmentDao.getFiltered(ID_VALUE, DATE_VALUE.toLocalDate(), DATE_VALUE.toLocalDate(),
-                AppointmentStatus.SUCCESS, PaymentStatus.PAID_BY_CARD, 1, 5)).thenThrow(DaoException.class);
+    void getFilteredThrowsException() throws DaoException, TransactionException {
+        when(appointmentDao.getFiltered(getAppointmentFilter(), 1, 5)).thenThrow(DaoException.class);
 
-        assertThrows(ServiceException.class, () -> appointmentService.getFiltered(ID_VALUE, DATE_VALUE.toLocalDate(),
-                DATE_VALUE.toLocalDate(), AppointmentStatus.SUCCESS, PaymentStatus.PAID_BY_CARD, 1, 5));
+        assertThrows(ServiceException.class, () -> appointmentService.getFiltered(getAppointmentFilter(), 1, 5));
 
         verifyTransactionStart();
         verifyTransactionRollback();

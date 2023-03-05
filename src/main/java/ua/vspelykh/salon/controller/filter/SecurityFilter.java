@@ -19,8 +19,8 @@ import static ua.vspelykh.salon.controller.command.CommandNames.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.model.entity.Role.ADMINISTRATOR;
 import static ua.vspelykh.salon.model.entity.Role.HAIRDRESSER;
-import static ua.vspelykh.salon.util.PageConstants.PAGE_COMMAND_PATTERN;
-import static ua.vspelykh.salon.util.PageConstants.getPermittedRoles;
+import static ua.vspelykh.salon.util.RolePermissions.PAGE_COMMAND_PATTERN;
+import static ua.vspelykh.salon.util.RolePermissions.getPermittedRoles;
 
 /**
  * The SecurityFilter class is an implementation of the Filter interface, responsible for filtering incoming requests

@@ -1,6 +1,12 @@
 package ua.vspelykh.salon.util.exception;
 
+/**
+ * Custom exception class for DAO layer errors.
+ *
+ * @version 1.0
+ */
 public class DaoException extends Exception {
+
     public DaoException() {
     }
 
