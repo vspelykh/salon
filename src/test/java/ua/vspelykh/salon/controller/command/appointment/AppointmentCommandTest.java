@@ -39,8 +39,6 @@ import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestMasterServic
 
 class AppointmentCommandTest extends AbstractCommandTest {
 
-    private final String ALLOWED_TIME = "allowedTime";
-
     @Mock
     private UserService userService;
 
@@ -127,6 +125,7 @@ class AppointmentCommandTest extends AbstractCommandTest {
     @Override
     protected void prepareMocks() throws ServiceException {
         master = getTestUser();
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());
         when(userService.findById(ID_VALUE)).thenReturn(master);
         when(userService.getUserLevelByUserId(ID_VALUE)).thenReturn(getTestUserLevel());
 

@@ -230,7 +230,7 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment> implements Appo
         statement.setInt(++k, entity.getContinuance());
         statement.setTimestamp(++k, Timestamp.valueOf(entity.getDate()));
         statement.setInt(++k, entity.getPrice());
-        statement.setInt(++k, entity.getDiscount());
+        statement.setDouble(++k, entity.getDiscount());
         statement.setString(++k, entity.getStatus().name());
         statement.setString(++k, entity.getPaymentStatus().name());
         return ++k;

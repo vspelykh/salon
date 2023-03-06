@@ -18,6 +18,7 @@ public class DaoTestData {
                 .surname(SURNAME_VALUE)
                 .email(EMAIL_VALUE)
                 .number(NUMBER_VALUE)
+                .birthday(BIRTHDAY_VALUE)
                 .password(PASSWORD_VALUE)
                 .roles(ROLES_VALUE)
                 .build();

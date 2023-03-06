@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.DEFAULT_DISCOUNT;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getAppointmentFilter;
 import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointment;
@@ -59,7 +60,7 @@ class AppointmentDaoImplTest extends AbstractDaoTest {
             verify(statement).setInt(++k, CONTINUANCE_VALUE);
             verify(statement).setTimestamp(++k, Timestamp.valueOf(DATE_VALUE));
             verify(statement).setInt(++k, PRICE_VALUE);
-            verify(statement).setInt(++k, ID_VALUE);
+            verify(statement).setDouble(++k, DEFAULT_DISCOUNT);
             verify(statement).setString(++k, AppointmentStatus.SUCCESS.name());
             verify(statement).setString(++k, PaymentStatus.PAID_BY_CARD.name());
             verify(statement).getGeneratedKeys();

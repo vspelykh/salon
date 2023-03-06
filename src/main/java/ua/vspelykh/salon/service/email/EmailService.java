@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.service;
+package ua.vspelykh.salon.service.email;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

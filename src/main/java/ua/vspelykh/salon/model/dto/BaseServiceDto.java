@@ -56,6 +56,7 @@ public class BaseServiceDto {
             BaseServiceDto dto = new BaseServiceDto();
             dto.setId(baseService.getId());
             dto.setService(baseService.getService());
+            dto.setPrice(baseService.getPrice());
             if (UA_LOCALE.equals(locale)) {
                 dto.setService(baseService.getServiceUa());
                 dto.setCategory(category.getNameUa());

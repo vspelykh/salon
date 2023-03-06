@@ -5,6 +5,7 @@ import ua.vspelykh.salon.model.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashSet;
 
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
@@ -31,6 +32,7 @@ public class UserRowMapper implements RowMapper<User> {
                 .surname(rs.getString(SURNAME))
                 .email(rs.getString(EMAIL))
                 .number(rs.getString(NUMBER))
+                .birthday(LocalDate.parse(rs.getString(BIRTHDAY)))
                 .password(rs.getString(PASSWORD))
                 .roles(new HashSet<>())
                 .build();

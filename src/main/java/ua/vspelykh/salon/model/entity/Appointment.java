@@ -28,7 +28,7 @@ public class Appointment extends AbstractBaseEntity {
     private int continuance;
     private LocalDateTime date;
     private int price;
-    private int discount;
+    private double discount;
     private AppointmentStatus status;
     private PaymentStatus paymentStatus;
 }

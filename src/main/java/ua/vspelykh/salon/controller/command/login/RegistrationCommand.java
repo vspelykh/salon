@@ -6,8 +6,10 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.model.dao.mapper.Column.BIRTHDAY;
 import static ua.vspelykh.salon.model.dao.mapper.Column.KEY;
 import static ua.vspelykh.salon.util.exception.Messages.*;
 
@@ -60,10 +62,11 @@ public class RegistrationCommand extends Command {
         String surname = getParameter(SURNAME);
         String email = getParameter(EMAIL);
         String number = getParameter(NUMBER);
+        String birthday = getParameter(BIRTHDAY);
         String password = getParameter(PASSWORD);
         String passRepeat = getParameter(PASSWORD_REPEAT);
-        setAttrsForFailCase(name, surname, email, number, password, passRepeat);
-        if (isFieldsEmpty(name, surname, email, number, password, passRepeat)) {
+        setAttrsForFailCase(name, surname, email, number, birthday, password, passRepeat);
+        if (isFieldsEmpty(name, surname, email, number, birthday, password, passRepeat)) {
             message = MESSAGE_FIELDS_EMPTY;
             return null;
         }
@@ -76,6 +79,7 @@ public class RegistrationCommand extends Command {
                 .surname(surname)
                 .email(email)
                 .number(number)
+                .birthday(LocalDate.parse(birthday))
                 .password(password)
                 .build();
     }
@@ -106,14 +110,16 @@ public class RegistrationCommand extends Command {
      * @param surname    the surname of the user
      * @param email      the email of the user
      * @param number     the phone number of the user
+     * @param birthday   the date of birth of the user
      * @param password   the password of the user
      * @param passRepeat the repeated password of the user
      */
-    private void setAttrsForFailCase(String name, String surname, String email, String number, String password, String passRepeat) {
+    private void setAttrsForFailCase(String name, String surname, String email, String number, String birthday, String password, String passRepeat) {
         setRequestAttribute(NAME, name);
         setRequestAttribute(SURNAME, surname);
         setRequestAttribute(EMAIL, email);
         setRequestAttribute(NUMBER, number);
+        setRequestAttribute(BIRTHDAY, birthday);
         setRequestAttribute(PASSWORD, password);
         setRequestAttribute(PASSWORD_REPEAT, passRepeat);
         setRequestAttribute(KEY, request.getParameter(KEY) == null ? EMPTY_STRING : request.getParameter(KEY));

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ public class User extends AbstractBaseEntity {
     private String surname;
     private String email;
     private String number;
+    private LocalDate birthday;
     private transient String password;
     private Set<Role> roles = new HashSet<>();
 }

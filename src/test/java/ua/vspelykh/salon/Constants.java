@@ -15,6 +15,7 @@ public interface Constants {
     String EMAIL_VALUE = "papahet@gmail.com";
     String NUMBER_VALUE = "+380976543211";
     String PASSWORD_VALUE = "Password1";
+    LocalDate BIRTHDAY_VALUE = LocalDate.now().minusYears(20);
     Set<Role> ROLES_VALUE = Set.of(Role.CLIENT);
 
     int ERROR_CODE = -1;

@@ -13,6 +13,7 @@ public final class Column {
     public static final String SURNAME = "surname";
     public static final String EMAIL = "email";
     public static final String NUMBER = "number";
+    public static final String BIRTHDAY = "birthday";
     public static final String PASSWORD = "password";
 
     public static final String LEVEL = "level";

@@ -18,10 +18,8 @@ import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ValidationException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Date;
+import java.sql.*;
 import java.util.*;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.ADD;
@@ -80,7 +78,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      */
     @Override
     public int create(User entity) throws DaoException {
-        String query = new QueryBuilder().insert(tableName, NAME, SURNAME, EMAIL, NUMBER, PASSWORD).build();
+        String query = new QueryBuilder().insert(tableName, NAME, SURNAME, EMAIL, NUMBER, BIRTHDAY, PASSWORD).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
@@ -106,7 +104,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      */
     @Override
     public void update(User entity) throws DaoException {
-        String query = new QueryBuilder().update(tableName).set(NAME, SURNAME, EMAIL, NUMBER, PASSWORD).where(ID).build();
+        String query = new QueryBuilder().update(tableName).set(NAME, SURNAME, EMAIL, NUMBER, BIRTHDAY, PASSWORD).where(ID).build();
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             encryptPassword(entity);
             setUserStatement(entity, statement);
@@ -337,6 +335,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         statement.setString(++k, entity.getSurname());
         statement.setString(++k, entity.getEmail());
         statement.setString(++k, entity.getNumber());
+        statement.setDate(++k, Date.valueOf(entity.getBirthday()));
         statement.setString(++k, entity.getPassword());
     }
 
@@ -389,7 +388,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         private static final String COUNT_MASTERS_QUERY = "SELECT COUNT(1) FROM users u INNER JOIN user_level ul " +
                 "ON u.id = ul.id";
-        private static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
+        private static final String SELECT_USERS = "SELECT u.id, name, surname, email, number, birthday, password, AVG(coalesce(mark,0)) " +
                 "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id LEFT JOIN feedbacks m ON u.id=" +
                 "(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id)";
 

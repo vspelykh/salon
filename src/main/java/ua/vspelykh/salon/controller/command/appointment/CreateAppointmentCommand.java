@@ -2,6 +2,7 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.entity.*;
+import ua.vspelykh.salon.service.discount.DiscountHandler;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -115,7 +116,12 @@ public class CreateAppointmentCommand extends Command {
     }
 
     /**
-     * Builds an appointment object based on the provided parameters and returns it.
+     * This method builds an appointment object with the given parameters and returns it. It also applies any eligible
+     * discounts to the appointment price using the DiscountHandler service. The user level of the master user is used to
+     * calculate the appointment price before any discount is applied. The discount service checks if the client is eligible
+     * for any discounts and applies them if applicable. The appointment price is then calculated by multiplying the
+     * total price of the selected services by the discount percentage. The discount percentage is 1.0 if the client is not
+     * eligible for any discounts.
      *
      * @param masterServices The list of services selected by the client for the appointment.
      * @param master         The master user for the appointment.
@@ -127,13 +133,18 @@ public class CreateAppointmentCommand extends Command {
      * @throws ServiceException If an error occurs while building the appointment object.
      */
     private Appointment buildAppointment(List<MasterService> masterServices, User master, User client, LocalDate date, LocalTime time, PaymentStatus paymentStatus) throws ServiceException {
+        UserLevel userLevel = getServiceFactory().getUserService().getUserLevelByUserId(master.getId());
+        LocalDateTime appointmentDate = LocalDateTime.of(date, time);
+        DiscountHandler discountHandler = new DiscountHandler(client, appointmentDate);
+        double discount = discountHandler.getDiscount();
+        int price = (int) Math.round(getTotalPrice(masterServices, userLevel) * discount);
         return Appointment.builder()
                 .masterId(master.getId())
                 .clientId(client.getId())
                 .continuance(getTotalContinuance(masterServices))
-                .date(LocalDateTime.of(date, time))
-                .price(getTotalPrice(masterServices, getServiceFactory().getUserService().getUserLevelByUserId(master.getId())))
-                .discount(DEFAULT_DISCOUNT)
+                .date(appointmentDate)
+                .price(price)
+                .discount(discount)
                 .paymentStatus(paymentStatus)
                 .status(AppointmentStatus.RESERVED).build();
     }

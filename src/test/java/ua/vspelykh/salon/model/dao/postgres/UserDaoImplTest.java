@@ -13,10 +13,7 @@ import ua.vspelykh.salon.util.MasterFilter;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +47,7 @@ class UserDaoImplTest extends AbstractDaoTest {
             when(statement.executeQuery()).thenReturn(mockResultSet);
 
             mockResultSetIfPresent(mockResultSet);
-            User user = mockUserDao.findById(getTestUser().getId());
+            User user = mockUserDao.findById(ID_VALUE);
 
             verifyQuery(SELECT_USER_BY_ID);
             verifyQuery(SELECT_USER_ROLE);
@@ -159,11 +156,13 @@ class UserDaoImplTest extends AbstractDaoTest {
 
             verifyQueryWithGeneratedKey(INSERT_USER);
             verifyNoMoreInteractions(mockConnection);
-            verify(statement).setString(1, NAME_VALUE);
-            verify(statement).setString(2, SURNAME_VALUE);
-            verify(statement).setString(3, EMAIL_VALUE);
-            verify(statement).setString(4, NUMBER_VALUE);
-            verify(statement).setString(eq(5), anyString());
+            int k = 0;
+            verify(statement).setString(++k, NAME_VALUE);
+            verify(statement).setString(++k, SURNAME_VALUE);
+            verify(statement).setString(++k, EMAIL_VALUE);
+            verify(statement).setString(++k, NUMBER_VALUE);
+            verify(statement).setDate(++k, Date.valueOf(BIRTHDAY_VALUE));
+            verify(statement).setString(eq(++k), anyString());
             verify(statement).getGeneratedKeys();
             assertEquals(ID_VALUE, id);
         }
@@ -334,6 +333,7 @@ class UserDaoImplTest extends AbstractDaoTest {
         when(resultSet.getString(SURNAME)).thenReturn(SURNAME_VALUE);
         when(resultSet.getString(EMAIL)).thenReturn(EMAIL_VALUE);
         when(resultSet.getString(NUMBER)).thenReturn(NUMBER_VALUE);
+        when(resultSet.getDate(BIRTHDAY)).thenReturn(Date.valueOf(BIRTHDAY_VALUE));
         when(resultSet.getString(PASSWORD)).thenReturn(PASSWORD_VALUE);
         when(resultSet.getString(ROLE)).thenReturn(Role.CLIENT.name());
     }
@@ -347,7 +347,9 @@ class UserDaoImplTest extends AbstractDaoTest {
         when(preparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);
         when(preparedStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true).thenReturn(false).thenReturn(true).thenReturn(false);
-        when(mockResultSet.getString(anyString())).thenReturn(Role.CLIENT.name());
+        when(mockResultSet.getString(BIRTHDAY)).thenReturn(String.valueOf(BIRTHDAY_VALUE));
+        when(mockResultSet.getString(ROLE)).thenReturn(Role.CLIENT.name());
+        when(mockResultSet.getString(PASSWORD)).thenReturn(PASSWORD_VALUE);
         when(mockResultSet.getInt(1)).thenReturn(ID_VALUE);
         return preparedStatement;
     }

@@ -74,7 +74,7 @@ public class ControllerConstants {
     public static final String ALLOWED_TIME = "allowedTime";
     public static final int DEFAULT_SIZE = 5;
     public static final int DEFAULT_PAGE = 1;
-    public static final int DEFAULT_DISCOUNT = 1;
+    public static final double DEFAULT_DISCOUNT = 1.0;
     public static final String PLACEHOLDER_EN = "Pick A Date";
     public static final String PLACEHOLDER_UA = "Виберіть дату";
     public static final String DAY = "day";

@@ -9,13 +9,13 @@ public interface SqlConstants {
         String DELETE_USER_BY_ID = "DELETE FROM users WHERE id=?";
         String SELECT_USERS_BY_ROLE = "SELECT * FROM users u INNER JOIN user_roles ur " +
                 "ON u.id=ur.user_id AND ur.role=?";
-        String INSERT_USER = "INSERT INTO users (name, surname, email, number, password) " +
-                "VALUES (?,?,?,?,?)";
+        String INSERT_USER = "INSERT INTO users (name, surname, email, number, birthday, password) " +
+                "VALUES (?,?,?,?,?,?)";
         String UPDATE_USER = "UPDATE users SET name=?, surname=?, email=?, " +
-                "number=?, password=? WHERE id=?";
+                "number=?, birthday=?, password=? WHERE id=?";
         String SELECT_FILTERED_1 = "SELECT * FROM users u INNER JOIN user_level ul ON u.id=ul.id WHERE ul.active=? " +
                 "ORDER BY name LIMIT 5 OFFSET 0";
-        String SELECT_FILTERED_2 = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) " +
+        String SELECT_FILTERED_2 = "SELECT u.id, name, surname, email, number, birthday, password, AVG(coalesce(mark,0)) " +
                 "as average FROM users u INNER JOIN user_level ul ON u.id = ul.id " +
                 "LEFT JOIN feedbacks m ON u.id=(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id) " +
                 "WHERE active=? GROUP BY u.id  ORDER BY average LIMIT 5 OFFSET 0";
@@ -24,7 +24,7 @@ public interface SqlConstants {
                 "AND  ms.base_service_id IN(SELECT id FROM base_services WHERE category_id IN(?,?,?)) " +
                 "GROUP BY ms.master_id) AS q ON q.master_id = u.id WHERE name ILIKE ? OR surname ILIKE ? AND active=? " +
                 "ORDER BY name DESC LIMIT 5 OFFSET 0";
-        String SELECT_FILTERED_4 = "SELECT u.id, name, surname, email, number, password, AVG(coalesce(mark,0)) as average " +
+        String SELECT_FILTERED_4 = "SELECT u.id, name, surname, email, number, birthday, password, AVG(coalesce(mark,0)) as average " +
                 "FROM users u INNER JOIN user_level ul ON u.id = ul.id " +
                 "LEFT JOIN feedbacks m ON u.id=(SELECT master_id FROM appointments a WHERE m.appointment_id=a.id) " +
                 "INNER JOIN (SELECT master_id from master_services ms WHERE  ms.base_service_id IN(?,?,?) " +
