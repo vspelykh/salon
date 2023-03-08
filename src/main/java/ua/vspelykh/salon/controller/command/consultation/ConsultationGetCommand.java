@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.controller.command.appointment;
+package ua.vspelykh.salon.controller.command.consultation;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.util.exception.ServiceException;

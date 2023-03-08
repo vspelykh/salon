@@ -27,6 +27,8 @@ public final class Messages {
     public static final String ERROR_500 = "500.error";
     public static final String ERROR_SCHEDULE_BUILDER = "Error getting service names during schedule building";
     public static final String ERROR_CREATE_APPOINTMENT_ON_WEEKEND = "Trying to create an appointment on weekend day";
+    public static final String CONSULTATION_ERROR = "consultation.error";
+    public static final String CONSULTATION_SUCCESS = "consultation.success";
 
 
     private Messages() {

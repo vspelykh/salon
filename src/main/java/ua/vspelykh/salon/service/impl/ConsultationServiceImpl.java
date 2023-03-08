@@ -7,6 +7,8 @@ import ua.vspelykh.salon.service.Transaction;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 import ua.vspelykh.salon.util.exception.TransactionException;
+import ua.vspelykh.salon.util.exception.ValidationException;
+import ua.vspelykh.salon.util.validation.Validation;
 
 import java.util.List;
 
@@ -53,12 +55,13 @@ public class ConsultationServiceImpl implements ConsultationService {
     @Override
     public void save(Consultation consultation) throws ServiceException {
         try {
-            transaction.start();
+            Validation.checkNumber(consultation.getNumber());
             if (consultation.isNew()) {
                 dao.create(consultation);
             } else {
                 dao.update(consultation);
             }
+            transaction.start();
             transaction.commit();
         } catch (DaoException | TransactionException e) {
             try {
@@ -67,6 +70,8 @@ public class ConsultationServiceImpl implements ConsultationService {
                 /*ignore*/
             }
             throw new ServiceException(e);
+        } catch (ValidationException e) {
+            throw new ServiceException(e.getMessage());
         }
     }
 

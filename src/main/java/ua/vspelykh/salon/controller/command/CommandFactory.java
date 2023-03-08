@@ -1,6 +1,10 @@
 package ua.vspelykh.salon.controller.command;
 
 import ua.vspelykh.salon.controller.command.appointment.*;
+import ua.vspelykh.salon.controller.command.consultation.ConsultationCommand;
+import ua.vspelykh.salon.controller.command.consultation.ConsultationEditCommand;
+import ua.vspelykh.salon.controller.command.consultation.ConsultationGetCommand;
+import ua.vspelykh.salon.controller.command.consultation.ConsultationPostCommand;
 import ua.vspelykh.salon.controller.command.login.*;
 import ua.vspelykh.salon.controller.command.user.*;
 
@@ -65,6 +69,7 @@ public class CommandFactory {
         put(INVITATION, new InvitationFormCommand());
         put(CREATE_INVITATION, new CreateInvitationCommand());
         put(EDIT_MASTER, new EditMasterCommand());
+        put(ERROR_COMMAND, new ErrorCommand());
     }
 
     /**

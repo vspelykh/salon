@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.controller.command.appointment;
+package ua.vspelykh.salon.controller.command.consultation;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.entity.Consultation;
@@ -7,9 +7,11 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.NAME;
 import static ua.vspelykh.salon.model.dao.mapper.Column.NUMBER;
+import static ua.vspelykh.salon.util.exception.Messages.CONSULTATION_ERROR;
+import static ua.vspelykh.salon.util.exception.Messages.CONSULTATION_SUCCESS;
 
 /**
  * A Command implementation for handling POST requests to create a new consultation.
@@ -32,9 +34,11 @@ public class ConsultationPostCommand extends Command {
                 number(getParameter(NUMBER)).build();
         try {
             getServiceFactory().getConsultationService().save(consultation);
+            setSessionAttribute(MESSAGE, CONSULTATION_SUCCESS);
+            redirect(SUCCESS_REDIRECT);
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, CONSULTATION_ERROR);
+            redirect(ERROR_REDIRECT);
         }
-        redirect(SUCCESS_REDIRECT);
     }
 }

@@ -130,7 +130,7 @@
                 <tr>
                     <th><fmt:message key="master.name"/><i></i></th>
                     <th><fmt:message key="cons.num"/><i></i></th>
-                    <th><fmt:message key="orders.date"/><i></i></th>
+                    <th></th>
                     <th></th>
                 </tr>
                 </thead>

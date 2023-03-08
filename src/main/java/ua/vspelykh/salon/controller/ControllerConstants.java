@@ -24,6 +24,8 @@ public class ControllerConstants {
 
     // Redirect paths
     public static final String SUCCESS_REDIRECT = "/salon?command=success";
+    public static final String ERROR_REDIRECT = "/salon?command=error";
+    public static final String ERROR_FORWARD = "error/404";
     public static final String CONSULTATION_REDIRECT = "/salon?command=consultations";
     public static final String LOGIN_REDIRECT = "/salon?command=login";
     public static final String APPOINTMENT_REDIRECT_PATTERN = "%s%s%s&%s=%s&%s=%s";
