@@ -26,6 +26,7 @@ public class MasterServiceRowMapper implements RowMapper<MasterService> {
     public MasterService map(ResultSet rs) throws SQLException {
         return MasterService.builder()
                 .id(rs.getInt(ID))
+                .masterId(rs.getInt(MASTER_ID))
                 .baseServiceId(rs.getInt(BASE_SERVICE_ID))
                 .continuance(rs.getInt(CONTINUANCE))
                 .build();

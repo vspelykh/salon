@@ -25,7 +25,7 @@
             <div class="modal-body">
                 <tags:changeStatus id="${param.id}"
                                    appointment="${appointment}"
-                                   isAdmin="true" redirect="redirect"
+                                   isAdmin="true" redirect="redirect" date="${appointment.date}"
                                    status="${appointment.status}"/>
 
                         <tags:acceptPayment id="${param.id}" redirect="redirect"

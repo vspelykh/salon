@@ -100,6 +100,7 @@ public class ControllerConstants {
     public static final String SIZES = "sizes";
     public static final String ERROR = "error";
     public static final String EMPTY_STRING = "";
+    public static final String REMOVED_DAYS = "removed_days";
 
     //other
     public static final String DATE_PATTERN = "dd-MM-yyyy";

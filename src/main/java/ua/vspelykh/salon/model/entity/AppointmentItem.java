@@ -1,9 +1,8 @@
 package ua.vspelykh.salon.model.entity;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -16,10 +15,9 @@ import lombok.experimental.SuperBuilder;
  * @version 1.0
  */
 @SuperBuilder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true)
 public class AppointmentItem extends AbstractBaseEntity {
 
     private Integer appointmentId;

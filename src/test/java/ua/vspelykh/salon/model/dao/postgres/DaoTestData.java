@@ -6,6 +6,7 @@ import ua.vspelykh.salon.util.MasterFilter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 
 import static ua.vspelykh.salon.Constants.*;
@@ -20,7 +21,7 @@ public class DaoTestData {
                 .number(NUMBER_VALUE)
                 .birthday(BIRTHDAY_VALUE)
                 .password(PASSWORD_VALUE)
-                .roles(ROLES_VALUE)
+                .roles(new HashSet<>())
                 .build();
     }
 

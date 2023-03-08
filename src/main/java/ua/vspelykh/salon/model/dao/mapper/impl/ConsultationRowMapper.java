@@ -28,6 +28,7 @@ public class ConsultationRowMapper implements RowMapper<Consultation> {
                 .name(rs.getString(NAME))
                 .number(rs.getString(NUMBER))
                 .date(rs.getTimestamp(DATE).toLocalDateTime())
+                .isRead(rs.getBoolean(IS_READ))
                 .build();
     }
 }

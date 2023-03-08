@@ -27,7 +27,9 @@ public class ConsultationPostCommand extends Command {
      */
     @Override
     public void process() throws ServletException, IOException {
-        Consultation consultation = Consultation.builder().name(getParameter(NAME)).number(getParameter(NUMBER)).build();
+        Consultation consultation = Consultation.builder().
+                name(getParameter(NAME)).
+                number(getParameter(NUMBER)).build();
         try {
             getServiceFactory().getConsultationService().save(consultation);
         } catch (ServiceException e) {

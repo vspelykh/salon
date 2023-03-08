@@ -39,6 +39,7 @@ class RegistrationCommandTest extends AbstractCommandTest {
         command.process();
         User testUser = getTestUser();
         testUser.setId(null);
+        testUser.setRoles(null);
         verify(userService).save(testUser);
         verify(request.getSession()).setAttribute(MESSAGE, MESSAGE_REGISTRATION_SUCCESS);
         verifyRedirect(servletContext.getContextPath() + SUCCESS_REDIRECT);

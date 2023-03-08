@@ -1,9 +1,7 @@
 package ua.vspelykh.salon.model.entity;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -16,10 +14,8 @@ import java.time.LocalDate;
  * that only take into account the explicitly included fields.
  */
 @SuperBuilder
-@Getter
-@Setter
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Invitation extends AbstractBaseEntity {
 
     private String email;

@@ -90,7 +90,20 @@ public class ServiceTestData {
                 .build();
     }
 
-    public static UserMasterDTO getTestUserMasterDto(){
+    public static UserMasterDTO getTestUserMasterDto() {
         return UserMasterDTO.build(getTestMaster(), getTestUserLevel(), MARK_VALUE, UA_LOCALE);
     }
+
+    public static User getTestUserWithRole() {
+        return User.builder().id(ID_VALUE)
+                .name(NAME_VALUE)
+                .surname(SURNAME_VALUE)
+                .email(EMAIL_VALUE)
+                .number(NUMBER_VALUE)
+                .birthday(BIRTHDAY_VALUE)
+                .password(PASSWORD_VALUE)
+                .roles(ROLES_VALUE)
+                .build();
+    }
+
 }

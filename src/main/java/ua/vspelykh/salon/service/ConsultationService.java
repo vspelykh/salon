@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface ConsultationService {
 
+    Consultation findById(int id) throws ServiceException;
+
     /**
      * Retrieves a list of all consultations.
      *
@@ -35,4 +37,6 @@ public interface ConsultationService {
      * @throws ServiceException if an error occurs while deleting the consultation
      */
     void delete(Integer id) throws ServiceException;
+
+    List<Consultation> getNewConsultations() throws ServiceException;
 }

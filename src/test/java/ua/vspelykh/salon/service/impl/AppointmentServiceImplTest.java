@@ -160,19 +160,20 @@ class AppointmentServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getFiltered() throws DaoException, ServiceException, TransactionException {
-
         when(appointmentDao.getFiltered(getAppointmentFilter(), 1, 5)).thenReturn(List.of(getTestAppointment()));
+        when(appointmentItemDao.getByAppointmentId(ID_VALUE)).thenReturn(List.of(getTestAppointmentItem()));
 
         User master = getTestMaster();
+        master.setRoles(ROLES_VALUE);
         User client = getTestUser();
+        client.setRoles(ROLES_VALUE);
         client.setId(2);
 
         when(userDao.findById(1)).thenReturn(master);
         when(userDao.findById(2)).thenReturn(client);
 
         List<AppointmentDto> actualAppointmentDtos = appointmentService.getFiltered(getAppointmentFilter(), 1, 5);
-
-        assertEquals(List.of(getTestAppointmentDto()), actualAppointmentDtos);
+        assertEquals(getTestAppointmentDto(), actualAppointmentDtos.get(0));
         verifyTransactionStart();
         verifyTransactionCommit();
     }

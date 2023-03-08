@@ -26,7 +26,7 @@ public class CommandNames {
     public static final String CONSULTATION = "consultation";
     public static final String CONSULTATION_POST = "consultation-post";
     public static final String CONSULTATION_GET = "consultations";
-    public static final String CONSULTATION_DELETE = "consultation-delete";
+    public static final String CONSULTATION_EDIT = "consultation-edit";
     public static final String CALENDAR = "calendar";
     public static final String SCHEDULE = "schedule";
     public static final String GET_SCHEDULE = "get-schedule";

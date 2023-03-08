@@ -9,6 +9,7 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
@@ -77,10 +78,12 @@ public class EditAppointmentCommand extends Command {
     }
 
     /**
-     * This method updates the status and payment status of the appointment based on the request parameters.
-     * If the status request parameter is null, nothing is updated.
-     * If the status is cancelled and the user is not an admin, nothing is updated.
-     * If the status is cancelled and the payment status is not 'NOT_PAID', the payment status is updated to 'RETURNED'.
+     * Updates the status and payment status of the appointment based on the request parameters. If the "status" request
+     * parameter is not null, the appointment's status is updated to the value of the parameter. If the status is
+     * "cancelled" and the user is not an admin, nothing is updated. If the status is "cancelled" and the payment status
+     * is not "NOT_PAID", the payment status is updated to "RETURNED". If the status is "SUCCESS" or "DIDNT_COME", and the
+     * appointment date is today or in the past, the appointment status is updated to the requested value. If the
+     * appointment date is in the future, nothing is updated.
      *
      * @param appointment the appointment object to be updated
      */
@@ -89,6 +92,13 @@ public class EditAppointmentCommand extends Command {
             String status = getParameter(STATUS);
             if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;
+            }
+            if (status.equals(AppointmentStatus.SUCCESS.name()) || status.equals(AppointmentStatus.DIDNT_COME.name())){
+                LocalDate dateOfAppointment = appointment.getDate().toLocalDate();
+                LocalDate currentDate = LocalDate.now();
+                if (currentDate.isBefore(dateOfAppointment)){
+                    return;
+                }
             }
             appointment.setStatus(AppointmentStatus.valueOf(status));
             if (status.equals(AppointmentStatus.CANCELLED.name()) && appointment.getPaymentStatus() != PaymentStatus.NOT_PAID) {

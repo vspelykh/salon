@@ -3,6 +3,7 @@ package ua.vspelykh.salon.model.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * The BaseServiceDto class represents a data transfer object for MasterService entity.
@@ -10,8 +11,9 @@ import lombok.EqualsAndHashCode;
  * @version 1.0
  */
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @Builder
+@ToString
 public class MasterServiceDto {
 
     private int id;

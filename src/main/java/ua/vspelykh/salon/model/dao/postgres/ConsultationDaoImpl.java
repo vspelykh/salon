@@ -5,18 +5,16 @@ import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dao.AbstractDao;
 import ua.vspelykh.salon.model.dao.ConsultationDao;
 import ua.vspelykh.salon.model.dao.QueryBuilder;
-import ua.vspelykh.salon.model.dao.Table;
 import ua.vspelykh.salon.model.dao.mapper.impl.ConsultationRowMapper;
 import ua.vspelykh.salon.model.entity.Consultation;
 import ua.vspelykh.salon.util.exception.DaoException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static ua.vspelykh.salon.model.dao.mapper.Column.NAME;
-import static ua.vspelykh.salon.model.dao.mapper.Column.NUMBER;
+import static ua.vspelykh.salon.model.dao.Table.CONSULTATION;
+import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 /**
  * ConsultationDaoImpl is a concrete implementation of the ConsultationDao interface that extends
@@ -33,7 +31,7 @@ public class ConsultationDaoImpl extends AbstractDao<Consultation> implements Co
      * Constructs a new ConsultationDaoImpl with a specific RowMapper and table name.
      */
     public ConsultationDaoImpl() {
-        super(new ConsultationRowMapper(), Table.CONSULTATION);
+        super(new ConsultationRowMapper(), CONSULTATION);
     }
 
     /**
@@ -75,12 +73,55 @@ public class ConsultationDaoImpl extends AbstractDao<Consultation> implements Co
     }
 
     /**
-     * This method throws an UnsupportedOperationException as the Consultation entity cannot be updated.
+     * This method updates a Consultation entity in the database.
      *
-     * @throws UnsupportedOperationException As Consultation entity cannot be updated
+     * @param entity The Consultation entity to be updated
+     * @throws DaoException if there is an error executing the update statement or the entity cannot be updated
      */
     @Override
     public void update(Consultation entity) throws DaoException {
-        throw new UnsupportedOperationException();
+        String query = new QueryBuilder().update(CONSULTATION).set(NAME, NUMBER, DATE, IS_READ).where(ID).build();
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+            setUpdateStatement(entity, statement);
+            int key = statement.executeUpdate();
+            if (key != 1) {
+                throw new DaoException(FAIL_UPDATE + tableName + ", id=" + entity.getId());
+            }
+        } catch (SQLException e) {
+            LOG.error(String.format(LOG_PATTERN, FAIL_UPDATE, tableName, e.getMessage()));
+            throw new DaoException(FAIL_UPDATE + tableName, e);
+        }
+    }
+
+    private void setUpdateStatement(Consultation entity, PreparedStatement statement) throws SQLException {
+        int k = 0;
+        statement.setString(++k, entity.getName());
+        statement.setString(++k, entity.getNumber());
+        statement.setTimestamp(++k, Timestamp.valueOf(entity.getDate()));
+        statement.setBoolean(++k, entity.isRead());
+        statement.setInt(++k, entity.getId());
+    }
+
+    /**
+     * Retrieves a list of new consultations from the database.
+     *
+     * @return a list of Consultation objects that have not been processed yet
+     * @throws DaoException if an error occurs while accessing the persistence layer
+     */
+    @Override
+    public List<Consultation> getNewConsultations() throws DaoException {
+        String query = new QueryBuilder().select(CONSULTATION).where(IS_READ).build();
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+            statement.setBoolean(1, false);
+            ResultSet resultSet = statement.executeQuery();
+            List<Consultation> consultations = new ArrayList<>();
+            while (resultSet.next()) {
+                consultations.add(rowMapper.map(resultSet));
+            }
+            return consultations;
+        } catch (SQLException e) {
+            LOG.error(e);
+            throw new DaoException(e);
+        }
     }
 }

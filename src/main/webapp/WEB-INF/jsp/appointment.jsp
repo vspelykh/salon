@@ -60,7 +60,7 @@
                                             <c:forEach items="${services}" var="item">
                                                 <label class="btn btn-secondary">
                                                     <input name="services" id="${item.id}" type="checkbox"
-                                                           value="${item.service.service}|${item.continuance}|${item.service.price}|${item.id}"
+                                                           value="${item.service.service}|${item.continuance}|${item.service.price}|${item.service.id}"
                                                         ${servicesChecked.contains(item.id) ? 'checked="checked"' : ''}>
                                                     <c:out value="${item.service.service} (${item.continuance} min)"/>
                                                 </label>

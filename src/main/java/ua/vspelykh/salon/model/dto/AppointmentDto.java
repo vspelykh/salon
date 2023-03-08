@@ -3,6 +3,7 @@ package ua.vspelykh.salon.model.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ua.vspelykh.salon.model.entity.AppointmentItem;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
 import ua.vspelykh.salon.model.entity.PaymentStatus;
@@ -17,8 +18,9 @@ import java.util.List;
  * @version 1.0
  */
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @Builder
+@ToString
 public class AppointmentDto {
 
     private Integer id;

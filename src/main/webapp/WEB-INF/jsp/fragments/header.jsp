@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
+
 </head>
 
 <header class="p-3 bg-dark text-white">
@@ -56,6 +57,19 @@
                 </li>
             </ul>
 
+            <div class="notification" style="margin-right: 30px;">
+                <i type="button" class="fas fa-bell" data-bs-toggle="modal"
+                        data-bs-target="#modalNotification">
+<%--                    <span class="sr-only">Notifications</span>--%>
+                </i>
+                <c:choose>
+                    <c:when test="${requestScope.get('new_consultations') != null}">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+                        background-color: #c50000; position: relative; top: -7px; left: -11px;"></span>
+                    </c:when>
+                </c:choose>
+            </div>
+
             <div class="text-end">
                 <c:choose>
                     <c:when test="${!sessionScope.get('isLogged')}">
@@ -87,7 +101,56 @@
                         </label>
                     </c:otherwise>
                 </c:choose>
+
             </div>
         </div>
     </div>
+    <script>
+        const bell = document.querySelector('.notification i');
+        const modal = document.querySelector('.modalNotification');
+        const closeModalBtn = document.querySelector('.close-modal-btn');
+
+        bell.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+    </script>
+
 </header>
+<!-- Modal form -->
+<div class="modal fade"  id="modalNotification" aria-labelledby="modalNotification"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="min-width: 200px; min-height: 300px;">
+            <table>
+                <thead>
+                <tr>
+                    <th><fmt:message key="master.name"/><i></i></th>
+                    <th><fmt:message key="cons.num"/><i></i></th>
+                    <th><fmt:message key="orders.date"/><i></i></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${new_consultations}" var="item">
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.number}</td>
+                        <form action="${pageContext.request.contextPath}/salon"
+                              method="post">
+                            <input hidden name="id" value="${item.id}">
+                            <input hidden name="command" value="consultation-edit">
+                            <input hidden name="redirect" value="redirect">
+                            <td><button type="submit" name="action" value="read"><fmt:message key="edit.edit"/></button></td>
+                            <td><button type="submit" name="action" value="delete"><fmt:message key="schedule.delete"/></button></td>
+                        </form>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

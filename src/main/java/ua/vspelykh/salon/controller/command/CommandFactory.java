@@ -50,7 +50,7 @@ public class CommandFactory {
         put(CONSULTATION, new ConsultationCommand());
         put(CONSULTATION_POST, new ConsultationPostCommand());
         put(CONSULTATION_GET, new ConsultationGetCommand());
-        put(CONSULTATION_DELETE, new ConsultationDeleteCommand());
+        put(CONSULTATION_EDIT, new ConsultationEditCommand());
         put(CALENDAR, new CalendarCommand());
         put(SCHEDULE, new ScheduleCommand());
         put(EDIT_SCHEDULE, new EditScheduleCommand());

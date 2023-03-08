@@ -112,7 +112,8 @@ CREATE TABLE consultations
     id     SERIAL PRIMARY KEY,
     name   VARCHAR NOT NULL,
     number VARCHAR NOT NULL,
-    date   TIMESTAMP DEFAULT now()
+    date   TIMESTAMP DEFAULT now(),
+    is_read BOOLEAN   DEFAULT FALSE
 );
 
 CREATE TABLE working_days

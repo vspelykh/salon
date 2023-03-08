@@ -115,9 +115,12 @@ class MasterServiceDaoImplTest extends AbstractDaoTest {
     private void mockResultSetIfPresent() throws SQLException {
         when(mockResultSet.next()).thenReturn(true).thenReturn(false);
         when(mockResultSet.getInt(ID)).thenReturn(ID_VALUE);
+        when(mockResultSet.getInt(MASTER_ID)).thenReturn(ID_VALUE);
         when(mockResultSet.getInt(APPOINTMENT_ID)).thenReturn(ID_VALUE);
         when(mockResultSet.getInt(MARK)).thenReturn(MARK_VALUE);
         when(mockResultSet.getString(COMMENT)).thenReturn(COMMENT_VALUE);
         when(mockResultSet.getTimestamp(DATE)).thenReturn(Timestamp.valueOf(DATE_VALUE));
+        when(mockResultSet.getInt(BASE_SERVICE_ID)).thenReturn(ID_VALUE);
+        when(mockResultSet.getInt(CONTINUANCE)).thenReturn(CONTINUANCE_VALUE);
     }
 }

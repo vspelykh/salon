@@ -35,6 +35,7 @@ public final class Column {
     public static final String CLIENT_ID = "client_id";
     public static final String DATE = "date";
     public static final String DISCOUNT = "discount";
+    public static final String IS_READ = "is_read";
 
     public static final String APPOINTMENT_ID = "appointment_id";
     public static final String MARK = "mark";

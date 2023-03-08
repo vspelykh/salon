@@ -2,6 +2,7 @@ package ua.vspelykh.salon.model.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.model.entity.UserLevel;
 
@@ -16,9 +17,12 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
  * and it contains information about a master user, including their level, about section, and rating.
  * The build method is a static factory method that takes a User object, a UserLevel object,
  * the master's rating, and a locale, and returns a new UserMasterDTO object with the appropriate values set.
+ *
+ * @version 1.0
  */
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
+@ToString
 public class UserMasterDTO {
 
     private int id;

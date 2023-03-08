@@ -117,6 +117,13 @@
                             </select>
                         </label>
                         <p></p>
+                        <c:choose>
+                            <c:when test="${sessionScope.message != null}">
+                                <fmt:message key="schedule.remove"/> ${sessionScope.removed_days}
+                                ${sessionScope.message = null}
+                                ${sessionScope.removed_days = null}
+                            </c:when>
+                        </c:choose>
                         <div class="form-group">
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
                                                               class="form-control"

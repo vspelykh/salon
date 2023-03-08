@@ -12,7 +12,7 @@ function selectHelper() {
                 '<label><input type="time" name="time-start" value="08:00"></label>' +
                 '<label><input type="time" name="time-end" value="20:00"></label>';
         } else if (choice === 'delete') {
-            para.textContent = 'Choose working days to delete.';
+            para.textContent = '<fmt:message key="schedule.choose"/>';
         } else {
 
             para.textContent = '';

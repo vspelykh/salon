@@ -2,6 +2,7 @@ package ua.vspelykh.salon.model.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ua.vspelykh.salon.model.entity.BaseService;
 import ua.vspelykh.salon.model.entity.ServiceCategory;
 
@@ -16,7 +17,8 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
  * @version 1.0
  */
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
+@ToString
 public class BaseServiceDto {
 
     private int id;

@@ -61,9 +61,10 @@
                                                             aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
+                                                    <fmt:message key="schedule.choose"/>
                                                     <tags:changeStatus id="${param.id}" days="${param.days}"
                                                                        appointment="${scheduleItem.appointment}"
-                                                                       isAdmin="${isAdmin}"
+                                                                       isAdmin="${isAdmin}" date="${scheduleItem.appointment.date}"
                                                                        status="${scheduleItem.appointment.status}"/>
                                                     <c:choose>
                                                         <c:when test="${isAdmin}">
@@ -75,7 +76,7 @@
 
                                                     <c:choose>
                                                         <c:when test="${isAdmin && scheduleItem.appointment.status == 'RESERVED'}">
-                                                            <form action="${pageContext.request.contextPath}/salon"
+                                                            <form name="appForm" action="${pageContext.request.contextPath}/salon"
                                                                   method="post">
                                                                 <input hidden name="command" value="edit-appointment">
                                                                 <input hidden name="id" value="${param.id}">
@@ -102,7 +103,8 @@
                                                     <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal"><fmt:message
                                                             key="main.cancel"/></button>
-                                                    <button type="submit" class="btn btn-primary">
+                                                    <button onclick="document.forms['appForm'].submit();"
+                                                            type="submit" class="btn btn-primary">
                                                         <fmt:message key="main.submit"/>
                                                     </button>
                                                 </div>

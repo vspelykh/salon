@@ -8,8 +8,9 @@
 <%@ attribute name="redirect" required="false" %>
 <%@ attribute name="appointment" required="true" type="ua.vspelykh.salon.model.dto.AppointmentDto" %>
 <%@ attribute name="status" required="true" %>
+<%@ attribute name="date" required="true" type="java.time.LocalDateTime" %>
 <%@ attribute name="isAdmin" required="true" type="java.lang.Boolean" %>
-
+<c:set var="now" value="<%=java.time.LocalDate.now()%>"/>
 
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="localization.messages"/>
@@ -32,12 +33,17 @@
             <input hidden name="appointment_id" value="${appointment.id}">
             <input hidden name="days" value="${days}">
             <input hidden name="redirect" value="${redirect}">
-            <button type="submit" name="status" value="SUCCESS" class="btn btn-success">
-                <fmt:message key="change.success"/>
-            </button>
-            <button type="submit" name="status" value="DIDNT_COME" class="btn btn-warning">
-                <fmt:message key="change.absent"/>
-            </button>
+            <c:choose>
+                <c:when test="${!now.isBefore(date.toLocalDate())}">
+                    <button type="submit" name="status" value="SUCCESS" class="btn btn-success">
+                        <fmt:message key="change.success"/>
+                    </button>
+                    <button type="submit" name="status" value="DIDNT_COME" class="btn btn-warning">
+                        <fmt:message key="change.absent"/>
+                    </button>
+                </c:when>
+            </c:choose>
+
             <c:choose>
                 <c:when test="${isAdmin}">
                     <button type="submit" name="status" value="CANCELLED" class="btn btn-danger">

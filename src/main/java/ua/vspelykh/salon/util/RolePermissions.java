@@ -54,7 +54,7 @@ public class RolePermissions {
         put(CONSULTATION, all);
         put(CONSULTATION_POST, all);
         put(CONSULTATION_GET, admin);
-        put(CONSULTATION_DELETE, admin);
+        put(CONSULTATION_EDIT, admin);
         put(CALENDAR, logged);
         put(SCHEDULE, admin);
         put(EDIT_SCHEDULE, admin);

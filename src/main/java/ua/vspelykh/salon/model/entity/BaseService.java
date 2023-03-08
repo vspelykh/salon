@@ -1,6 +1,7 @@
 package ua.vspelykh.salon.model.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -13,11 +14,8 @@ import lombok.experimental.SuperBuilder;
  * @version 1.0
  */
 @SuperBuilder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class BaseService extends AbstractBaseEntity {
 
     private String service;
