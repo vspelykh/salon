@@ -1,8 +1,9 @@
-package ua.vspelykh.salon.controller.command;
+package ua.vspelykh.salon.controller.command.header;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.service.BaseServiceService;
 import ua.vspelykh.salon.service.ServiceCategoryService;

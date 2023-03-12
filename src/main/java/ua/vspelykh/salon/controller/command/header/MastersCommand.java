@@ -1,5 +1,6 @@
-package ua.vspelykh.salon.controller.command;
+package ua.vspelykh.salon.controller.command.header;
 
+import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.dto.UserMasterDTO;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.model.entity.Role;

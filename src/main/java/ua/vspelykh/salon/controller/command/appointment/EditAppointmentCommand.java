@@ -16,6 +16,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandNames.ORDERS;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.util.exception.Messages.EDIT_APPOINTMENT_ERROR;
 
 /**
  * The EditAppointmentCommand class extends the Command class and handles the edit operation for an appointment.
@@ -45,7 +46,8 @@ public class EditAppointmentCommand extends Command {
             getServiceFactory().getAppointmentService().save(appointment);
             redirectByMasterId(getParameter(ID));
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, EDIT_APPOINTMENT_ERROR);
+            redirect(ERROR_REDIRECT);
         }
     }
 
@@ -93,10 +95,10 @@ public class EditAppointmentCommand extends Command {
             if (status.equals(AppointmentStatus.CANCELLED.name()) && !isAdmin()) {
                 return;
             }
-            if (status.equals(AppointmentStatus.SUCCESS.name()) || status.equals(AppointmentStatus.DIDNT_COME.name())){
+            if (status.equals(AppointmentStatus.SUCCESS.name()) || status.equals(AppointmentStatus.DIDNT_COME.name())) {
                 LocalDate dateOfAppointment = appointment.getDate().toLocalDate();
                 LocalDate currentDate = LocalDate.now();
-                if (currentDate.isBefore(dateOfAppointment)){
+                if (currentDate.isBefore(dateOfAppointment)) {
                     return;
                 }
             }

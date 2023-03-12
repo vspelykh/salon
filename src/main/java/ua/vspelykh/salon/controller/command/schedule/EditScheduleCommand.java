@@ -12,6 +12,7 @@ import java.util.List;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getLocalDate;
+import static ua.vspelykh.salon.util.exception.Messages.EDIT_SCHEDULE_ERROR;
 import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_DELETE_DAYS;
 
 /**
@@ -54,7 +55,8 @@ public class EditScheduleCommand extends AbstractScheduleCommand {
                 sendError404();
             }
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, EDIT_SCHEDULE_ERROR);
+            redirect(ERROR_REDIRECT);
         }
         redirect(SCHEDULE_REDIRECT + userId);
     }

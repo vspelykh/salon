@@ -8,10 +8,10 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.MESSAGE;
-import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_FEEDBACK;
+import static ua.vspelykh.salon.util.exception.Messages.POST_FEEDBACK_ERROR;
 
 /**
  * The FeedbackPostCommand class extends the Command class and handles the POST request for creating a new feedback.
@@ -39,7 +39,8 @@ public class FeedbackPostCommand extends Command {
         try {
             getServiceFactory().getFeedbackService().save(feedback);
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, POST_FEEDBACK_ERROR);
+            redirect(ERROR_REDIRECT);
         }
         setSessionAttribute(MESSAGE, MESSAGE_FEEDBACK);
         redirect(SUCCESS_REDIRECT);

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.util.exception.Messages.CONSULTATION_EDIT_ERROR;
 
 /**
  * The ConsultationEditCommand class represents a command to edit a consultation. It extends the Command class and
@@ -56,7 +57,8 @@ public class ConsultationEditCommand extends Command {
                 redirect(CONSULTATION_REDIRECT);
             }
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, CONSULTATION_EDIT_ERROR);
+            redirect(ERROR_REDIRECT);
         }
     }
 }

@@ -1,4 +1,6 @@
-package ua.vspelykh.salon.controller.command;
+package ua.vspelykh.salon.controller.command.response;
+
+import ua.vspelykh.salon.controller.command.Command;
 
 import javax.servlet.ServletException;
 import java.io.IOException;

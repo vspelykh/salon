@@ -29,7 +29,12 @@ public final class Messages {
     public static final String ERROR_CREATE_APPOINTMENT_ON_WEEKEND = "Trying to create an appointment on weekend day";
     public static final String CONSULTATION_ERROR = "consultation.error";
     public static final String CONSULTATION_SUCCESS = "consultation.success";
-
+    public static final String EDIT_APPOINTMENT_ERROR = "edit.app.error";
+    public static final String POST_FEEDBACK_ERROR = "post.feedback.error";
+    public static final String CONSULTATION_EDIT_ERROR = "cons.edit.error";
+    public static final String EDIT_SCHEDULE_ERROR = "edit.schedule.error";
+    public static final String EDIT_ROLE_ERROR = "edit.role.error";
+    public static final String EDIT_MASTER_ERROR = "edit.master.error";
 
     private Messages() {
     }

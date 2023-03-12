@@ -8,8 +8,9 @@ import ua.vspelykh.salon.util.exception.ServiceException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.util.exception.Messages.EDIT_MASTER_ERROR;
 
 /**
  * The EditMasterCommand class extends the abstract Command class and is responsible for processing the editing of a
@@ -41,7 +42,8 @@ public class EditMasterCommand extends Command {
             serviceFactory.getUserService().update(userLevel);
             redirect(SCHEDULE_REDIRECT + masterId);
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, EDIT_MASTER_ERROR);
+            redirect(ERROR_REDIRECT);
         }
     }
 }

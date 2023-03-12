@@ -1,5 +1,6 @@
-package ua.vspelykh.salon.controller.command;
+package ua.vspelykh.salon.controller.command.header;
 
+import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;

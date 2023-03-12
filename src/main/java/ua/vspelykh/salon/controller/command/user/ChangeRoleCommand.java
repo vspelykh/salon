@@ -11,6 +11,7 @@ import java.io.IOException;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
+import static ua.vspelykh.salon.util.exception.Messages.EDIT_ROLE_ERROR;
 
 /**
  * The ChangeRoleCommand class extends the abstract Command class and is responsible for handling the change of a user's role.
@@ -40,7 +41,8 @@ public class ChangeRoleCommand extends Command {
             setSessionAttribute(MESSAGE, SUCCESS);
             redirect(ROLES_REDIRECT + user.getEmail());
         } catch (ServiceException e) {
-            sendError500();
+            setSessionAttribute(MESSAGE, EDIT_ROLE_ERROR);
+            redirect(ERROR_REDIRECT);
         }
     }
 }
