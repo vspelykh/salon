@@ -6,6 +6,10 @@ import ua.vspelykh.salon.controller.command.consultation.ConsultationEditCommand
 import ua.vspelykh.salon.controller.command.consultation.ConsultationGetCommand;
 import ua.vspelykh.salon.controller.command.consultation.ConsultationPostCommand;
 import ua.vspelykh.salon.controller.command.login.*;
+import ua.vspelykh.salon.controller.command.schedule.EditScheduleCommand;
+import ua.vspelykh.salon.controller.command.schedule.GetScheduleCommand;
+import ua.vspelykh.salon.controller.command.schedule.LookScheduleCommand;
+import ua.vspelykh.salon.controller.command.schedule.ScheduleCommand;
 import ua.vspelykh.salon.controller.command.user.*;
 
 import javax.servlet.http.HttpServletRequest;

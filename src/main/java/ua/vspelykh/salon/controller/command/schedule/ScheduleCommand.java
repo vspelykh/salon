@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.controller.command.user;
+package ua.vspelykh.salon.controller.command.schedule;
 
 import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.util.exception.ServiceException;

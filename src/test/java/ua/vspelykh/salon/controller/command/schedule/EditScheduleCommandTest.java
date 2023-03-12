@@ -1,4 +1,4 @@
-package ua.vspelykh.salon.controller.command.user;
+package ua.vspelykh.salon.controller.command.schedule;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
 import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
-import static ua.vspelykh.salon.controller.command.user.AbstractScheduleCommand.*;
+import static ua.vspelykh.salon.controller.command.schedule.AbstractScheduleCommand.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointment;
 
