@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -45,7 +46,8 @@ class ChangeRoleCommandTest extends AbstractCommandTest {
         when(userService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
 
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_ROLE_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
 

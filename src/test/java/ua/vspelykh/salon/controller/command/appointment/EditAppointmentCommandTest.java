@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.service.AppointmentService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,8 +16,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.DATE_VALUE;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
@@ -104,7 +104,8 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
         when(session.getAttribute(CURRENT_USER)).thenReturn(getTestMaster());
         when(appointmentService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_APPOINTMENT_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
     @Override

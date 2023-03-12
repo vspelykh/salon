@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.service.FeedbackService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -12,8 +13,7 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.controller.ControllerConstants.MESSAGE;
-import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 
 class FeedbackPostCommandTest extends AbstractCommandTest {
@@ -39,7 +39,8 @@ class FeedbackPostCommandTest extends AbstractCommandTest {
     void ProcessFeedbackPostError() throws ServletException, IOException, ServiceException {
         doThrow(ServiceException.class).when(feedbackService).save(any());
         command.process();
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.POST_FEEDBACK_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.WorkingDayService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -16,8 +17,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.controller.ControllerConstants.DAYS;
-import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.controller.command.schedule.AbstractScheduleCommand.ACTION;
 import static ua.vspelykh.salon.controller.command.schedule.AbstractScheduleCommand.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointment;
@@ -67,7 +68,8 @@ class EditScheduleCommandTest extends AbstractCommandTest {
         when(request.getParameter(ACTION)).thenReturn(DELETE);
         doThrow(ServiceException.class).when(appointmentService).getByDateAndMasterId(any(), anyInt());
         command.process();
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_SCHEDULE_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
     @Override

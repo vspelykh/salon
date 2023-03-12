@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.MastersLevel;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.controller.ControllerConstants.SCHEDULE_REDIRECT;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
 import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUserLevel;
 
@@ -41,7 +42,8 @@ class EditMasterCommandTest extends AbstractCommandTest {
     void processEditMasterError() throws ServletException, IOException, ServiceException {
         when(serviceFactory.getUserService()).thenThrow(ServiceException.class);
         command.process();
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_MASTER_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
     @Override
