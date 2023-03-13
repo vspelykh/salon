@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static ua.vspelykh.salon.controller.ControllerConstants.INTERVAL;
 import static ua.vspelykh.salon.util.exception.Messages.ERROR_CREATE_APPOINTMENT_ON_WEEKEND;
 
 
@@ -46,6 +47,24 @@ public class TimeSlotsUtils {
         return slots;
     }
 
+    public static List<LocalTime> getPossibleSlotsForAppointment(int continuance, List<LocalTime> slots) {
+        List<LocalTime> possibleSlots = new ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
+            LocalTime current = slots.get(i);
+            int count = 1;
+            for (LocalTime another : slots) {
+                while (current.plusMinutes((long) count * INTERVAL).equals(another)) {
+                    ++count;
+                }
+                if (continuance <= count * INTERVAL) {
+                    possibleSlots.add(current);
+                    break;
+                }
+            }
+        }
+        return possibleSlots;
+    }
+
     /**
      * Removes time slots that are occupied by appointments from the given list of time slots.
      *
@@ -60,6 +79,7 @@ public class TimeSlotsUtils {
             removeProcess(intervalCount, startTime, interval, slots);
         }
     }
+
 
     /**
      * Removes slots from the given list of slots starting from the given start time, which are occupied by an appointment with

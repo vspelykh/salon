@@ -15,7 +15,9 @@ public final class Messages {
     public static final String MESSAGE_DELETE_DAYS = "error.days";
     public static final String MESSAGE_REGISTRATION_SUCCESS = "registration.success";
     public static final String MESSAGE_APPOINTMENT_SUCCESS = "appointment.success";
-    public static final String MESSAGE_APPOINTMENT_FAIL = "Time slot have already occupied or duration not allowed anymore.";
+    public static final String MESSAGE_POSTPONEMENT_SUCCESS = "postponement.success";
+    public static final String MESSAGE_POSTPONEMENT_FAIL = "postponement.fail";
+    public static final String MESSAGE_APPOINTMENT_FAIL = "The time slot is already occupied or the duration is no longer allowed.";
     public static final String MESSAGE_FEEDBACK_EXISTS = "message.feedback.exist";
     public static final String MESSAGE_FEEDBACK = "message.mark";
     public static final String MESSAGE_SUCCESS_INVITATION = "success.invitation";

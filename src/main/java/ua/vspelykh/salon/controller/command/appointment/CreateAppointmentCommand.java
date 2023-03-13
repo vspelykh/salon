@@ -43,7 +43,7 @@ public class CreateAppointmentCommand extends Command {
         try {
             List<MasterService> masterServices = parseServices();
             validateAndSaveAppointment(masterServices);
-            request.getSession().setAttribute(MESSAGE, MESSAGE_APPOINTMENT_SUCCESS);
+            setSessionAttribute(MESSAGE, MESSAGE_APPOINTMENT_SUCCESS);
             redirect(SUCCESS_REDIRECT);
         } catch (ServiceException e) {
             setErrorMessageAndRedirect();

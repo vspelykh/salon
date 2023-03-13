@@ -131,10 +131,13 @@ public class ScheduleBuilder {
             return Collections.emptyList();
         }
         List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
-        removeOccupiedSlotsForDtos(slots, appointments, INTERVAL);
+        List<AppointmentDto> copyOfAppointments = new ArrayList<>(appointments);
+        copyOfAppointments.remove(appointment);
+        removeOccupiedSlotsForDtos(slots, copyOfAppointments, INTERVAL);
         removeSlotsIfDateIsToday(slots, day.getDate());
         List<LocalTime> possibleSlots = new ArrayList<>();
         calculatePossibleSlotsForAppointment(appointment, slots, possibleSlots);
+        possibleSlots.remove(appointment.getDate().toLocalTime());
         return possibleSlots;
     }
 

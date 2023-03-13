@@ -56,10 +56,10 @@
             <c:when test="${isAdmin}">
                 <form action="${pageContext.request.contextPath}/salon"
                       method="get">
-                    <input hidden name="command" value="postponement-appointment">
-                    <input hidden name="id" value="${id}">
-                    <input hidden name="days" value="${days}">
-                    <input hidden name="appointment_id" value="${appointment_id}">
+                    <input hidden name="command" value="postpone-form">
+                    <input hidden name="id" value="${appointment.id}">
+<%--                    <input hidden name="days" value="${days}">--%>
+<%--                    <input hidden name="appointment_id" value="${appointment_id}">--%>
                     <button type="submit" class="btn btn-outline-black">
                         <fmt:message key="change.postponement"/>
                     </button>

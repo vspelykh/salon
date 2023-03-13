@@ -47,39 +47,54 @@ public class CommandFactory {
     private static final Map<String, Command> COMMANDS = new HashMap<>();
 
     static {
+        //header
+        put(ABOUT, new AboutCommand());
         put(HOME, new HomeCommand());
         put(PRICING, new PricingCommand());
-        put(ABOUT, new AboutCommand());
         put(MASTERS, new MastersCommand());
-        put(LOGIN, new LogInCommand());
+
+        //appointment
+        put(APPOINTMENT, new AppointmentCommand());
+        put(CALENDAR, new CalendarCommand());
+        put(CREATE_APPOINTMENT, new CreateAppointmentCommand());
+        put(EDIT_APPOINTMENT, new EditAppointmentCommand());
+        put(FEEDBACK, new FeedbackCommand());
+        put(FEEDBACK_POST, new FeedbackPostCommand());
+        put(ORDERS, new OrdersCommand());
+        put(POSTPONE_FORM, new PostponeFormCommand());
+        put(POSTPONEMENT, new PostponementCommand());
+
+        //login
         put(CHECK_LOGIN, new CheckLoginCommand());
+        put(CREATE_INVITATION, new CreateInvitationCommand());
+        put(INVITATION, new InvitationFormCommand());
+        put(LOGIN, new LogInCommand());
         put(LOGOUT, new LogoutCommand());
-        put(SIGN_UP_FORM, new SignUpFormCommand());
         put(REGISTRATION, new RegistrationCommand());
+        put(SIGN_UP_FORM, new SignUpFormCommand());
+
+        //response
         put(SUCCESS, new SuccessCommand());
-        put(PROFILE, new ProfileCommand());
+        put(ERROR_COMMAND, new ErrorCommand());
+
+        //user
         put(ADMIN, new AdminCommand());
-        put(ROLES, new RolesCommand());
         put(CHANGE_ROLE, new ChangeRoleCommand());
+        put(EDIT_MASTER, new EditMasterCommand());
+        put(PROFILE, new ProfileCommand());
+        put(ROLES, new RolesCommand());
+
+        //consultation
         put(CONSULTATION, new ConsultationCommand());
         put(CONSULTATION_POST, new ConsultationPostCommand());
         put(CONSULTATION_GET, new ConsultationGetCommand());
         put(CONSULTATION_EDIT, new ConsultationEditCommand());
-        put(CALENDAR, new CalendarCommand());
-        put(SCHEDULE, new ScheduleCommand());
+
+        //schedule
         put(EDIT_SCHEDULE, new EditScheduleCommand());
-        put(APPOINTMENT, new AppointmentCommand());
-        put(CREATE_APPOINTMENT, new CreateAppointmentCommand());
-        put(FEEDBACK, new FeedbackCommand());
-        put(FEEDBACK_POST, new FeedbackPostCommand());
         put(GET_SCHEDULE, new GetScheduleCommand());
         put(LOOK_SCHEDULE, new LookScheduleCommand());
-        put(EDIT_APPOINTMENT, new EditAppointmentCommand());
-        put(ORDERS, new OrdersCommand());
-        put(INVITATION, new InvitationFormCommand());
-        put(CREATE_INVITATION, new CreateInvitationCommand());
-        put(EDIT_MASTER, new EditMasterCommand());
-        put(ERROR_COMMAND, new ErrorCommand());
+        put(SCHEDULE, new ScheduleCommand());
     }
 
     /**

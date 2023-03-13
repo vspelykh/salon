@@ -38,39 +38,54 @@ public class RolePermissions {
         Set<Role> masterAndAdmin = new HashSet<>(List.of(Role.HAIRDRESSER, Role.ADMINISTRATOR));
         Set<Role> guest = new HashSet<>(List.of(Role.GUEST));
 
+        //header
+        put(ABOUT, all);
         put(HOME_REDIRECT, all);
         put(PRICING, all);
         put(MASTERS, all);
+
+        //appointment
+        put(APPOINTMENT, logged);
+        put(CALENDAR, logged);
+        put(CREATE_APPOINTMENT, logged);
+        put(EDIT_APPOINTMENT, masterAndAdmin);
+        put(FEEDBACK, logged);
+        put(FEEDBACK_POST, logged);
+        put(ORDERS, admin);
+        put(POSTPONE_FORM, admin);
+        put(POSTPONEMENT, admin);
+
+        //login
+        put(CHECK_LOGIN, guest);
+        put(CREATE_INVITATION, admin);
+        put(INVITATION, admin);
         put(LOGIN, guest);
         put(LOGOUT, logged);
-        put(CHECK_LOGIN, guest);
-        put(LOGOUT, logged);
-        put(SIGN_UP_FORM, guest);
         put(REGISTRATION, guest);
+        put(SIGN_UP_FORM, guest);
+
+        //response
         put(SUCCESS, all);
-        put(PROFILE, logged);
+        put(ERROR_COMMAND, all);
+
+        //user
         put(ADMIN, admin);
         put(CHANGE_ROLE, admin);
+        put(EDIT_MASTER, admin);
+        put(PROFILE, logged);
+        put(ROLES, admin);
+
+        //consultation
         put(CONSULTATION, all);
         put(CONSULTATION_POST, all);
         put(CONSULTATION_GET, admin);
         put(CONSULTATION_EDIT, admin);
-        put(CALENDAR, logged);
-        put(SCHEDULE, admin);
+
+        //schedule
         put(EDIT_SCHEDULE, admin);
         put(GET_SCHEDULE, masterAndAdmin);
         put(LOOK_SCHEDULE, masterAndAdmin);
-        put(APPOINTMENT, logged);
-        put(CREATE_APPOINTMENT, logged);
-        put(FEEDBACK, logged);
-        put(FEEDBACK_POST, logged);
-        put(EDIT_SCHEDULE, masterAndAdmin);
-        put(ORDERS, admin);
-        put(CREATE_INVITATION, admin);
-        put(INVITATION, admin);
-        put(ROLES, admin);
-        put(EDIT_MASTER, admin);
-        put(ABOUT, all);
+        put(SCHEDULE, admin);
     }
 
     /**

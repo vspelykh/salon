@@ -43,6 +43,8 @@ public class CommandNames {
     public static final String INVITATION = "invitation";
     public static final String EDIT_MASTER = "edit-master";
     public static final String ERROR_COMMAND = "error";
+    public static final String POSTPONE_FORM = "postpone-form";
+    public static final String POSTPONEMENT = "postponement";
 
     /**
      * A private constructor to prevent the instantiation of this class from external classes.
