@@ -12,21 +12,14 @@ import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.exception.Messages.CONSULTATION_EDIT_ERROR;
 
 /**
- * The ConsultationEditCommand class represents a command to edit a consultation. It extends the Command class and
- * overrides the process method to either delete or mark the consultation as read. If the "delete" action is specified
- * in the request parameters, the process method calls the delete method of the ConsultationService class to delete the
- * consultation with the ID parameter from the request. If the "read" action is specified, the method calls the findById
- * method of the ConsultationService class to retrieve the consultation with the ID parameter from the request, sets
- * its "read" property to true, and saves the consultation using the save method of the ConsultationService class. The
- * process method then redirects the request to either the home page or the consultation page, depending on the value of
- * the "redirect" request parameter.
+ * The ConsultationEditCommand class represents a command to edit a consultation.
  *
  * @version 1.0
  **/
 public class ConsultationEditCommand extends Command {
 
-    private static final String DELETE = "delete";
-    private static final String READ = "read";
+    public static final String DELETE = "delete";
+    public static final String READ = "read";
 
     /**
      * Deletes or marks a consultation as read based on the request parameters. If the "delete" action is specified, the

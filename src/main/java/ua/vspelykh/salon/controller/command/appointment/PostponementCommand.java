@@ -16,7 +16,7 @@ import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.util.SalonUtils.getTime;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
-import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_APPOINTMENT_FAIL;
+import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_POSTPONEMENT_FAIL;
 import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_POSTPONEMENT_SUCCESS;
 
 /**
@@ -70,7 +70,7 @@ public class PostponementCommand extends Command {
      * working day and appointment information for the given date and master ID, and calculates the available time
      * slots based on the working day schedule and the appointments already scheduled for that day. If the chosen
      * time slot is not available or if it would result in an appointment running over the allotted time, a
-     * {@code ServiceException} is thrown with the appropriate error message.
+     * ServiceException is thrown with the appropriate error message.
      *
      * @param appointment the appointment to check
      * @param date        the new date of the appointment
@@ -88,7 +88,7 @@ public class PostponementCommand extends Command {
         removeSlotsIfDateIsToday(slots, day.getDate());
         int allowedMinutes = countAllowedMinutes(getTime(String.valueOf(time)), appointments, day);
         if (!slots.contains(time) || allowedMinutes < appointment.getContinuance()) {
-            throw new ServiceException(MESSAGE_APPOINTMENT_FAIL);
+            throw new ServiceException(MESSAGE_POSTPONEMENT_FAIL);
         }
     }
 }

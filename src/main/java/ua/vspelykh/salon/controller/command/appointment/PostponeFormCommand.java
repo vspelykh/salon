@@ -86,7 +86,6 @@ public class PostponeFormCommand extends Command {
         }
     }
 
-
     /**
      * Retrieves the available time slots for the working day and appointment, removes the time slots that are already
      * taken, and sets the available time slots as a request attribute.

@@ -47,6 +47,15 @@ public class TimeSlotsUtils {
         return slots;
     }
 
+    /**
+     *  Method returns a list of possible time slots for postponing an appointment.
+     *  The appointment can be moved to any of the time slots contained in the list possibleSlots,
+     *  which is returned by the method.
+     *
+     * @param continuance The duration of the appointment in minutes
+     * @param slots       The list of available time slots in which the appointment can be postponed
+     * @return A list of LocalTime objects representing the possible time slots for the appointment
+     */
     public static List<LocalTime> getPossibleSlotsForAppointment(int continuance, List<LocalTime> slots) {
         List<LocalTime> possibleSlots = new ArrayList<>();
         for (int i = 0; i < slots.size(); i++) {
@@ -79,7 +88,6 @@ public class TimeSlotsUtils {
             removeProcess(intervalCount, startTime, interval, slots);
         }
     }
-
 
     /**
      * Removes slots from the given list of slots starting from the given start time, which are occupied by an appointment with
