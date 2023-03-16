@@ -61,7 +61,7 @@
                                                             aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <fmt:message key="schedule.choose"/>
+<%--                                                    <fmt:message key="schedule.choose"/>--%>
                                                     <tags:changeStatus id="${param.id}" days="${param.days}"
                                                                        appointment="${scheduleItem.appointment}"
                                                                        isAdmin="${isAdmin}" date="${scheduleItem.appointment.date}"

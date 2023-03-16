@@ -23,9 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static ua.vspelykh.salon.controller.ControllerConstants.COMMAND;
-import static ua.vspelykh.salon.controller.ControllerConstants.ROLES;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.controller.command.CommandNames.ADMIN;
+import static ua.vspelykh.salon.controller.command.CommandNames.LOGIN;
+import static ua.vspelykh.salon.controller.command.CommandNames.MASTERS;
+import static ua.vspelykh.salon.controller.command.CommandNames.PROFILE;
+import static ua.vspelykh.salon.controller.command.CommandNames.SUCCESS;
 import static ua.vspelykh.salon.controller.command.CommandNames.*;
+import static ua.vspelykh.salon.util.exception.Messages.ERROR_404;
 
 /**
  * The CommandFactory class is a factory that provides a command object based on the HTTP request parameter
@@ -109,12 +114,21 @@ public class CommandFactory {
 
     /**
      * Returns a Command object based on the HTTP request parameter "command". If the parameter does not exist
-     * or is not mapped to any command, the HOME command is returned.
+     * HOME page command. is returned. Else if it is not mapped to any command, the ERROR page command is returned.
      *
      * @param request the HTTP request object
      * @return the corresponding Command object
      */
     public static Command getCommand(HttpServletRequest request) {
-        return Optional.ofNullable(COMMANDS.get(request.getParameter(COMMAND))).orElse(COMMANDS.get(HOME));
+        if (request.getParameter(COMMAND) == null) {
+            return COMMANDS.get(HOME);
+        } else {
+            Command command = Optional.ofNullable(COMMANDS.get(request.getParameter(COMMAND)))
+                    .orElse(COMMANDS.get(ERROR_COMMAND));
+            if (command instanceof ErrorCommand) {
+                request.getSession().setAttribute(MESSAGE, ERROR_404);
+            }
+            return command;
+        }
     }
 }

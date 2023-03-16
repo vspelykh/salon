@@ -29,6 +29,7 @@ public final class Messages {
     public static final String ERROR_WRITING_TO_JSP = "Error writing to JspWriter";
     public static final String ERROR_PRINT_STARS = "Error to print stars for feedback";
     public static final String ERROR_500 = "500.error";
+    public static final String ERROR_404 = "404.exist";
     public static final String ERROR_SCHEDULE_BUILDER = "Error getting service names during schedule building";
     public static final String ERROR_CREATE_APPOINTMENT_ON_WEEKEND = "Trying to create an appointment on weekend day";
     public static final String CONSULTATION_ERROR = "consultation.error";
