@@ -33,7 +33,7 @@ public class SessionAttributeListener implements ServletRequestListener {
      * Initializes the session attributes for the currently logged-in user based on the user information
      * in the database.
      *
-     * @param sre the {@link ServletRequestEvent} containing the servlet request
+     * @param sre the ServletRequestEvent containing the servlet request
      */
     @Override
     public void requestInitialized(ServletRequestEvent sre) {

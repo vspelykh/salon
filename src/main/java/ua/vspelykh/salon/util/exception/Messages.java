@@ -11,6 +11,8 @@ public final class Messages {
     public static final String MESSAGE_PASSWORDS_MISMATCH = "passwords";
     public static final String MESSAGE_REGISTRATION_EMAIL_EXISTS = "registration.email";
     public static final String MESSAGE_REGISTRATION_NUMBER_EXISTS = "registration.number_exists";
+    public static final String MESSAGE_BAD_PASSWORD = "registration.password";
+    public static final String MESSAGE_KEY = "registration.key";
     public static final String MESSAGE_REGISTRATION_OTHER_ERROR = "registration.other";
     public static final String MESSAGE_DELETE_DAYS = "error.days";
     public static final String MESSAGE_REGISTRATION_SUCCESS = "registration.success";

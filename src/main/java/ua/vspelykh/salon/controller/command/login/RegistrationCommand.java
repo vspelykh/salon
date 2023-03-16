@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
+import static ua.vspelykh.salon.model.dao.Table.INVITATION;
 import static ua.vspelykh.salon.model.dao.mapper.Column.BIRTHDAY;
 import static ua.vspelykh.salon.model.dao.mapper.Column.KEY;
 import static ua.vspelykh.salon.util.exception.Messages.*;
@@ -97,6 +98,10 @@ public class RegistrationCommand extends Command {
             setRequestAttribute(MESSAGE, MESSAGE_REGISTRATION_EMAIL_EXISTS);
         } else if (e.getMessage().contains("(" + NUMBER + ")")) {
             setRequestAttribute(MESSAGE, MESSAGE_REGISTRATION_NUMBER_EXISTS);
+        } else if (e.getMessage().contains("(" + PASSWORD + ")")) {
+            setRequestAttribute(MESSAGE, MESSAGE_BAD_PASSWORD);
+        } else if (e.getMessage().contains(INVITATION)) {
+            setRequestAttribute(MESSAGE, MESSAGE_KEY);
         } else {
             setRequestAttribute(MESSAGE, MESSAGE_REGISTRATION_OTHER_ERROR);
         }

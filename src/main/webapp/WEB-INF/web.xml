@@ -45,10 +45,9 @@
   <listener>
     <listener-class>ua.vspelykh.salon.listener.SessionAttributeListener</listener-class>
   </listener>
-
-<!--  <listener>-->
-<!--    <listener-class>ua.vspelykh.salon.listener.ScheduledEmailExecutorListener</listener-class>-->
-<!--  </listener>-->
+  <listener>
+    <listener-class>ua.vspelykh.salon.listener.ScheduledEmailExecutorListener</listener-class>
+  </listener>
 
   <error-page>
     <error-code>404</error-code>

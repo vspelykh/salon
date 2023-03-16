@@ -23,7 +23,19 @@ Final project "Beauty Salon"
 # Database schema
 ![schema.png](schema.png)
 
-# Test data:
+# Deployment 
+To run the project, you will need to have Tomcat 9 and Maven installed on your machine.
+
+- Clone the project repository to your local machine.
+
+- Navigate to the project directory and run the following command to build the project: `mvn clean package`
+- Copy the generated WAR file located in the target directory to the webapps directory of your Tomcat installation.
+- Start Tomcat by running the startup.bat or startup.sh script located in the bin directory of your Tomcat installation.
+- Once Tomcat is running, open a web browser and go to the following URL to access the application: 
+`http://localhost:8080/salon`
+
+
+# Test data
 
 ### Admin login:
 Email: _admin@gmail.com_
@@ -99,3 +111,5 @@ to perform the necessary actions based on user input.
 - Mockito
 ### Utility
 - Lombok
+
+![Logo](src/main/webapp/static/images/lilith.png)
