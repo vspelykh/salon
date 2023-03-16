@@ -16,12 +16,12 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.Controller.COMMAND;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.GET_SCHEDULE;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestUserWithRole;
 
 class SecurityFilterTest extends AbstractFilterTest {
 
@@ -39,7 +39,7 @@ class SecurityFilterTest extends AbstractFilterTest {
 
     @Test
     void testCommandIsWrong() throws ServletException, IOException {
-        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUserWithRole());
         when(request.getParameter(COMMAND)).thenReturn(COMMAND);
         doFilter();
         verify(chain).doFilter(request, response);
@@ -47,7 +47,7 @@ class SecurityFilterTest extends AbstractFilterTest {
 
     @Test
     void testCurrentUserIsNull() throws ServletException, IOException {
-        when(session.getAttribute(CURRENT_USER)).thenReturn(null).thenReturn(getTestUser());
+        when(session.getAttribute(CURRENT_USER)).thenReturn(null).thenReturn(getTestUserWithRole());
         doFilter();
         verify(chain).doFilter(request, response);
     }

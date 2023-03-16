@@ -17,11 +17,21 @@
 <div class="container">
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="text-center">
-            <h1 class="display-1 fw-bold">404</h1>
-            <p class="fs-3"><span class="text-danger"><fmt:message key="404.oops"/></span> <fmt:message key="404.page"/> </p>
-            <p class="lead">
-                <fmt:message key="404.exist"/>
-            </p>
+            <c:choose>
+                <c:when test="${sessionScope.message == null}">
+                    <h1 class="display-1 fw-bold">404</h1>
+                    <p class="fs-3"><span class="text-danger"><fmt:message key="404.oops"/></span> <fmt:message key="404.page"/> </p>
+                    <p class="lead">
+                        <fmt:message key="404.exist"/>
+                    </p>
+                </c:when>
+            </c:choose>
+            <c:choose>
+                <c:when test="${sessionScope.message != null}">
+                    <h1><fmt:message key="${sessionScope.message}"/></h1>
+                    ${sessionScope.message = null}
+                </c:when>
+            </c:choose>
             <a href="${pageContext.request.contextPath}/salon" class="btn btn-primary"><fmt:message key="404.home"/></a>
         </div>
     </div>

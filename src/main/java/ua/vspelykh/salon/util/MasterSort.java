@@ -5,21 +5,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * An enumeration of possible sorting options for the list of masters.
+ *
+ * @version 1.0
+ */
 public enum MasterSort implements Serializable {
 
-    NAME_ASC("name asc"), NAME_DESC("name DESC"), RATING_ASC("rating asc"), RATING_DESC("rating DESC"),
-    FIRST_PRO("first experienced"), FIRST_YOUNG("first young");
+    NAME_ASC, NAME_DESC, RATING_ASC, RATING_DESC, FIRST_PRO, FIRST_YOUNG;
 
-    String text;
-
-    MasterSort(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
+    /**
+     * Returns a list of all possible sorting options.
+     *
+     * @return a list of all possible sorting options
+     */
     public static List<MasterSort> list() {
         List<MasterSort> sorts = new ArrayList<>();
         Collections.addAll(sorts, values());

@@ -4,6 +4,12 @@ import lombok.*;
 
 import java.io.Serializable;
 
+/**
+ * The UserLevel class represents a level of a master in the application.
+ * It includes additional fields for the master's level, description and activity status.
+ *
+ * @version 1.0
+ */
 @Builder
 @Getter
 @Setter

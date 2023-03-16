@@ -4,38 +4,38 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 import ua.vspelykh.salon.model.dao.InvitationDao;
 import ua.vspelykh.salon.model.entity.Invitation;
 import ua.vspelykh.salon.model.entity.Role;
-import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.InvitationService;
 import ua.vspelykh.salon.service.Transaction;
+import ua.vspelykh.salon.service.email.EmailService;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 import ua.vspelykh.salon.util.exception.TransactionException;
 
-import java.time.LocalDate;
-
 import static ua.vspelykh.salon.util.SalonUtils.generateKeyString;
 
+/**
+ * This class implements the InvitationService interface to create invitations with a unique key and email
+ * that will be used to register a new user with a specific role in the system. The invitation can be removed
+ * if it already exists with the same email.
+ * <p>
+ * The InvitationServiceImpl class also encrypts the key and sends an email with the invitation key
+ * to the email address provided.
+ *
+ * @version 1.0
+ */
 public class InvitationServiceImpl implements InvitationService {
 
     private InvitationDao invitationDao;
     private Transaction transaction;
 
-    @Override
-    public Invitation findByEmailAndKey(String email, String key) throws ServiceException {
-        try {
-            Invitation invitation = invitationDao.findByEmail(email);
-            BasicPasswordEncryptor keyEncryptor = new BasicPasswordEncryptor();
-            if (keyEncryptor.checkPassword(key, invitation.getKey())) {
-                return invitation;
-            } else if (invitation.getDate().plusDays(7).isBefore(LocalDate.now())) {
-                throw new ServiceException("Too late, need to get new invitation");
-            } else throw new ServiceException("Incorrect key or invitation doesn't exist");
-
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
-    }
-
+    /**
+     * Creates a new invitation with a unique key and email that will be used to register
+     * a new user with a specific role in the system.
+     *
+     * @param email the email address of the user to be invited
+     * @param role  the role of the user to be invited
+     * @throws ServiceException if there is an error creating the invitation
+     */
     @Override
     public void create(String email, Role role) throws ServiceException {
         try {
@@ -55,6 +55,12 @@ public class InvitationServiceImpl implements InvitationService {
         }
     }
 
+    /**
+     * Encrypts the provided key using a BasicPasswordEncryptor.
+     *
+     * @param key the key to be encrypted
+     * @return the encrypted key
+     */
     private String encryptKey(String key) {
         BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
         return encryptor.encryptPassword(key);

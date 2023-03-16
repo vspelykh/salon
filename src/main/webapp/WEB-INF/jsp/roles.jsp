@@ -11,7 +11,7 @@
 <jsp:include page="fragments/header.jsp"/>
 <div class="container">
     <c:choose>
-        <c:when test="${sessionScope.message == 'success'}">
+        <c:when test="${sessionScope.message != null}">
             <p5 class="text-danger"><fmt:message key="roles.success"/></p5>
             ${sessionScope.message = null}
         </c:when>

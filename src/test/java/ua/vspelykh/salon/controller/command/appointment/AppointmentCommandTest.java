@@ -28,19 +28,16 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
 import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestMasterServiceDto;
 
 class AppointmentCommandTest extends AbstractCommandTest {
-
-    private final String ALLOWED_TIME = "allowedTime";
 
     @Mock
     private UserService userService;
@@ -128,10 +125,11 @@ class AppointmentCommandTest extends AbstractCommandTest {
     @Override
     protected void prepareMocks() throws ServiceException {
         master = getTestUser();
+        when(session.getAttribute(CURRENT_USER)).thenReturn(getTestUser());
         when(userService.findById(ID_VALUE)).thenReturn(master);
         when(userService.getUserLevelByUserId(ID_VALUE)).thenReturn(getTestUserLevel());
 
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
+        when(workingDayService.getByUserIdAndDate(ID_VALUE, DATE_VALUE.toLocalDate())).thenReturn(getTestWorkingDay());
 
         dtos = List.of(getTestMasterServiceDto());
         when(masterServiceService.getDTOsByMasterId(ID_VALUE, UA_LOCALE)).thenReturn(dtos);

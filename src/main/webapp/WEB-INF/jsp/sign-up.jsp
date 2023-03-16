@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
@@ -35,19 +35,30 @@
                                     <div class="form-outline mb-4">
                                         <input type="text" id="formSurname" name="surname" value="${surname}"
                                                class="form-control active form-control-lg"/>
-                                        <label class="form-label" for="formSurname"><fmt:message key="sign.surname"/></label>
+                                        <label class="form-label" for="formSurname"><fmt:message
+                                                key="sign.surname"/></label>
                                     </div>
 
                                     <div class="form-outline mb-4">
                                         <input type="email" id="formEmail" name="email" value="${email}"
                                                class="form-control active form-control-lg"/>
-                                        <label class="form-label" for="formEmail"><fmt:message key="sign.email"/></label>
+                                        <label class="form-label" for="formEmail"><fmt:message
+                                                key="sign.email"/></label>
                                     </div>
 
                                     <div class="form-outline mb-4">
                                         <input type="tel" id="formNumber" name="number" value="${number}"
                                                class="form-control active form-control-lg"/>
-                                        <label class="form-label" for="formNumber"><fmt:message key="sign.number"/></label>
+                                        <label class="form-label" for="formNumber"><fmt:message
+                                                key="sign.number"/></label>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <input type="date" id="formBirthday" name="birthday" value="${birthday}"
+                                               min="1930-01-01" max="2020-01-01"
+                                               class="form-control active form-control-lg"/>
+                                        <label class="form-label" for="formBirthday"><fmt:message
+                                                key="sign.birthday"/></label>
                                     </div>
 
                                     <div class="form-outline mb-4">
@@ -59,13 +70,16 @@
                                     <div class="form-outline mb-4">
                                         <input type="password" id="formPassword" name="password" value="${password}"
                                                class="form-control active form-control-lg"/>
-                                        <label class="form-label" for="formPassword"><fmt:message key="sign.pass"/></label>
+                                        <label class="form-label" for="formPassword"><fmt:message
+                                                key="sign.pass"/></label>
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="password" id="formPasswordRepeat" name="passwordRepeat" value="${passwordRepeat}"
+                                        <input type="password" id="formPasswordRepeat" name="passwordRepeat"
+                                               value="${passwordRepeat}"
                                                class="form-control active form-control-lg"/>
-                                        <label class="form-label" for="formPasswordRepeat"><fmt:message key="sign.repeat"/></label>
+                                        <label class="form-label" for="formPasswordRepeat"><fmt:message
+                                                key="sign.repeat"/></label>
                                     </div>
 
                                     <div class="d-flex justify-content-center">

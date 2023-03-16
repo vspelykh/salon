@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.ROLES_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class LogoutCommandTest extends AbstractCommandTest {
 

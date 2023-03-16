@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.*;
 import ua.vspelykh.salon.service.AppointmentService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -15,15 +16,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.DATE_VALUE;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.ControllerConstants.CURRENT_USER;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointment;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointment;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class EditAppointmentCommandTest extends AbstractCommandTest {
 
@@ -57,7 +57,7 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
         User user = getTestUser();
         user.setRoles(Set.of(Role.HAIRDRESSER));
         when(session.getAttribute(CURRENT_USER)).thenReturn(user);
-        when(request.getParameter("redirect")).thenReturn(null);
+        when(request.getParameter(REDIRECT)).thenReturn(null);
         command.process();
         assertEquals(AppointmentStatus.SUCCESS, appointment.getStatus());
         assertEquals(PaymentStatus.NOT_PAID, appointment.getPaymentStatus());
@@ -104,7 +104,8 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
         when(session.getAttribute(CURRENT_USER)).thenReturn(getTestMaster());
         when(appointmentService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_APPOINTMENT_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
     @Override
@@ -117,8 +118,8 @@ class EditAppointmentCommandTest extends AbstractCommandTest {
         when(appointmentService.findById(ID_VALUE)).thenReturn(appointment);
         when(request.getParameter(STATUS)).thenReturn(AppointmentStatus.SUCCESS.name());
         when(request.getParameter(PAYMENT_STATUS)).thenReturn(PaymentStatus.PAID_BY_CARD.name());
-        when(request.getParameter("redirect")).thenReturn("redirect");
-        when(request.getParameter("new_slot")).thenReturn(newDate.toLocalTime().toString());
+        when(request.getParameter(REDIRECT)).thenReturn(REDIRECT);
+        when(request.getParameter(NEW_SLOT)).thenReturn(newDate.toLocalTime().toString());
         doNothing().when(appointmentService).save(appointment);
     }
 

@@ -18,8 +18,9 @@ import static ua.vspelykh.salon.Constants.CLIENT_ID_VALUE;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
+import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_FEEDBACK_EXISTS;
 
 class FeedbackCommandTest extends AbstractCommandTest {
 
@@ -48,7 +49,7 @@ class FeedbackCommandTest extends AbstractCommandTest {
 
     @Test
     void feedbackAlreadyExists() throws ServletException, IOException {
-        when(feedbackService.getFeedbackByAppointmentId(ID_VALUE)).thenReturn(getTestFeedback());
+        when(feedbackService.getByAppointmentId(ID_VALUE)).thenReturn(getTestFeedback());
         command.process();
         verifyAttributes();
         verifyRedirect(SUCCESS_REDIRECT);
@@ -56,20 +57,21 @@ class FeedbackCommandTest extends AbstractCommandTest {
 
     @Test
     void feedbackAccessDenied() throws ServletException, IOException {
-        when(feedbackService.getFeedbackByAppointmentId(ID_VALUE)).thenReturn(null);
+        when(feedbackService.getByAppointmentId(ID_VALUE)).thenReturn(null);
         command.process();
         verifyError403();
     }
 
     @Test
     void process() throws ServletException, IOException {
-        when(feedbackService.getFeedbackByAppointmentId(ID_VALUE)).thenReturn(null);
+        when(feedbackService.getByAppointmentId(ID_VALUE)).thenReturn(null);
         user.setId(CLIENT_ID_VALUE);
         command.process();
         verifyForward(FEEDBACK);
     }
 
-    @Test void processError() throws ServiceException, ServletException, IOException {
+    @Test
+    void processError() throws ServiceException, ServletException, IOException {
         when(appointmentService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
@@ -86,6 +88,6 @@ class FeedbackCommandTest extends AbstractCommandTest {
 
     @Override
     protected void verifyAttributes() {
-        verify(session).setAttribute(MESSAGE, "message.mark.exist");
+        verify(session).setAttribute(MESSAGE, MESSAGE_FEEDBACK_EXISTS);
     }
 }

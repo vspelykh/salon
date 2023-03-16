@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestBaseService;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestMasterService;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestBaseService;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestMasterService;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestCategory;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestMasterServiceDto;
 

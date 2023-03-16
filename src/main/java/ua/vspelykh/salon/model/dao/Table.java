@@ -1,5 +1,10 @@
 package ua.vspelykh.salon.model.dao;
 
+/**
+ * This class provides a list of table names used in the database.
+ *
+ * @version 1.0
+ */
 public final class Table {
 
     public static final String USER = "users";
@@ -15,6 +20,9 @@ public final class Table {
     public static final String WORKING_DAY = "working_days";
     public static final String INVITATION = "invitations";
 
+    /**
+     * Private constructor to prevent instantiation of the class.
+     */
     private Table() {
     }
 }

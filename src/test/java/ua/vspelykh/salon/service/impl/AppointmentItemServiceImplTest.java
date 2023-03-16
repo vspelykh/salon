@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestAppointmentItem;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestAppointmentItem;
 
 class AppointmentItemServiceImplTest extends AbstractServiceTest {
 
@@ -43,9 +43,7 @@ class AppointmentItemServiceImplTest extends AbstractServiceTest {
     void saveThrowsException() throws DaoException, TransactionException {
         AppointmentItem appointmentItem = new AppointmentItem();
         doThrow(new DaoException()).when(appointmentItemDao).create(appointmentItem);
-        assertThrows(ServiceException.class, () -> {
-            appointmentItemService.save(appointmentItem);
-        });
+        assertThrows(ServiceException.class, () -> appointmentItemService.save(appointmentItem));
         verifyTransactionStart();
         verifyTransactionRollback();
     }
@@ -62,9 +60,7 @@ class AppointmentItemServiceImplTest extends AbstractServiceTest {
     @Test
     void getByAppointmentIdThrowsException() throws DaoException {
         when(appointmentItemDao.getByAppointmentId(ID_VALUE)).thenThrow(new DaoException());
-        Assertions.assertThrows(ServiceException.class, () -> {
-            appointmentItemService.getByAppointmentId(ID_VALUE);
-        });
+        Assertions.assertThrows(ServiceException.class, () -> appointmentItemService.getByAppointmentId(ID_VALUE));
         verify(appointmentItemDao, times(1)).getByAppointmentId(ID_VALUE);
     }
 }

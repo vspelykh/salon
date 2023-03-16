@@ -117,6 +117,13 @@
                             </select>
                         </label>
                         <p></p>
+                        <c:choose>
+                            <c:when test="${sessionScope.message != null}">
+                                <fmt:message key="schedule.remove"/> ${sessionScope.removed_days}
+                                ${sessionScope.message = null}
+                                ${sessionScope.removed_days = null}
+                            </c:when>
+                        </c:choose>
                         <div class="form-group">
                             <label for="selector-date"><input name="days" type="datetime-local" id="selector-date"
                                                               class="form-control"
@@ -131,6 +138,28 @@
         </div>
     </div>
     <script>
+
+        function selectHelper() {
+            const select = document.querySelector('#action-select');
+            const para = document.querySelector('p');
+
+            select.addEventListener('change', setActionParams);
+
+            function setActionParams() {
+                const choice = select.value;
+
+                if (choice === 'save') {
+                    para.innerHTML =
+                        '<label><input type="time" name="time-start" value="08:00"></label>' +
+                        '<label><input type="time" name="time-end" value="20:00"></label>';
+                } else if (choice === 'delete') {
+                    para.innerHTML = '<fmt:message key="schedule.choose"/>';
+                } else {
+
+                    para.textContent = '';
+                }
+            }
+        }
 
         var coolDates = [${days}]
 

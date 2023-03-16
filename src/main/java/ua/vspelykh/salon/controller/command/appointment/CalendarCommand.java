@@ -2,89 +2,122 @@ package ua.vspelykh.salon.controller.command.appointment;
 
 import ua.vspelykh.salon.controller.command.Command;
 import ua.vspelykh.salon.model.dto.FeedbackDto;
-import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.model.entity.WorkingDay;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
-import static ua.vspelykh.salon.controller.filter.LocalizationFilter.LANG;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.util.SalonUtils.getStringDate;
 import static ua.vspelykh.salon.util.TimeSlotsUtils.*;
 
+/**
+ * The CalendarCommand class extends the Command class and provides information about the days and time slots
+ * available for appointment. It contains several methods that set different attributes to the request object based
+ * on requested user's ID, and the date selected in the calendar.
+ *
+ * @version 1.0
+ */
 public class CalendarCommand extends Command {
 
-    public static final String DAY = "day";
-    protected static final String TIME = "time";
-    private static final String USER = "user";
-    private static final String FEEDBACKS = "feedbacks";
-    private static final String DATE_PATTERN = "dd-MM-yyyy";
-    private static final String SLOTS = "slots";
-    private static final String PLACEHOLDER = "placeholder";
-    public static final int INTERVAL = 30;
-
+    /**
+     * This method is responsible for processing the request and setting the attributes to the request object.
+     * It gets the current user's ID and the requested user's ID. If they are the same, the user is redirected to the
+     * masters page. Otherwise, it calls methods to set the attributes related to the requested user's ID.
+     * Finally, it forwards the request to the calendar page.
+     *
+     * @throws ServletException if the servlet cannot handle the request for some reason
+     * @throws IOException      if an I/O error occurs during the processing of the request
+     */
     @Override
     public void process() throws ServletException, IOException {
         try {
-            User user = (User) request.getSession().getAttribute(CURRENT_USER);
-            if (user.getId().equals(Integer.valueOf(request.getParameter(ID)))) {
+            int userId = getCurrentUser().getId();
+            int requestedUserId = getParameterInt(ID);
+            if (userId == requestedUserId) {
                 redirect(MASTERS_REDIRECT);
                 return;
             }
-            setMasterInfoAttrs();
-            setFeedbacksAttrs();
-            setTimeSlotsForChosenDayElseSetEmptyPlaceholder();
+            setMasterInfoAttrs(requestedUserId);
+            setFeedbacksAttrs(requestedUserId);
+            setTimeSlotsAttrs(requestedUserId);
             forward(CALENDAR);
         } catch (ServiceException e) {
-            response.sendError(404);
+            sendError404();
         }
     }
 
-    private void setMasterInfoAttrs() throws ServiceException {
-        List<WorkingDay> workingDays = getServiceFactory().getWorkingDayService().findDaysByUserId(
-                Integer.valueOf(request.getParameter(ID)));
-        request.setAttribute(USER, getServiceFactory().getUserService().findById(
-                Integer.valueOf(request.getParameter(ID))));
-        request.setAttribute(DAYS, workingDays);
+    /**
+     * Sets the attributes related to the requested user's information. It calls the findDaysByUserId method
+     * to get the user's working days, sets the days attribute to the list of working days, and sets the user attribute
+     * to the user's details obtained by calling the findById method.
+     *
+     * @param requestedUserId The ID of the requested user
+     * @throws ServiceException If there is an issue with the service layer
+     */
+    private void setMasterInfoAttrs(int requestedUserId) throws ServiceException {
+        List<WorkingDay> workingDays = serviceFactory.getWorkingDayService().findByUserId(requestedUserId);
+        setRequestAttribute(DAYS, workingDays);
+        setRequestAttribute(USER, serviceFactory.getUserService().findById(requestedUserId));
     }
 
-    private void setTimeSlotsForChosenDayElseSetEmptyPlaceholder() throws ServiceException {
+    /**
+     * This method sets the available time slots for the requested user. If a date is selected, it gets the working day
+     * details for that date using the getByUserIdAndDate method and adds the available time slots
+     * to the request attributes. If no date is selected, it sets the placeholder text based on the locale.
+     *
+     * @param requestedUserId The ID of the requested user
+     * @throws ServiceException If there is an issue with the service layer
+     */
+    private void setTimeSlotsAttrs(int requestedUserId) throws ServiceException {
         if (request.getParameter(DAY) != null) {
-            WorkingDay day = getServiceFactory().getWorkingDayService().getDayByUserIdAndDate(
-                    Integer.parseInt(request.getParameter(ID)),
-                    LocalDate.parse(request.getParameter(DAY), DateTimeFormatter.ofPattern(DATE_PATTERN)));
-            request.setAttribute(DAY, day);
-            request.setAttribute(PLACEHOLDER, day.getDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
+            WorkingDay day = serviceFactory.getWorkingDayService().getByUserIdAndDate(requestedUserId,
+                    getParameterLocalDate(DAY));
+            setRequestAttribute(DAY, day);
+            setRequestAttribute(PLACEHOLDER, getStringDate(day.getDate()));
             addTimeSlotsToAttributes(day);
-
         } else {
-            String placeholder = request.getSession().getAttribute(LANG) == "en" ? "Pick A Date" : "Виберіть дату";
-            request.setAttribute(PLACEHOLDER, placeholder);
+            String placeholder = getLocale().equals(UA_LOCALE) ? PLACEHOLDER_UA : PLACEHOLDER_EN;
+            setRequestAttribute(PLACEHOLDER, placeholder);
         }
     }
 
+    /**
+     * This method sets the available time slots for the requested user. If a specific date is selected in the calendar,
+     * it gets the user's working day details for that date and adds the available time slots to the request attributes.
+     * If no date is selected, it sets the placeholder text based on the locale.
+     *
+     * @param day The WorkingDay represents the working day details for a specific date of the requested user.
+     * @throws ServiceException If there is an issue with the service layer
+     */
     private void addTimeSlotsToAttributes(WorkingDay day) throws ServiceException {
         List<LocalTime> slots = getSlots(day.getTimeStart(), day.getTimeEnd(), INTERVAL);
         removeOccupiedSlots(slots, getServiceFactory().getAppointmentService().getByDateAndMasterId(day.getDate(),
                 day.getUserId()), INTERVAL);
         removeSlotsIfDateIsToday(slots, day.getDate());
-        request.setAttribute(SLOTS, slots);
+        setRequestAttribute(SLOTS, slots);
     }
 
-    private void setFeedbacksAttrs() throws ServiceException {
-        int page = request.getParameter(PAGE) == null ? 1 : Integer.parseInt(request.getParameter(PAGE));
-        List<FeedbackDto> feedbacks = serviceFactory.getFeedbackService().getFeedbacksByMasterId(Integer.valueOf(request.getParameter(ID)),
-                page);
-        request.setAttribute(FEEDBACKS, feedbacks);
-        request.setAttribute(PAGE + CHECKED, page);
-        int countOfItems = serviceFactory.getFeedbackService().countFeedbacksByMasterId(Integer.valueOf(request.getParameter(ID)));
-        countAndSet(5, countOfItems);
+    /**
+     * This method sets the feedbacks for the requested user. It gets the feedbacks from the service layer and adds
+     * them to the request attributes. It also sets the current page number and the total count of feedbacks.
+     * Finally, it sets the pagination attributes to allow navigation between feedback pages.
+     *
+     * @param requestedUserId - the ID of the requested user
+     * @throws ServiceException if there is an issue with the service layer
+     */
+    private void setFeedbacksAttrs(int requestedUserId) throws ServiceException {
+        int page = getPageParameter();
+        List<FeedbackDto> feedbacks = serviceFactory.getFeedbackService().getByMasterId(requestedUserId, page);
+        setRequestAttribute(FEEDBACKS, feedbacks);
+        setRequestAttribute(PAGE + CHECKED, page);
+        int countOfItems = serviceFactory.getFeedbackService().countByMasterId(requestedUserId);
+        setPaginationAttrs(DEFAULT_SIZE, countOfItems);
     }
 }

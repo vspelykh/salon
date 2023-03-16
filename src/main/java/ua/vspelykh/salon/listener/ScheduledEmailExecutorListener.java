@@ -1,11 +1,12 @@
 package ua.vspelykh.salon.listener;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.entity.AppointmentStatus;
-import ua.vspelykh.salon.service.EmailService;
 import ua.vspelykh.salon.service.ServiceFactory;
+import ua.vspelykh.salon.service.email.EmailService;
 import ua.vspelykh.salon.service.impl.ServiceFactoryImpl;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
@@ -23,19 +24,40 @@ import java.util.concurrent.TimeUnit;
 
 import static ua.vspelykh.salon.listener.ListenerConstants.*;
 
+/**
+ * This class is a ServletContextListener that schedules a task to send emails every morning to all visitors who
+ * had appointments the previous day with a status of SUCCESS. The task is scheduled to run every day at 9:00 AM.
+ *
+ * @version 1.0
+ */
 public class ScheduledEmailExecutorListener implements ServletContextListener {
 
     private static final Logger LOG = LogManager.getLogger(ScheduledEmailExecutorListener.class);
 
+    /**
+     * This method is called by the servlet container when the context is initialized. It schedules the email task to run
+     * every day at 9:00 AM.
+     *
+     * @param sce The ServletContextEvent object.
+     */
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
         executeTask();
     }
 
+    /**
+     * This method is called by the servlet container when the context is destroyed.
+     *
+     * @param sce The ServletContextEvent object.
+     */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContextListener.super.contextDestroyed(sce);
     }
 
+    /**
+     * This method schedules the email task to run every day at 9:00 AM.
+     */
     private void executeTask() {
 
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of(KYIV));
@@ -53,6 +75,12 @@ public class ScheduledEmailExecutorListener implements ServletContextListener {
                 TimeUnit.SECONDS);
     }
 
+    /**
+     * This method retrieves all appointments from the previous day and sends feedback emails to visitors who had
+     * appointment with a status of SUCCESS.
+     *
+     * @return A Runnable object that represents the email task.
+     */
     private Runnable getTask() {
         try {
             ServiceFactory serviceFactory = ServiceFactoryImpl.getServiceFactory();
@@ -66,7 +94,9 @@ public class ScheduledEmailExecutorListener implements ServletContextListener {
                             String feedbackLink = "http://localhost:8080/salon?command=feedback&id=" + appointment.getId();
                             String email = String.format(FEEDBACK_EMAIL, clientName, masterName, feedbackLink);
                             EmailService.sendEmail(appointment.getClient().getEmail(), FEEDBACK_THEME, email);
-                            LOG.info(MessageFormat.format("Email for appointment id={0} sent.", appointment.getId()));
+                            if (LOG.isEnabled(Level.INFO)) {
+                                LOG.info(MessageFormat.format("Email for appointment id={0} sent.", appointment.getId()));
+                            }
                         }
                     }
                 };

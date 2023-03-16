@@ -20,15 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.Constants.DATE_VALUE;
+import static ua.vspelykh.salon.Constants.ID_VALUE;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.command.CommandNames.APPOINTMENT;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.TIME;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.MASTER_ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
+import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_APPOINTMENT_SUCCESS;
 
 class CreateAppointmentCommandTest extends AbstractCommandTest {
 
@@ -53,11 +52,11 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
     protected void setUp() throws ServiceException {
         super.setUp();
         initCommand(new CreateAppointmentCommand());
+        prepareMocks();
     }
 
     @Test
-    void createAppointmentProcess() throws ServiceException, ServletException, IOException {
-        prepareMocks();
+    void createAppointmentProcess() throws ServletException, IOException {
         command.process();
         verifyAttributes();
         verifyRedirect(SUCCESS_REDIRECT);
@@ -65,7 +64,6 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
 
     @Test
     void createAppointmentProcessNotAllowed() throws ServiceException, ServletException, IOException {
-        prepareMocks();
         Appointment testAppointment = getTestAppointment();
         testAppointment.setDate(LocalDateTime.of(date, DATE_VALUE.toLocalTime()));
         List<Appointment> appointments = new ArrayList<>();
@@ -78,6 +76,7 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
     @Override
     protected void prepareMocks() throws ServiceException {
         String services = ".|.|.|1";
+        when(request.getParameter(SERVICES)).thenReturn(services);
         when(request.getParameterValues(SERVICES)).thenReturn(new String[]{services});
         when(serviceFactory.getServiceService()).thenReturn(masterServiceService);
         when(serviceFactory.getBaseServiceService()).thenReturn(baseServiceService);
@@ -96,7 +95,7 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
         when(serviceFactory.getWorkingDayService()).thenReturn(workingDayService);
         WorkingDay testWorkingDay = getTestWorkingDay();
         testWorkingDay.setDate(testWorkingDay.getDate().plusDays(1));
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE_2, date)).thenReturn(testWorkingDay);
+        when(workingDayService.getByUserIdAndDate(ID_VALUE_2, date)).thenReturn(testWorkingDay);
         when(serviceFactory.getAppointmentService()).thenReturn(appointmentService);
         Appointment testAppointment = getTestAppointment();
         testAppointment.setDate(LocalDateTime.of(date, DATE_VALUE.toLocalTime()));
@@ -105,6 +104,6 @@ class CreateAppointmentCommandTest extends AbstractCommandTest {
 
     @Override
     protected void verifyAttributes() {
-        verify(session).setAttribute(MESSAGE, APPOINTMENT + DOT + SUCCESS);
+        verify(session).setAttribute(MESSAGE, MESSAGE_APPOINTMENT_SUCCESS);
     }
 }

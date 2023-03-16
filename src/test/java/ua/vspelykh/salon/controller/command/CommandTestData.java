@@ -1,5 +1,6 @@
 package ua.vspelykh.salon.controller.command;
 
+import ua.vspelykh.salon.model.entity.Consultation;
 import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.model.entity.User;
 
@@ -19,6 +20,15 @@ public class CommandTestData {
                 .number(NUMBER_VALUE)
                 .password(PASSWORD_VALUE)
                 .roles(Set.of(Role.HAIRDRESSER))
+                .build();
+    }
+
+    public static Consultation getTestConsultation(){
+        return Consultation.builder().id(ID_VALUE)
+                .name(NAME_VALUE)
+                .number(NUMBER_VALUE)
+                .date(DATE_VALUE)
+                .isRead(false)
                 .build();
     }
 }

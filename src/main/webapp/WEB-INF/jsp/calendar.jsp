@@ -33,7 +33,7 @@
                     <fmt:message key="calendar.choose"/></h2>
                 <div class="col-lg-3">
                     <c:choose>
-                        <c:when test="${sessionScope.error == 'y'}">
+                        <c:when test="${sessionScope.error != null}">
                             <h6 style="color: red"><fmt:message key="calendar.occupied"/></h6>
                             ${sessionScope.error = null}
                         </c:when>

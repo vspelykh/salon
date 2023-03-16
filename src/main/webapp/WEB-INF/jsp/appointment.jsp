@@ -29,6 +29,12 @@
                             </c:when>
                         </c:choose>
                         <span><fmt:message key="appointment.please"/></span>
+                        <br>
+                       <c:choose>
+                           <c:when test="${discount != 0}">
+                               <fmt:message key="appointment.discount"/> ${discount}%
+                           </c:when>
+                       </c:choose>
                         <hr class="mt-1">
                     </div>
 
@@ -54,7 +60,7 @@
                                             <c:forEach items="${services}" var="item">
                                                 <label class="btn btn-secondary">
                                                     <input name="services" id="${item.id}" type="checkbox"
-                                                           value="${item.service.service}|${item.continuance}|${item.service.price}|${item.id}"
+                                                           value="${item.service.service}|${item.continuance}|${item.service.price}|${item.service.id}"
                                                         ${servicesChecked.contains(item.id) ? 'checked="checked"' : ''}>
                                                     <c:out value="${item.service.service} (${item.continuance} min)"/>
                                                 </label>
@@ -106,6 +112,10 @@
             }
         }
         price *= ${userLevel.level.index};
+        if(${discount != 0}){
+            let discount = ${discount};
+            price*= (100.0 - discount) / 100.0;
+        }
         res += '<b><fmt:message key="appointment.total"/> ' + time + ' <fmt:message key="appointment.min"/>';
         res += ' <fmt:message key="appointment.price"/> ' + Math.floor(price) + " <fmt:message key="appointment.grn"/></b>";
         if (time <= ${allowedTime} && time !== 0) {

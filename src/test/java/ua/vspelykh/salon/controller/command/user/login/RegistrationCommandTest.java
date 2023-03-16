@@ -17,8 +17,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.*;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.model.dao.mapper.Column.BIRTHDAY;
 import static ua.vspelykh.salon.model.dao.mapper.Column.KEY;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 import static ua.vspelykh.salon.util.exception.Messages.*;
 
 class RegistrationCommandTest extends AbstractCommandTest {
@@ -38,6 +39,7 @@ class RegistrationCommandTest extends AbstractCommandTest {
         command.process();
         User testUser = getTestUser();
         testUser.setId(null);
+        testUser.setRoles(null);
         verify(userService).save(testUser);
         verify(request.getSession()).setAttribute(MESSAGE, MESSAGE_REGISTRATION_SUCCESS);
         verifyRedirect(servletContext.getContextPath() + SUCCESS_REDIRECT);
@@ -105,6 +107,7 @@ class RegistrationCommandTest extends AbstractCommandTest {
         when(request.getParameter(EMAIL)).thenReturn(EMAIL_VALUE);
         when(request.getParameter(NUMBER)).thenReturn(NUMBER_VALUE);
         when(request.getParameter(PASSWORD)).thenReturn(PASSWORD_VALUE);
+        when(request.getParameter(BIRTHDAY)).thenReturn(String.valueOf(BIRTHDAY_VALUE));
         when(request.getParameter(PASSWORD_REPEAT)).thenReturn(PASSWORD_VALUE);
     }
 

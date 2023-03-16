@@ -2,6 +2,12 @@ package ua.vspelykh.salon.model.dao;
 
 import ua.vspelykh.salon.util.MasterSort;
 
+/**
+ * A utility class to build SQL queries.
+ *
+ * @version 1.0
+ */
+@SuppressWarnings("unused")
 public class QueryBuilder {
 
     protected static final String SELECT = "SELECT * FROM ";
@@ -121,11 +127,9 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder innerJoinCondition(String condition) {
+    public void innerJoinCondition(String condition) {
         append(INNER_JOIN).append("(").append(condition).append(")");
-        return this;
     }
-
 
     public QueryBuilder groupBy(String tableName, String field, String as) {
         append(GROUP_BY).alias(tableName).append(".").append(field).append(") AS ").append(as);
@@ -143,10 +147,9 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder whereAliasIn(String table, String field, int length) {
+    public void whereAliasIn(String table, String field, int length) {
         append(WHERE).alias(table).append(".").append(field).append(" IN");
         appendQuestionMark(length);
-        return this;
     }
 
     public QueryBuilder whereInCondition(String field, String sql) {
@@ -154,12 +157,11 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder andInCondition(String tableName, String field, int length) {
+    public void andInCondition(String tableName, String field, int length) {
         append(" AND");
         alias(tableName).append(".");
         append(field).append(" IN");
         appendQuestionMark(length);
-        return this;
     }
 
     public QueryBuilder and(String field) {
@@ -174,10 +176,9 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder aliasIn(String tableName, String field, String condition) {
+    public void aliasIn(String tableName, String field, String condition) {
         alias(tableName);
         query.append(".").append(field).append(" IN(").append(condition).append(")");
-        return this;
     }
 
     public QueryBuilder andWithAliasIn(String tableName, String field, String condition) {
@@ -282,9 +283,8 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder desc() {
+    public void desc() {
         query.append(DESC);
-        return this;
     }
 
     public QueryBuilder pagination(int page, int size) {

@@ -66,25 +66,25 @@ class OrdersCommandTest extends AbstractCommandTest {
         when(serviceFactory.getUserService()).thenReturn(userService);
         when(serviceFactory.getAppointmentService()).thenReturn(appointmentService);
         when(userService.findMasters(true)).thenReturn(masters);
-        when(request.getParameter(DATE + "From")).thenReturn(DATE_VALUE.toLocalDate().toString());
-        when(request.getParameter(DATE + "To")).thenReturn(DATE_VALUE.toLocalDate().toString());
+        when(request.getParameter(DATE_FROM)).thenReturn(DATE_VALUE.toLocalDate().toString());
+        when(request.getParameter(DATE_TO)).thenReturn(DATE_VALUE.toLocalDate().toString());
         when(request.getParameter(STATUS)).thenReturn(AppointmentStatus.RESERVED.name());
         when(request.getParameter(PAYMENT_STATUS)).thenReturn(PaymentStatus.PAID_BY_CARD.name());
-        when(request.getParameter(PAGE)).thenReturn("1");
-        when(request.getParameter(SIZE)).thenReturn("5");
-        when(appointmentService.getFiltered(anyInt(), any(), any(), any(), any(), anyInt(), anyInt()))
+        when(request.getParameter(PAGE)).thenReturn(String.valueOf(DEFAULT_PAGE));
+        when(request.getParameter(SIZE)).thenReturn(String.valueOf(DEFAULT_SIZE));
+        when(appointmentService.getFiltered(any(), anyInt(), anyInt()))
                 .thenReturn(List.of(getTestAppointmentDto()));
     }
 
     @Override
     protected void verifyAttributes() {
         verify(request).setAttribute(MASTERS, masters);
-        verify(request).setAttribute(PAGE + CHECKED, 1);
-        verify(request).setAttribute(SIZE + CHECKED, 5);
+        verify(request).setAttribute(PAGE + CHECKED, DEFAULT_PAGE);
+        verify(request).setAttribute(SIZE + CHECKED, DEFAULT_SIZE);
         verify(request).setAttribute(APPOINTMENTS, List.of(getTestAppointmentDto()));
         verify(request).setAttribute(ID + CHECKED, ID_VALUE_2);
-        verify(request).setAttribute(DATE + "From" + CHECKED, DATE_VALUE.toLocalDate());
-        verify(request).setAttribute(DATE + "To" + CHECKED, DATE_VALUE.toLocalDate());
+        verify(request).setAttribute(DATE_FROM + CHECKED, DATE_VALUE.toLocalDate());
+        verify(request).setAttribute(DATE_TO + CHECKED, DATE_VALUE.toLocalDate());
         verify(request).setAttribute(STATUS + CHECKED, AppointmentStatus.RESERVED.name());
         request.setAttribute(PAYMENT_STATUS + CHECKED, PaymentStatus.PAID_BY_CARD.name());
     }

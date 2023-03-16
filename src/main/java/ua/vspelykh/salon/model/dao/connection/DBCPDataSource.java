@@ -10,6 +10,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * This class provides a connection to a database using Apache DBCP (Database Connection Pool).
+ * It reads the database properties from the db/dbConnection.properties file.
+ *
+ * @version 1.0
+ */
 public class DBCPDataSource {
 
     private static final Logger LOG = LogManager.getLogger(DBCPDataSource.class);
@@ -21,6 +27,7 @@ public class DBCPDataSource {
 
     private static final BasicDataSource ds = new BasicDataSource();
 
+    /* Set up the data source object with the properties from the property file.*/
     static {
         Properties properties = new Properties();
         readProperties(properties);
@@ -33,6 +40,12 @@ public class DBCPDataSource {
         ds.setMaxOpenPreparedStatements(100);
     }
 
+    /**
+     * Get a database connection from the data source.
+     *
+     * @return a Connection object
+     * @throws SQLException if there is an error connecting to the database
+     */
     public static Connection getConnection() throws SQLException {
         try {
             Connection connection = ds.getConnection();
@@ -43,6 +56,11 @@ public class DBCPDataSource {
         }
     }
 
+    /**
+     * Load the database properties from the property file.
+     *
+     * @param properties a Properties object to store the properties in
+     */
     private static void readProperties(Properties properties) {
         try {
             properties.load(DBCPDataSource.class.getClassLoader().getResourceAsStream(DB_PROPERTY_PATH));
@@ -51,6 +69,9 @@ public class DBCPDataSource {
         }
     }
 
+    /**
+     * Private constructor to prevent instantiation of this class.
+     */
     private DBCPDataSource() {
     }
 }

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="df" uri="/WEB-INF/tld/customTag.tld" %>
 <html>
 <head>
     <fmt:setLocale value="${sessionScope.lang}"/>
@@ -20,8 +21,8 @@
                 <thead>
                 <tr>
                     <th><fmt:message key="master.name"/><i></i></th>
-                    <th><fmt:message key="roles.mail"/><i></i></th>
                     <th><fmt:message key="cons.num"/><i></i></th>
+                    <th><fmt:message key="orders.date"/><i></i></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -30,16 +31,20 @@
                     <tr>
                         <td>${item.name} </td>
                         <td>${item.number}</td>
-                        <td>${item.date}</td>
+                        <td><df:dateTimeParser locale="${sessionScope.lang}" date="${item.date}"/>
+                        </td>
                         <td>
-                            <form method="post" action="${pageContext.request.contextPath}/salon">
-                                <label>
-                                    <input hidden name="command" value="consultation-delete">
-                                </label>
-                                <label>
-                                    <input hidden name="id" value="${item.id}">
-                                </label>
-                                <input class="btn btn-danger" type="submit" value="Remove"/>
+                            <form action="${pageContext.request.contextPath}/salon"
+                                  method="post">
+                                <input hidden name="id" value="${item.id}">
+                                <input hidden name="command" value="consultation-edit">
+                                <c:choose>
+                                    <c:when test="${item.read == false}">
+                                        <button class="btn btn-warning" type="submit" name="action" value="read">Read</button>
+                                    </c:when>
+                                </c:choose>
+
+                                <button class="btn btn-danger" type="submit" name="action" value="delete">Delete</button>
                             </form>
                         </td>
                     </tr>

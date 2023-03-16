@@ -9,24 +9,40 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
-import static ua.vspelykh.salon.controller.command.CommandNames.FEEDBACK;
 import static ua.vspelykh.salon.model.dao.mapper.Column.*;
+import static ua.vspelykh.salon.util.exception.Messages.MESSAGE_FEEDBACK;
+import static ua.vspelykh.salon.util.exception.Messages.POST_FEEDBACK_ERROR;
 
+/**
+ * The FeedbackPostCommand class extends the Command class and handles the POST request for creating a new feedback.
+ *
+ * @version 1.0
+ */
 public class FeedbackPostCommand extends Command {
 
+    /**
+     * This method is responsible for processing the request by creating a Feedback object based on the form data
+     * submitted in the request, and then saving the feedback to the feedback service using the service factory.
+     * If the service throws a ServiceException, the method sends a 500 error response.
+     * Finally, it sets a success message in the session and redirects to the success page.
+     *
+     * @throws ServletException if the servlet cannot handle the request for some reason
+     * @throws IOException      if an I/O error occurs during the processing of the request
+     */
     @Override
     public void process() throws ServletException, IOException {
-        Feedback mark = new Feedback();
-        mark.setMark(Integer.parseInt(request.getParameter(MARK)));
-        mark.setComment(request.getParameter(COMMENT));
-        mark.setAppointmentId(Integer.valueOf(request.getParameter(APPOINTMENT_ID)));
-        mark.setDate(LocalDateTime.now());
+        Feedback feedback = Feedback.builder().mark(getParameterInt(MARK))
+                .comment(getParameter(COMMENT))
+                .appointmentId(getParameterInt(APPOINTMENT_ID))
+                .date(LocalDateTime.now())
+                .build();
         try {
-            getServiceFactory().getFeedbackService().save(mark);
+            getServiceFactory().getFeedbackService().save(feedback);
         } catch (ServiceException e) {
-            response.sendError(500);
+            setSessionAttribute(MESSAGE, POST_FEEDBACK_ERROR);
+            redirect(ERROR_REDIRECT);
         }
-        request.getSession().setAttribute(MESSAGE, MESSAGE + DOT + FEEDBACK);
+        setSessionAttribute(MESSAGE, MESSAGE_FEEDBACK);
         redirect(SUCCESS_REDIRECT);
     }
 }

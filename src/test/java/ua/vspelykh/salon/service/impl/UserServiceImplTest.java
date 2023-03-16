@@ -14,6 +14,7 @@ import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.model.entity.UserLevel;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.MasterFilter;
 import ua.vspelykh.salon.util.MasterSort;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
@@ -25,10 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.*;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.REMOVE;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.*;
 
 class UserServiceImplTest extends AbstractServiceTest {
@@ -115,7 +115,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void saveThrowsException() throws DaoException, TransactionException, ServiceException {
+    void saveThrowsException() throws DaoException, TransactionException {
         User testUser = getTestUser();
         testUser.setId(null);
 
@@ -157,7 +157,7 @@ class UserServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
-    void saveWithKeyThrowsException() throws DaoException, TransactionException, ServiceException {
+    void saveWithKeyThrowsException() throws DaoException, TransactionException {
         BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
         String fakeEncryptPassword = encryptor.encryptPassword(anyString());
         Invitation invitation = getTestInvitation();
@@ -181,13 +181,14 @@ class UserServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getMastersDto() throws DaoException, ServiceException, TransactionException {
-        when(userDao.findFiltered(any(), any(), any(), anyString(), anyInt(), anyInt(), any()))
+        when(userDao.findFiltered(any(), anyInt(), anyInt(), any()))
                 .thenReturn(List.of(getTestMaster()));
         when(feedbackDao.getFeedbacksByMasterId(ID_VALUE)).thenReturn(List.of(getTestFeedback()));
         when(userLevelDao.getUserLevelByUserId(ID_VALUE)).thenReturn(getTestUserLevel());
 
-        List<UserMasterDTO> mastersDto = userService.getMastersDto(List.of(), List.of(), List.of(), NAME_VALUE,
-                1, 5, MasterSort.NAME_ASC, UA_LOCALE);
+        MasterFilter filter = createMasterFilter(List.of(), List.of(), List.of(), NAME_VALUE);
+        List<UserMasterDTO> mastersDto = userService.getMastersDto(filter, DEFAULT_PAGE, DEFAULT_SIZE,
+                MasterSort.NAME_ASC, UA_LOCALE);
 
         assertEquals(getTestUserMasterDto(), mastersDto.get(0));
         verifyTransactionStart();

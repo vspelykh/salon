@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import ua.vspelykh.salon.controller.command.AbstractCommandTest;
 import ua.vspelykh.salon.model.entity.Role;
 import ua.vspelykh.salon.service.UserService;
+import ua.vspelykh.salon.util.exception.Messages;
 import ua.vspelykh.salon.util.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -13,13 +14,10 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static ua.vspelykh.salon.Constants.ID_VALUE;
-import static ua.vspelykh.salon.controller.ControllerConstants.MESSAGE;
-import static ua.vspelykh.salon.controller.ControllerConstants.SUCCESS;
-import static ua.vspelykh.salon.controller.command.user.AbstractScheduleCommand.ACTION;
-import static ua.vspelykh.salon.controller.command.user.ChangeRoleCommand.ADD;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.getTestUser;
+import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ROLE;
 import static ua.vspelykh.salon.model.dao.mapper.Column.USER_ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.getTestUser;
 
 class ChangeRoleCommandTest extends AbstractCommandTest {
 
@@ -48,7 +46,8 @@ class ChangeRoleCommandTest extends AbstractCommandTest {
         when(userService.findById(ID_VALUE)).thenThrow(ServiceException.class);
         command.process();
 
-        verifyError500();
+        verify(session).setAttribute(MESSAGE, Messages.EDIT_ROLE_ERROR);
+        verifyRedirect(ERROR_REDIRECT);
     }
 
 

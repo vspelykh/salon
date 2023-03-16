@@ -8,7 +8,7 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <div class="container">
-<img src="static/images/salon3.jpg">
+<img src="static/images/lilith.png">
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

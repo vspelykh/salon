@@ -19,6 +19,11 @@ import java.util.Objects;
 
 import static ua.vspelykh.salon.model.dao.mapper.Column.UA_LOCALE;
 
+/**
+ * This class implements the BaseServiceService interface and provides implementation for its methods.
+ *
+ * @version 1.0
+ */
 public class BaseServiceServiceImpl implements BaseServiceService {
 
     private static final Logger LOG = LogManager.getLogger(BaseServiceServiceImpl.class);
@@ -27,6 +32,13 @@ public class BaseServiceServiceImpl implements BaseServiceService {
     private BaseServiceDao baseServiceDao;
     private Transaction transaction;
 
+    /**
+     * Retrieves a BaseService object with the given id.
+     *
+     * @param id the id of the BaseService to retrieve.
+     * @return a BaseService object with the given id.
+     * @throws ServiceException if an error occurs while retrieving the BaseService.
+     */
     @Override
     public BaseService findById(Integer id) throws ServiceException {
         try {
@@ -36,6 +48,13 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Retrieves all BaseService objects as BaseServiceDto objects in the specified locale.
+     *
+     * @param locale the locale in which to retrieve the BaseServiceDto objects.
+     * @return a List of BaseServiceDto objects in the specified locale.
+     * @throws ServiceException if an error occurs while retrieving the BaseServiceDto objects.
+     */
     @Override
     public List<BaseServiceDto> findAll(String locale) throws ServiceException {
         try {
@@ -54,6 +73,13 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Saves the specified BaseService object.
+     * If the BaseService is new, it will be created. If it already exists, it will be updated.
+     *
+     * @param baseService the BaseService object to save.
+     * @throws ServiceException if an error occurs while saving the BaseService object.
+     */
     @Override
     public void save(BaseService baseService) throws ServiceException {
         try {
@@ -75,6 +101,12 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Deletes the BaseService object with the specified id.
+     *
+     * @param baseServiceId the id of the BaseService to delete.
+     * @throws ServiceException if an error occurs while deleting the BaseService object.
+     */
     @Override
     public void delete(Integer baseServiceId) throws ServiceException {
         try {
@@ -92,6 +124,16 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Retrieves a List of BaseServiceDto objects that match the specified filter parameters.
+     *
+     * @param categoriesIds a List of category ids to filter by.
+     * @param page          the page number of the results.
+     * @param size          the number of results per page.
+     * @param locale        the locale in which to retrieve the BaseServiceDto objects.
+     * @return a List of BaseServiceDto objects that match the specified filter parameters.
+     * @throws ServiceException if an error occurs while retrieving the BaseServiceDto objects.
+     */
     @Override
     public List<BaseServiceDto> findByFilter(List<Integer> categoriesIds, int page, int size, String locale) throws ServiceException {
         try {
@@ -109,6 +151,15 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Retrieves the count of BaseService objects that match the specified filter parameters.
+     *
+     * @param categoriesIds a List of category ids to filter by.
+     * @param page          the page number of the results.
+     * @param size          the number of results per page.
+     * @return the count of BaseService objects that match the specified filter parameters.
+     * @throws ServiceException if an error occurs while retrieving the count.
+     */
     @Override
     public int getCountOfCategories(List<Integer> categoriesIds, int page, int size) throws ServiceException {
         try {
@@ -118,6 +169,14 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         }
     }
 
+    /**
+     * Converts a List of BaseService objects to a List of BaseServiceDto objects in the specified locale.
+     *
+     * @param baseServices the List of BaseService objects to convert.
+     * @param locale       the locale in which to convert the objects.
+     * @return a List of BaseServiceDto objects in the specified locale.
+     * @throws DaoException if an error occurs while converting the objects.
+     */
     private List<BaseServiceDto> toDtos(List<BaseService> baseServices, String locale) throws DaoException {
         List<BaseServiceDto> dtos = new ArrayList<>();
         for (BaseService baseService : baseServices) {
@@ -126,6 +185,13 @@ public class BaseServiceServiceImpl implements BaseServiceService {
         return dtos;
     }
 
+    /**
+     * Converts an BaseService object to an BaseServiceDto object.
+     *
+     * @param baseService the Appointment object to convert
+     * @return an BaseServiceDto object representing the baseService
+     * @throws DaoException if an error occurs while converting the baseService
+     */
     private BaseServiceDto toDto(BaseService baseService, String locale) throws DaoException {
         BaseServiceDto dto = new BaseServiceDto();
         ServiceCategory category = serviceCategoryDao.findById(baseService.getCategoryId());

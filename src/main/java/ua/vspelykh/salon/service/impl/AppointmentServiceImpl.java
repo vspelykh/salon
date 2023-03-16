@@ -7,9 +7,13 @@ import ua.vspelykh.salon.model.dao.AppointmentItemDao;
 import ua.vspelykh.salon.model.dao.UserDao;
 import ua.vspelykh.salon.model.dto.AppointmentDto;
 import ua.vspelykh.salon.model.dto.UserDto;
-import ua.vspelykh.salon.model.entity.*;
+import ua.vspelykh.salon.model.entity.Appointment;
+import ua.vspelykh.salon.model.entity.AppointmentItem;
+import ua.vspelykh.salon.model.entity.MasterService;
+import ua.vspelykh.salon.model.entity.User;
 import ua.vspelykh.salon.service.AppointmentService;
 import ua.vspelykh.salon.service.Transaction;
+import ua.vspelykh.salon.util.AppointmentFilter;
 import ua.vspelykh.salon.util.exception.DaoException;
 import ua.vspelykh.salon.util.exception.ServiceException;
 import ua.vspelykh.salon.util.exception.TransactionException;
@@ -18,6 +22,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the AppointmentService interface.
+ * Handles all the business logic related to appointments.
+ *
+ * @version 1.0
+ */
 public class AppointmentServiceImpl implements AppointmentService {
 
     private static final Logger LOG = LogManager.getLogger(AppointmentServiceImpl.class);
@@ -27,6 +37,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentItemDao appointmentItemDao;
     private Transaction transaction;
 
+    /**
+     * Retrieves an appointment by its ID.
+     *
+     * @param id the ID of the appointment to retrieve
+     * @return the appointment with the specified ID
+     * @throws ServiceException if there was an error retrieving the appointment
+     */
     @Override
     public Appointment findById(Integer id) throws ServiceException {
         try {
@@ -37,6 +54,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Saves an appointment to the database.
+     *
+     * @param appointment the appointment to save
+     * @throws ServiceException if there was an error saving the appointment
+     */
     @Override
     public void save(Appointment appointment) throws ServiceException {
         try {
@@ -58,6 +81,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Saves an appointment and a list of master services to the database.
+     *
+     * @param appointment    the appointment to save
+     * @param masterServices the list of master services to save
+     * @throws ServiceException if there was an error saving the appointment or master services
+     */
     @Override
     public void save(Appointment appointment, List<MasterService> masterServices) throws ServiceException {
         try {
@@ -83,6 +113,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Deletes an appointment from the database.
+     *
+     * @param id the ID of the appointment to delete
+     * @throws ServiceException if there was an error deleting the appointment
+     */
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
@@ -100,26 +136,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    @Override
-    public List<Appointment> getByMasterId(Integer masterId) throws ServiceException {
-        try {
-            return appointmentDao.getByMasterId(masterId);
-        } catch (DaoException e) {
-            LOG.error("Error to find appointments by master id");
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<Appointment> getByClientId(Integer clientId) throws ServiceException {
-        try {
-            return appointmentDao.getByClientId(clientId);
-        } catch (DaoException e) {
-            LOG.error("Error to find appointment by client id");
-            throw new ServiceException(e);
-        }
-    }
-
+    /**
+     * Retrieves a list of appointments for a specific date and master ID.
+     *
+     * @param date     the date to filter appointments by
+     * @param masterId the ID of the master to filter appointments by
+     * @return a list of appointments for the specified date and master ID
+     * @throws ServiceException if there was an error retrieving the appointments
+     */
     @Override
     public List<Appointment> getByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
         try {
@@ -130,6 +154,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Retrieves a list of appointment DTOs for a specific date and master ID.
+     *
+     * @param date     the date to filter appointments by
+     * @param masterId the ID of the master to filter appointments by
+     * @return a list of appointment DTOs for the specified date and master ID
+     * @throws ServiceException if there was an error retrieving the appointment DTOs
+     */
     @Override
     public List<AppointmentDto> getDTOsByDateAndMasterId(LocalDate date, int masterId) throws ServiceException {
         try {
@@ -148,6 +180,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Retrieves a list of appointment DTOs for a specific date.
+     *
+     * @param date the date to filter appointments by
+     * @return a list of appointment DTOs for the specified date
+     * @throws ServiceException if there was an error retrieving the appointment DTOs
+     */
     @Override
     public List<AppointmentDto> getAllByDate(LocalDate date) throws ServiceException {
         try {
@@ -159,12 +198,20 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Retrieves a filtered list of appointments from the database based on the specified filter, page, and size.
+     *
+     * @param filter the filter to apply to the appointments
+     * @param page   the page number of the results to retrieve
+     * @param size   the maximum number of results to retrieve per page
+     * @return a list of AppointmentDto objects representing the filtered appointments
+     * @throws ServiceException if an error occurs while retrieving the appointments
+     */
     @Override
-    public List<AppointmentDto> getFiltered(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus, int page, int size) throws ServiceException {
+    public List<AppointmentDto> getFiltered(AppointmentFilter filter, int page, int size) throws ServiceException {
         try {
             transaction.start();
-            List<AppointmentDto> appointmentDTOs = toDTOs(appointmentDao.getFiltered(masterId, dateFrom, dateTo,
-                    status, paymentStatus, page, size));
+            List<AppointmentDto> appointmentDTOs = toDTOs(appointmentDao.getFiltered(filter, page, size));
             transaction.commit();
             return appointmentDTOs;
         } catch (DaoException | TransactionException e) {
@@ -178,15 +225,29 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    /**
+     * Retrieves the count of appointments in the database based on the specified filter.
+     *
+     * @param filter the filter to apply to the appointments
+     * @return the count of appointments that match the filter
+     * @throws ServiceException if an error occurs while retrieving the count
+     */
     @Override
-    public int getCountOfAppointments(Integer masterId, LocalDate dateFrom, LocalDate dateTo, AppointmentStatus status, PaymentStatus paymentStatus) throws ServiceException {
+    public int getCountOfAppointments(AppointmentFilter filter) throws ServiceException {
         try {
-            return appointmentDao.getCountOfAppointments(masterId, dateFrom, dateTo, status, paymentStatus);
+            return appointmentDao.getCountOfAppointments(filter);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
     }
 
+    /**
+     * Converts a list of Appointment objects to a list of AppointmentDto objects.
+     *
+     * @param appointments the list of Appointment objects to convert
+     * @return a list of AppointmentDto objects representing the appointments
+     * @throws DaoException if an error occurs while converting the appointments
+     */
     private List<AppointmentDto> toDTOs(List<Appointment> appointments) throws DaoException {
         List<AppointmentDto> dtos = new ArrayList<>();
         for (Appointment appointment : appointments) {
@@ -195,6 +256,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return dtos;
     }
 
+    /**
+     * Converts an Appointment object to an AppointmentDto object.
+     *
+     * @param appointment the Appointment object to convert
+     * @return an AppointmentDto object representing the appointment
+     * @throws DaoException if an error occurs while converting the appointment
+     */
     private AppointmentDto toDTO(Appointment appointment) throws DaoException {
         return AppointmentDto.builder()
                 .id(appointment.getId())
@@ -210,10 +278,21 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
     }
 
+    /**
+     * Converts a User object to a UserDto object.
+     *
+     * @param user the User object to convert
+     * @return a UserDto object representing the user
+     */
     private UserDto userToDTO(User user) {
-        UserDto userDto = new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getNumber());
-        userDto.setRoles(user.getRoles());
-        return userDto;
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .number(user.getNumber())
+                .roles(user.getRoles())
+                .build();
     }
 
     public void setAppointmentDao(AppointmentDao appointmentDao) {
@@ -224,7 +303,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.userDao = userDao;
     }
 
-    public void setOrderingDao(AppointmentItemDao appointmentItemDao) {
+    public void setAppointmentItemDao(AppointmentItemDao appointmentItemDao) {
         this.appointmentItemDao = appointmentItemDao;
     }
 

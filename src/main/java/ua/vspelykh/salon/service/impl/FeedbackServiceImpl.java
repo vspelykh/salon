@@ -17,6 +17,12 @@ import ua.vspelykh.salon.util.exception.TransactionException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is an implementation of the FeedbackService interface, providing methods to manage feedback
+ * related operations such as saving, deleting, getting feedback by appointment ID and counting feedback by master ID.
+ *
+ * @version 1.0
+ */
 public class FeedbackServiceImpl implements FeedbackService {
 
     private static final Logger LOG = LogManager.getLogger(FeedbackServiceImpl.class);
@@ -26,10 +32,16 @@ public class FeedbackServiceImpl implements FeedbackService {
     private UserDao userDao;
     private Transaction transaction;
 
+    /**
+     * Saves the new feedback.
+     *
+     * @param feedback the feedback to save
+     * @throws ServiceException if there was an error saving the feedback
+     */
     @Override
     public void save(Feedback feedback) throws ServiceException {
         try {
-            if (!feedback.isNew()){
+            if (!feedback.isNew()) {
                 throw new ServiceException("Edit feedback is forbidden operation!");
             }
             transaction.start();
@@ -46,8 +58,16 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
+    /**
+     * Gets the list of feedbacks by the given master ID and page number.
+     *
+     * @param masterId the ID of the master to get feedbacks for
+     * @param page     the page number to retrieve
+     * @return a list of FeedbackDto objects
+     * @throws ServiceException if there was an error getting the feedbacks
+     */
     @Override
-    public List<FeedbackDto> getFeedbacksByMasterId(Integer masterId, int page) throws ServiceException {
+    public List<FeedbackDto> getByMasterId(Integer masterId, int page) throws ServiceException {
         try {
             transaction.start();
             List<Feedback> feedbacks = feedbackDao.getFeedbacksByMasterId(masterId, page);
@@ -64,6 +84,13 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
+    /**
+     * Converts a list of Feedback objects to a list of FeedbackDto objects.
+     *
+     * @param feedbacks the list of Feedback objects to convert
+     * @return a list of FeedbackDto objects
+     * @throws DaoException if there was an error accessing the data layer
+     */
     private List<FeedbackDto> toDTOs(List<Feedback> feedbacks) throws DaoException {
         List<FeedbackDto> dtos = new ArrayList<>();
         for (Feedback feedback : feedbacks) {
@@ -72,11 +99,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         return dtos;
     }
 
+    /**
+     * Converts a Feedback object to a FeedbackDto object.
+     *
+     * @param feedback the Feedback object to convert
+     * @return a FeedbackDto object
+     * @throws DaoException if there was an error accessing the data layer
+     */
     private FeedbackDto toDTO(Feedback feedback) throws DaoException {
         User client = userDao.findById(appointmentDao.findById(feedback.getAppointmentId()).getClientId());
         return new FeedbackDto.FeedbackDtoBuilder(client, feedback).build();
     }
 
+    /**
+     * Deletes the feedback with the given ID.
+     *
+     * @param id the ID of the feedback to delete
+     * @throws ServiceException if there was an error deleting the feedback
+     */
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
@@ -94,17 +134,30 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
+    /**
+     * Counts the number of feedbacks for the given master ID.
+     *
+     * @param masterID the ID of the master to count feedbacks for
+     * @return the number of feedbacks for the given master ID
+     * @throws ServiceException if there was an error counting the feedbacks
+     */
     @Override
-    public int countFeedbacksByMasterId(Integer masterID) throws ServiceException {
+    public int countByMasterId(Integer masterID) throws ServiceException {
         try {
-            return feedbackDao.countFeedbacksByMasterId(masterID);
+            return feedbackDao.countByMasterId(masterID);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
     }
 
+    /**
+     * Gets the feedback for the given appointment ID.
+     *
+     * @param appointmentId the ID of the appointment to get feedback for
+     * @return the Feedback object for the given appointment ID, or null if it doesn't exist
+     */
     @Override
-    public Feedback getFeedbackByAppointmentId(Integer appointmentId) {
+    public Feedback getByAppointmentId(Integer appointmentId) {
         try {
             return feedbackDao.findByAppointmentId(appointmentId);
         } catch (DaoException e) {

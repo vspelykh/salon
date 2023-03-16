@@ -29,15 +29,14 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ua.vspelykh.salon.Constants.*;
+import static ua.vspelykh.salon.controller.ControllerConstants.DATE_PATTERN;
 import static ua.vspelykh.salon.controller.ControllerConstants.*;
 import static ua.vspelykh.salon.controller.command.CommandNames.CALENDAR;
 import static ua.vspelykh.salon.controller.command.CommandTestData.ID_VALUE_2;
 import static ua.vspelykh.salon.controller.command.CommandTestData.getTestMaster;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.DAY;
-import static ua.vspelykh.salon.controller.command.appointment.CalendarCommand.INTERVAL;
 import static ua.vspelykh.salon.model.dao.Table.FEEDBACKS;
-import static ua.vspelykh.salon.model.dao.impl.DaoTestData.*;
 import static ua.vspelykh.salon.model.dao.mapper.Column.ID;
+import static ua.vspelykh.salon.model.dao.postgres.DaoTestData.*;
 import static ua.vspelykh.salon.service.impl.ServiceTestData.getTestFeedbackDto;
 
 class CalendarCommandTest extends AbstractCommandTest {
@@ -89,7 +88,7 @@ class CalendarCommandTest extends AbstractCommandTest {
     @Test
     void processError() throws ServletException, IOException, ServiceException {
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
-        when(workingDayService.findDaysByUserId(ID_VALUE_2)).thenThrow(ServiceException.class);
+        when(workingDayService.findByUserId(ID_VALUE_2)).thenThrow(ServiceException.class);
         command.process();
         verifyError404();
     }
@@ -181,7 +180,7 @@ class CalendarCommandTest extends AbstractCommandTest {
     @ParameterizedTest
     @MethodSource("getPaginationData")
     void testPaginationCountAndAttrs(int countOfItems, int expectedNumberOfPage) throws ServletException, IOException, ServiceException {
-        when(feedbackService.countFeedbacksByMasterId(ID_VALUE_2)).thenReturn(countOfItems);
+        when(feedbackService.countByMasterId(ID_VALUE_2)).thenReturn(countOfItems);
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
         command.process();
         verify(request).setAttribute(NUMBER_OF_PAGES, expectedNumberOfPage);
@@ -198,7 +197,7 @@ class CalendarCommandTest extends AbstractCommandTest {
         prepareMocks();
         when(request.getParameter(ID)).thenReturn(String.valueOf(ID_VALUE_2));
         when(request.getParameter(DAY)).thenReturn(DATE_VALUE.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
-        when(workingDayService.getDayByUserIdAndDate(ID_VALUE_2, DATE_VALUE.toLocalDate())).thenReturn(workingDay);
+        when(workingDayService.getByUserIdAndDate(ID_VALUE_2, DATE_VALUE.toLocalDate())).thenReturn(workingDay);
         when(appointmentService.getByDateAndMasterId(workingDay.getDate(), ID_VALUE_2)).thenReturn(appointments);
     }
 
@@ -209,9 +208,9 @@ class CalendarCommandTest extends AbstractCommandTest {
         when(serviceFactory.getFeedbackService()).thenReturn(feedbackService);
         when(serviceFactory.getAppointmentService()).thenReturn(appointmentService);
         when(request.getSession().getAttribute(CURRENT_USER)).thenReturn(getTestUser());
-        when(workingDayService.findDaysByUserId(ID_VALUE_2)).thenReturn(List.of(getTestWorkingDay()));
+        when(workingDayService.findByUserId(ID_VALUE_2)).thenReturn(List.of(getTestWorkingDay()));
         when(userService.findById(ID_VALUE_2)).thenReturn(testMaster);
-        when(feedbackService.getFeedbacksByMasterId(ID_VALUE_2, 1)).thenReturn(List.of(getTestFeedbackDto()));
+        when(feedbackService.getByMasterId(ID_VALUE_2, 1)).thenReturn(List.of(getTestFeedbackDto()));
     }
 
     @Override
