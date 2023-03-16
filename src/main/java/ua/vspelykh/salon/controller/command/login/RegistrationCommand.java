@@ -61,7 +61,7 @@ public class RegistrationCommand extends Command {
     private User buildUser() {
         String name = getParameter(NAME);
         String surname = getParameter(SURNAME);
-        String email = getParameter(EMAIL);
+        String email = getParameter(EMAIL).toLowerCase();
         String number = getParameter(NUMBER);
         String birthday = getParameter(BIRTHDAY);
         String password = getParameter(PASSWORD);
