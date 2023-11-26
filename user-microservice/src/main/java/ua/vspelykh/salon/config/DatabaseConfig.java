@@ -1,5 +1,6 @@
 package ua.vspelykh.salon.config;
 
+import liquibase.integration.spring.SpringLiquibase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -40,15 +41,15 @@ public class DatabaseConfig {
         return new LiquibaseProperties();
     }
 
-//    @Bean
-//    public SpringLiquibase liquibase(LiquibaseProperties liquibaseProperties) {
-//        var liquibase = new SpringLiquibase();
-//        liquibase.setDataSource(dataSource());
-//        liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
-//        liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
-//        liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
-//        liquibase.setChangeLog(liquibaseProperties.getChangeLog());
-//
-//        return liquibase;
-//    }
+    @Bean
+    public SpringLiquibase liquibase(LiquibaseProperties liquibaseProperties) {
+        var liquibase = new SpringLiquibase();
+        liquibase.setDataSource(dataSource());
+        liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
+        liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
+        liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
+        liquibase.setChangeLog(liquibaseProperties.getChangeLog());
+
+        return liquibase;
+    }
 }

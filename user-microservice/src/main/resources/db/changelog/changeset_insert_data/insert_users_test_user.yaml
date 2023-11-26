@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: vspelykh
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: "550e8400-e29b-41d4-a716-446655440000"
+              - column:
+                  name: first_name
+                  value: "John"
+              - column:
+                  name: last_name
+                  value: "Doe"
+              - column:
+                  name: email
+                  value: "admin@gmail.com"
+              - column:
+                  name: number
+                  value: "+380661239900"
+              - column:
+                  name: birthday
+                  value: "20.03.1994"
+              - column:
+                  name: password
+                  value: "lm7vuxj9PYktix+xnLhQarMqbSws3die"
+
+  - changeSet:
+      id: 5
+      author: vspelykh
+      changes:
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: "550e8400-e29b-41d4-a716-446655440000"
+              - column:
+                  name: role
+                  value: "ADMINISTRATOR"

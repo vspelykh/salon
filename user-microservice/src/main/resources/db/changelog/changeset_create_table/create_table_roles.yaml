@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: vspelykh
+      changes:
+        - addUniqueConstraint:
+            tableName: user_roles
+            columnNames: user_id, role
+            constraintName: user_roles_idx
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: user_id
+            constraintName: foreign_key_roles_users_id
+            referencedTableName: users
+            referencedColumnNames: id
