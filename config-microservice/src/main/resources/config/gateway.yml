@@ -1,0 +1,42 @@
+server:
+  port: 8900
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowed-methods:
+              - GET
+              - POST
+              - PATCH
+              - PUT
+              - DELETE
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: gateway
+          uri: http://localhost:8900
+          predicates:
+            - Path=/gateway/**
+          filters:
+            - RewritePath=/gateway/(?<path>.*), /$\{path}
+        - id: user
+          uri: http://localhost:8200
+          predicates:
+            - Path=/api/v1/**
+          filters:
+          - RewritePath=^/user/(?<path>.*), /$\{path}

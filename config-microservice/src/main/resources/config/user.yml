@@ -1,0 +1,34 @@
+server:
+  port: 8200
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    jdbc-url: ${datasource.url}:5432/users-salon-service
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_DB_APP_USER}
+    password: ${POSTGRES_DB_APP_PASS}
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    url: ${spring.datasource.jdbc-url}
+    database-change-log-table: schema_history
+    database-change-log-lock-table: schema_lock_history

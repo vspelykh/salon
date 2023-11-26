@@ -18,6 +18,8 @@
     <modules>
         <module>config-microservice</module>
         <module>discovery-microservice</module>
+        <module>user-microservice</module>
+        <module>gateway-microservice</module>
     </modules>
 
 </project>
