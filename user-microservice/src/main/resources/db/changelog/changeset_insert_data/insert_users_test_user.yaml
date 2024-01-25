@@ -26,7 +26,7 @@ databaseChangeLog:
                   value: "20.03.1994"
               - column:
                   name: password
-                  value: "lm7vuxj9PYktix+xnLhQarMqbSws3die"
+                  value: "$2a$12$Mzp6qqN8dp/PPQE9XlX6J.X5yO1HtLfLTKXkW32Ke9FzK.Pp7zD7C"
 
   - changeSet:
       id: 5

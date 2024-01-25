@@ -4,11 +4,17 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${APP.SERVER.URL}:8761/eureka/
   instance:
     preferIpAddress: true
 
 spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
   servlet:
     multipart:
       max-file-size: 5MB
@@ -21,14 +27,10 @@ spring:
     show-sql: true
 
   datasource:
-    jdbc-url: ${datasource.url}:5432/users-salon-service
+    url: ${DATASOURCE.URL}
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRES_DB_APP_USER}
     password: ${POSTGRES_DB_APP_PASS}
-
-  liquibase:
-    enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
-    url: ${spring.datasource.jdbc-url}
-    database-change-log-table: schema_history
-    database-change-log-lock-table: schema_lock_history
+    liquibase:
+      enabled: true
+      change-log: classpath:/db/changelog/db.changelog-master.yaml
