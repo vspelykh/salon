@@ -27,13 +27,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-//                        authorizationManagerRequestMatcherRegistry
-//                                .requestMatchers("/api/v1/**", "/v3/api-docs/user")
-//                                .access(hasIpAddress(allowedIpAddress))
-//                                .anyRequest().denyAll())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry.anyRequest().permitAll())
+                        authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/api/v1/**", "/v3/api-docs/user")
+                                .access(hasIpAddress(allowedIpAddress))
+                                .anyRequest().denyAll())
                 .build();
     }
 

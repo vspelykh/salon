@@ -12,8 +12,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
+import ua.vspelykh.gatewaymicroservice.model.Role;
 
 import java.util.List;
+
+import static ua.vspelykh.gatewaymicroservice.config.SecurityConstants.*;
 
 
 @Configuration
@@ -40,18 +43,15 @@ public class SecurityConfig {
                                         Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
                                 .accessDeniedHandler((swe, e) ->
                                         Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN))))
-//                .authorizeExchange(authorizeExchangeSpec ->
-//                        authorizeExchangeSpec
-//                                .pathMatchers(PERMIT_ALL).permitAll()
-//                                .pathMatchers(PERMIT_ADMIN_OR_HAIRDRESSER)
-//                                .hasAnyAuthority(Role.ADMINISTRATOR.name(), Role.HAIRDRESSER.name())
-//                                .pathMatchers(PERMIT_ADMIN).hasAuthority(Role.ADMINISTRATOR.name())
-//                                .pathMatchers(PERMIT_HAIRDRESSER).hasAuthority(Role.HAIRDRESSER.name())
-//                                .pathMatchers(PERMIT_CLIENT).hasAuthority(Role.CLIENT.name())
-//                                .pathMatchers(PERMIT_AUTHENTICATED).authenticated())
-
                 .authorizeExchange(authorizeExchangeSpec ->
-                        authorizeExchangeSpec.anyExchange().permitAll())
+                        authorizeExchangeSpec
+                                .pathMatchers(PERMIT_ALL).permitAll()
+                                .pathMatchers(PERMIT_ADMIN_OR_HAIRDRESSER)
+                                .hasAnyAuthority(Role.ADMINISTRATOR.name(), Role.HAIRDRESSER.name())
+                                .pathMatchers(PERMIT_ADMIN).hasAuthority(Role.ADMINISTRATOR.name())
+                                .pathMatchers(PERMIT_HAIRDRESSER).hasAuthority(Role.HAIRDRESSER.name())
+                                .pathMatchers(PERMIT_CLIENT).hasAuthority(Role.CLIENT.name())
+                                .pathMatchers(PERMIT_AUTHENTICATED).authenticated())
                 .build();
     }
 
