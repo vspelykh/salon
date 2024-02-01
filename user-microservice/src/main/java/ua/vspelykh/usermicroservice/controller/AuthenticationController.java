@@ -1,5 +1,12 @@
 package ua.vspelykh.usermicroservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.vspelykh.usermicroservice.controller.request.LoginRequest;
 import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
+import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
 import ua.vspelykh.usermicroservice.controller.response.LoginResponse;
 import ua.vspelykh.usermicroservice.model.entity.User;
 import ua.vspelykh.usermicroservice.service.UserService;
@@ -19,9 +27,15 @@ import ua.vspelykh.usermicroservice.utils.jwt.JwtProvider;
 
 import java.util.UUID;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Code.CODE_200;
+import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Code.CODE_404;
+import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Message.MESSAGE_200;
+import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Message.MESSAGE_404;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v1", produces = "application/json")
+@RequestMapping(path = "/api/v1", produces = APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,6 +44,13 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "Registration in the system as a Head of Practice")
+    @ApiResponses(value = {@ApiResponse(responseCode = CODE_200, description = MESSAGE_200, content =
+            {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = LoginResponse.class))}),
+            @ApiResponse(responseCode = CODE_404, description = MESSAGE_404)
+    })
+    @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
+            schema = @Schema(type = "string", allowableValues = {"swg"}))
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken

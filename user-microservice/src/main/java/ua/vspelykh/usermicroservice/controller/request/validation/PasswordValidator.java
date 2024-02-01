@@ -2,7 +2,7 @@ package ua.vspelykh.usermicroservice.controller.request.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ua.vspelykh.usermicroservice.controller.RegistrationRequest;
+import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
 
 import static ua.vspelykh.usermicroservice.controller.request.RegexConstants.PASS_NO_SPACES_REGEX;
 import static ua.vspelykh.usermicroservice.controller.request.RegexConstants.PASS_REGEX;

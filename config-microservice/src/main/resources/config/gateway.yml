@@ -9,6 +9,7 @@ eureka:
     preferIpAddress: true
 
 spring:
+
   main:
     web-application-type: reactive
     allow-bean-definition-overriding: true
@@ -39,6 +40,35 @@ spring:
         - id: user
           uri: ${APP.SERVER.URL}:8200
           predicates:
-            - Path=/user/**
+            - Path=/user/**,/v3/api-docs/user
           filters:
             - RewritePath=^/user/(?<path>.*), /api/v1/$\{path}
+        - id: openapi
+          uri: ${APP.SERVER.URL}:8900
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        - id: swagger-ui
+          uri: ${APP.SERVER.URL}:8900/webjars/springdoc-openapi-ui/index.html
+          predicates:
+            - Path=/swagger-ui/**
+          filters:
+            - RewritePath=/swagger-ui/(?<path>.*), /$\{path}
+
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+        primaryName: API Gateway Service
+      - url: /v3/api-docs/user
+        name: User Service
+        primaryName: User Service

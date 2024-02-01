@@ -1,6 +1,6 @@
 package ua.vspelykh.usermicroservice.service;
 
-import ua.vspelykh.usermicroservice.controller.RegistrationRequest;
+import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
 import ua.vspelykh.usermicroservice.model.entity.User;
 
 import java.util.UUID;

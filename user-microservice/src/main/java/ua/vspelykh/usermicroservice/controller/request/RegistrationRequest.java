@@ -1,4 +1,4 @@
-package ua.vspelykh.usermicroservice.controller;
+package ua.vspelykh.usermicroservice.controller.request;
 
 
 import jakarta.validation.constraints.NotBlank;

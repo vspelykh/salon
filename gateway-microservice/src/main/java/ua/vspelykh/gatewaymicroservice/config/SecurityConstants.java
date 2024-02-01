@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecurityConstants {
 
-    static final String[] PERMIT_ALL = {"/user/login", "/user/refresh"};
+    static final String[] PERMIT_ALL = {"/user/login", "/user/refresh", "/swagger-ui/**", "/openapi/**", "/webjars/**",
+            "/v3/api-docs/**"
+    };
 
     static final String[] PERMIT_AUTHENTICATED = {"/user/test"};
 
