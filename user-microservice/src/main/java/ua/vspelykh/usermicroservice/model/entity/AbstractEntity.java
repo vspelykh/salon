@@ -1,8 +1,12 @@
 package ua.vspelykh.usermicroservice.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
@@ -16,8 +20,7 @@ import java.util.UUID;
 @SuperBuilder
 public abstract class AbstractEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @UuidGenerator
     private UUID id;
 }

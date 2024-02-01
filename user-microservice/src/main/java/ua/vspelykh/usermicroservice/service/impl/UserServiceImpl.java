@@ -5,12 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.vspelykh.usermicroservice.controller.mapper.UserMapper;
 import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
+import ua.vspelykh.usermicroservice.controller.request.RoleAction;
+import ua.vspelykh.usermicroservice.controller.request.UserRoleChangeRequest;
 import ua.vspelykh.usermicroservice.exception.ResourceNotFoundException;
 import ua.vspelykh.usermicroservice.model.entity.User;
 import ua.vspelykh.usermicroservice.model.enums.Role;
 import ua.vspelykh.usermicroservice.repository.UserRepository;
 import ua.vspelykh.usermicroservice.service.UserService;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,8 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User wasn't found by id: " + id));
+        return getOrElseThrow(id);
     }
 
     @Override
@@ -40,5 +42,22 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(Role.CLIENT));
         return userRepository.save(user);
 
+    }
+
+    @Override
+    @Transactional
+    public void updateRoleByUserId(UserRoleChangeRequest request) {
+        User user = getOrElseThrow(request.getUserId());
+        Set<Role> roles = user.getRoles();
+        if (Objects.requireNonNull(request.getAction()) == RoleAction.ADD) {
+            roles.add(request.getRole());
+        } else if (request.getAction() == RoleAction.REMOVE) {
+            roles.remove(request.getRole());
+        }
+    }
+
+    private User getOrElseThrow(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User wasn't found by id: " + id));
     }
 }

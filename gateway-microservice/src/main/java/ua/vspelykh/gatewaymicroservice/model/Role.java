@@ -12,5 +12,5 @@ package ua.vspelykh.gatewaymicroservice.model;
  * @version 2.0
  */
 public enum Role {
-    GUEST, ADMINISTRATOR, CLIENT, HAIRDRESSER
+    ADMINISTRATOR, CLIENT, HAIRDRESSER
 }

@@ -1,9 +1,11 @@
 package ua.vspelykh.usermicroservice.controller.request;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +32,7 @@ public class RegistrationRequest {
     private String lastName;
 
     @NotBlank
+    @Size(min = 1, max = 150)
     @Pattern(regexp = EMAIL_REGEX, message = "Invalid email format.")
     private String email;
 
@@ -38,6 +41,7 @@ public class RegistrationRequest {
     private String number;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     @NotBlank

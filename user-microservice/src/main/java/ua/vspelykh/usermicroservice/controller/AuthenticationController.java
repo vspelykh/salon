@@ -44,7 +44,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    @Operation(summary = "Registration in the system as a Head of Practice")
+    @Operation(summary = "Login in the system")
     @ApiResponses(value = {@ApiResponse(responseCode = CODE_200, description = MESSAGE_200, content =
             {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = LoginResponse.class))}),
             @ApiResponse(responseCode = CODE_404, description = MESSAGE_404)
@@ -61,6 +61,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Get new access token by refresh token")
+    @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
+            schema = @Schema(type = "string", allowableValues = {"swg"}))
     public ResponseEntity<LoginResponse> refreshAccessToken(@RequestBody RefreshRequest refreshRequest) {
         String userId = jwtProvider.getUserIdFromRefreshToken(refreshRequest);
         User user = userService.findUserById(UUID.fromString(userId));
@@ -70,6 +73,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registration")
+    @Operation(summary = "Registration in the system as a client")
+    @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
+            schema = @Schema(type = "string", allowableValues = {"swg"}))
     public ResponseEntity<LoginResponse> registerAsClient(@Valid @RequestBody RegistrationRequest registrationRequest) {
         User registeredUser = userService.registerAsClient(registrationRequest);
         return ResponseEntity.ok(jwtProvider.createLoginResponse(registeredUser));
