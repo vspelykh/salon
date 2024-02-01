@@ -2,12 +2,16 @@ package ua.vspelykh.usermicroservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ua.vspelykh.usermicroservice.controller.RegistrationRequest;
 import ua.vspelykh.usermicroservice.controller.mapper.UserMapper;
 import ua.vspelykh.usermicroservice.exception.ResourceNotFoundException;
 import ua.vspelykh.usermicroservice.model.entity.User;
+import ua.vspelykh.usermicroservice.model.enums.Role;
 import ua.vspelykh.usermicroservice.repository.UserRepository;
 import ua.vspelykh.usermicroservice.service.UserService;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -27,5 +31,14 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User wasn't found by email: " + email));
+    }
+
+    @Override
+    @Transactional
+    public User registerAsClient(RegistrationRequest registrationRequest) {
+        User user = userMapper.fromRegistrationRequest(registrationRequest);
+        user.setRoles(Set.of(Role.CLIENT));
+        return userRepository.save(user);
+
     }
 }

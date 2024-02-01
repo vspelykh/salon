@@ -1,5 +1,6 @@
 package ua.vspelykh.usermicroservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,11 +40,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
+    public ResponseEntity<LoginResponse> refreshAccessToken(@RequestBody RefreshRequest refreshRequest) {
         String userId = jwtProvider.getUserIdFromRefreshToken(refreshRequest);
         User user = userService.findUserById(UUID.fromString(userId));
         LoginResponse loginResponse = jwtProvider.refreshAccessToken(refreshRequest.getRefreshToken(), user);
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<LoginResponse> registerAsClient(@Valid @RequestBody RegistrationRequest registrationRequest) {
+        User registeredUser = userService.registerAsClient(registrationRequest);
+        return ResponseEntity.ok(jwtProvider.createLoginResponse(registeredUser));
     }
 }
