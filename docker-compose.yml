@@ -1,0 +1,71 @@
+version: "3.6"
+
+services:
+  config-microservice:
+    image: "$AND_DOCKER_REGISTRY_NAME/$PROJECT-$APP1:$CI_COMMIT_BRANCH"
+    container_name: $APP1-$TECHNLOGY-$CI_COMMIT_BRANCH
+    env_file:
+      - $AND_ENV_CONF
+    restart: always
+    ports:
+      - $PORT_APP1:$PORT_APP1
+    logging:
+      driver: loki
+      options:
+        loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        max-size: 300m
+        max-file: "1"
+
+  discovery-microservice:
+    image: "$AND_DOCKER_REGISTRY_NAME/$PROJECT-$APP2:$CI_COMMIT_BRANCH"
+    container_name: $APP2-$TECHNLOGY-$CI_COMMIT_BRANCH
+    env_file:
+      - $AND_ENV_DISC
+    restart: always
+    ports:
+      - $PORT_APP2:$PORT_APP2
+    depends_on:
+      - config-microservice
+    logging:
+      driver: loki
+      options:
+        loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        max-size: 300m
+        max-file: "1"
+
+  gateway-microservice:
+    image: "$AND_DOCKER_REGISTRY_NAME/$PROJECT-$APP3:$CI_COMMIT_BRANCH"
+    container_name: $APP3-$TECHNLOGY-$CI_COMMIT_BRANCH
+    env_file:
+      - $AND_ENV_GATE
+    restart: always
+    ports:
+      - $PORT_APP3:$PORT_APP3
+    depends_on:
+      - config-microservice
+      - discovery-microservice
+    logging:
+      driver: loki
+      options:
+        loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        max-size: 300m
+        max-file: "1"
+
+  user-microservice:
+    image: "$AND_DOCKER_REGISTRY_NAME/$PROJECT-$APP5:$CI_COMMIT_BRANCH"
+    container_name: $APP5-$TECHNLOGY-$CI_COMMIT_BRANCH
+    env_file:
+      - $AND_ENV_USR
+    restart: always
+    ports:
+      - $PORT_APP5:$PORT_APP5
+    depends_on:
+      - config-microservice
+      - discovery-microservice
+      - gateway-microservice
+    logging:
+      driver: loki
+      options:
+        loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        max-size: 300m
+        max-file: "1"
