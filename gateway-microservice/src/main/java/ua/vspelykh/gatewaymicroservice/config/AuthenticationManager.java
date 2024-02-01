@@ -21,9 +21,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        String bearerToken = authentication.getCredentials().toString();
-        String authToken = bearerToken.startsWith("Bearer ") ? bearerToken.substring("Bearer ".length()) : bearerToken;
-
+        String authToken = authentication.getCredentials().toString();
         return Mono.just(jwtProvider.validateToken(authToken))
                 .filter(valid -> valid)
                 .switchIfEmpty(Mono.empty())

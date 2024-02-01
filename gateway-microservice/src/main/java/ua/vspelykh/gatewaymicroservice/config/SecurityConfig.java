@@ -3,9 +3,7 @@ package ua.vspelykh.gatewaymicroservice.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -18,11 +16,12 @@ import ua.vspelykh.gatewaymicroservice.model.Role;
 
 import java.util.List;
 
+import static ua.vspelykh.gatewaymicroservice.config.SecurityConstants.*;
+
 
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
-@EnableReactiveMethodSecurity
 public class SecurityConfig {
 
     private final AuthenticationManager authenticationManager;
@@ -39,15 +38,20 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .exceptionHandling(exceptionHandlingSpec ->
-                        exceptionHandlingSpec.authenticationEntryPoint((swe, e) ->
+                        exceptionHandlingSpec
+                                .authenticationEntryPoint((swe, e) ->
                                         Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
                                 .accessDeniedHandler((swe, e) ->
                                         Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN))))
                 .authorizeExchange(authorizeExchangeSpec ->
-                        authorizeExchangeSpec.pathMatchers(HttpMethod.OPTIONS).permitAll()
-                                .pathMatchers("/user/login").permitAll()
-                                .pathMatchers("/user/auth").hasAuthority(Role.ADMINISTRATOR.name())
-                                .pathMatchers("/user/test").hasAuthority(Role.HAIRDRESSER.name()))
+                        authorizeExchangeSpec
+                                .pathMatchers(PERMIT_ALL).permitAll()
+                                .pathMatchers(PERMIT_ADMIN_OR_HAIRDRESSER)
+                                .hasAnyAuthority(Role.ADMINISTRATOR.name(), Role.HAIRDRESSER.name())
+                                .pathMatchers(PERMIT_ADMIN).hasAuthority(Role.ADMINISTRATOR.name())
+                                .pathMatchers(PERMIT_HAIRDRESSER).hasAuthority(Role.HAIRDRESSER.name())
+                                .pathMatchers(PERMIT_CLIENT).hasAuthority(Role.CLIENT.name())
+                                .pathMatchers(PERMIT_AUTHENTICATED).authenticated())
                 .build();
     }
 

@@ -30,7 +30,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
     }
 
     private Mono<? extends SecurityContext> getSecurityContext(String token) {
-        Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
+        String authToken = token.startsWith("Bearer ") ? token.substring("Bearer ".length()) : token;
+        Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
         return authenticationManager.authenticate(auth).map(SecurityContextImpl::new);
     }
 }

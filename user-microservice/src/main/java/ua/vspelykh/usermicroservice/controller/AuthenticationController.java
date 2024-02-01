@@ -5,9 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import ua.vspelykh.usermicroservice.controller.dto.UserProfileDto;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ua.vspelykh.usermicroservice.controller.request.LoginRequest;
+import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
 import ua.vspelykh.usermicroservice.controller.response.LoginResponse;
 import ua.vspelykh.usermicroservice.model.entity.User;
 import ua.vspelykh.usermicroservice.service.UserService;
@@ -32,25 +35,15 @@ public class AuthenticationController {
                         (loginRequest.getEmail(), loginRequest.getPassword()));
         String email = authentication.getName();
         User user = userService.findByEmail(email);
-        String token = jwtProvider.createAccessToken(user);
-
-        LoginResponse loginRes = new LoginResponse(email, token);
-        return ResponseEntity.ok(loginRes);
+        return ResponseEntity.ok(jwtProvider.createLoginResponse(user));
     }
 
-    @PostMapping("/login/id")
-    ResponseEntity<UserProfileDto> findUserById(@RequestBody UUID id) {
-        UserProfileDto user = userService.findUserById(id);
-        return ResponseEntity.ok(user);
-    }
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
+        String userId = jwtProvider.getUserIdFromRefreshToken(refreshRequest);
+        User user = userService.findUserById(UUID.fromString(userId));
+        LoginResponse loginResponse = jwtProvider.refreshAccessToken(refreshRequest.getRefreshToken(), user);
 
-    @GetMapping("/test")
-    ResponseEntity<String> test() {
-        return ResponseEntity.ok("YEP!");
-    }
-
-    @GetMapping("/auth")
-    ResponseEntity<String> auth() {
-        return ResponseEntity.ok("YEP!2");
+        return ResponseEntity.ok(loginResponse);
     }
 }

@@ -2,7 +2,6 @@ package ua.vspelykh.usermicroservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.vspelykh.usermicroservice.controller.dto.UserProfileDto;
 import ua.vspelykh.usermicroservice.controller.mapper.UserMapper;
 import ua.vspelykh.usermicroservice.exception.ResourceNotFoundException;
 import ua.vspelykh.usermicroservice.model.entity.User;
@@ -19,10 +18,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserProfileDto findUserById(UUID id) {
-        User user = userRepository.findById(id)
+    public User findUserById(UUID id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User wasn't found by id: " + id));
-        return userMapper.toProfileDto(user);
     }
 
     @Override

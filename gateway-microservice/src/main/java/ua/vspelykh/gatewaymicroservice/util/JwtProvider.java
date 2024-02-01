@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ua.vspelykh.gatewaymicroservice.exception.AuthenticationException;
 import ua.vspelykh.gatewaymicroservice.model.Role;
 
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 
-@Service
+@Component
 public class JwtProvider {
 
     private static final String TOKEN_HEADER = "Authorization";
@@ -47,7 +47,6 @@ public class JwtProvider {
         try {
             claims = this.getAllClaimsFromToken(token);
         } catch (Exception var4) {
-            System.out.println("not valid token");
             return false;
         }
 

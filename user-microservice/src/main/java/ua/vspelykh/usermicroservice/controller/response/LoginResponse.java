@@ -1,12 +1,13 @@
 package ua.vspelykh.usermicroservice.controller.response;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class LoginResponse {
 
     private String email;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 }

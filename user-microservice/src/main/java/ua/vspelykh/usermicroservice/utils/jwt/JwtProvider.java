@@ -5,8 +5,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import ua.vspelykh.usermicroservice.controller.dto.UserInfo;
+import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
+import ua.vspelykh.usermicroservice.controller.response.LoginResponse;
 import ua.vspelykh.usermicroservice.exception.AuthenticationException;
 import ua.vspelykh.usermicroservice.model.entity.User;
 import ua.vspelykh.usermicroservice.model.enums.Role;
@@ -26,25 +29,67 @@ public class JwtProvider {
 
     private final JwtParser jwtParser;
 
+    private static final Integer ACCESS_TOKEN_LIFETIME = 10;
+    private static final Integer REFRESH_TOKEN_LIFETIME = 24 * 7 * 60;
+
     public JwtProvider(@Value("${JWT_SECRET}") String secret) {
         this.secret = secret;
         this.jwtParser = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))).build();
     }
 
-    public String createAccessToken(User user) {
+    public LoginResponse createLoginResponse(User user) {
+        return LoginResponse.builder()
+                .email(user.getEmail())
+                .accessToken(createAccessToken(user))
+                .refreshToken(generateRefreshToken(user.getId()))
+                .build();
+    }
+
+    public LoginResponse refreshAccessToken(String refreshToken, User user) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)))
+                    .build()
+                    .parseClaimsJws(refreshToken)
+                    .getBody();
+
+            Date expiration = claims.getExpiration();
+            if (expiration.before(new Date())) {
+                throw new JwtException("Refresh token is expired");
+            }
+            return LoginResponse.builder()
+                    .email(user.getEmail())
+                    .accessToken(createAccessToken(user))
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new AuthenticationException("Invalid refresh token");
+        }
+    }
+
+    private String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getId().toString());
         claims.put("id", user.getId());
         claims.put("email", user.getEmail());
         claims.put("roles", user.getRoles());
         Date tokenCreateTime = new Date();
-        long accessTokenValidity = 60 * 60 * 1000L;
-        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(ACCESS_TOKEN_LIFETIME));
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
                 .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)))
                 .compact();
     }
+
+    private String generateRefreshToken(@NonNull UUID id) {
+        Date tokenCreateTime = new Date();
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(REFRESH_TOKEN_LIFETIME));
+        return Jwts.builder().setSubject(id.toString())
+                .setExpiration(tokenValidity)
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)))
+                .compact();
+    }
+
 
     public Claims resolveClaims(HttpServletRequest req) {
         try {
@@ -115,5 +160,9 @@ public class JwtProvider {
 
     private Claims parseJwtClaims(String token) {
         return jwtParser.parseClaimsJws(token).getBody();
+    }
+
+    public String getUserIdFromRefreshToken(RefreshRequest refreshRequest) {
+        return this.getAllClaimsFromToken(refreshRequest.getRefreshToken()).getSubject();
     }
 }

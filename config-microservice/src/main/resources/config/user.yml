@@ -1,6 +1,9 @@
 server:
   port: 8200
 
+ip:
+  address: ${IP.ADDRESS}
+
 eureka:
   client:
     serviceUrl:
