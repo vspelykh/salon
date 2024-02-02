@@ -1,0 +1,19 @@
+server:
+  port: 8400
+
+ip:
+  address: ${IP.ADDRESS}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${APP.SERVER.URL}:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
