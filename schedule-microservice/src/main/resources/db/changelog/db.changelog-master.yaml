@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset_create_table/create_table_working_days.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_table_translations.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_care_category_table.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_table_care_type.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_care_table.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_master_level_table.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_table_appointments.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_table_appointment_items.yaml

@@ -43,6 +43,12 @@ spring:
             - Path=/user/**,/v3/api-docs/user
           filters:
             - RewritePath=^/user/(?<path>.*), /api/v1/$\{path}
+        - id: schedule
+          uri: ${APP.SERVER.URL}:8200
+          predicates:
+            - Path=/schedule/**,/v3/api-docs/user
+          filters:
+            - RewritePath=^/schedule/(?<path>.*), /api/v1/$\{path}
         - id: openapi
           uri: ${APP.SERVER.URL}:8900
           predicates:
@@ -72,3 +78,6 @@ springdoc:
       - url: /v3/api-docs/user
         name: User Service
         primaryName: User Service
+      - url: /v3/api-docs/schedule
+        name: Schedule Service
+        primaryName: Schedule Service

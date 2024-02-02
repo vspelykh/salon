@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-care-types-table
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: care_types
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: basic_price
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: translation_care_type_foreign_key_change
+      author: vspelykh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: care_types
+            baseColumnNames: name_id
+            constraintName: foreign_key_care_types
+            referencedTableName: translations
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: care_types
+            baseColumnNames: category_id
+            constraintName: foreign_key_care_category
+            referencedTableName: categories
+            referencedColumnNames: id

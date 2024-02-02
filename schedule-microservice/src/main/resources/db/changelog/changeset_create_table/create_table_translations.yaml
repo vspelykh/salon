@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-translations-table
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: translations
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: foreign_key_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: en
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ua
+                  type: varchar
+                  constraints:
+                    nullable: false

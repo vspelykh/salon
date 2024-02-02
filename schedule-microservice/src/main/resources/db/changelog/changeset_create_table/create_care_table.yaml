@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-care-types-table
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: cares
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: master_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: care_type_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: continuance
+                  type: integer
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: care_type_foreign_key_change
+      author: vspelykh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: cares
+            baseColumnNames: care_type_id
+            constraintName: foreign_key_care_types
+            referencedTableName: care_types
+            referencedColumnNames: id

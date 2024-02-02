@@ -20,6 +20,7 @@
         <module>discovery-microservice</module>
         <module>user-microservice</module>
         <module>gateway-microservice</module>
+        <module>schedule-microservice</module>
     </modules>
 
 </project>

@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-master_levels_table
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: master_levels
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: about_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: boolean
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: translation_level_foreign_key_change
+      author: vspelykh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: master_levels
+            baseColumnNames: about_id
+            constraintName: foreign_key_level
+            referencedTableName: translations
+            referencedColumnNames: id

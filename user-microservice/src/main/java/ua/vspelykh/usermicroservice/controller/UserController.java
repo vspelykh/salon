@@ -15,7 +15,9 @@ import ua.vspelykh.usermicroservice.controller.request.UserRoleChangeRequest;
 import ua.vspelykh.usermicroservice.service.UserService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static ua.vspelykh.usermicroservice.utils.EndpointDescriptions.ROLES_DESC;
 import static ua.vspelykh.usermicroservice.utils.SystemConstants.API_V1;
+import static ua.vspelykh.usermicroservice.utils.SystemConstants.BEARER_AUTH;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,13 +27,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/roles")
-    @Operation(summary = "Login in the system")
+    @Operation(summary = ROLES_DESC)
     @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
             schema = @Schema(type = "string", allowableValues = {"swg"}))
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = BEARER_AUTH)
     public ResponseEntity<Void> changeRoleOfUser(@RequestBody UserRoleChangeRequest request) {
         userService.updateRoleByUserId(request);
         return ResponseEntity.noContent().build();
     }
-
 }

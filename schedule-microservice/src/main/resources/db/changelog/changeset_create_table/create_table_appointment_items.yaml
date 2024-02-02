@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-appointment-items
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: appointment_items
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: appointment_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: care_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: care_foreign_key_change
+      author: vspelykh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: appointment_items
+            baseColumnNames: care_id
+            constraintName: foreign_key_care_types
+            referencedTableName: cares
+            referencedColumnNames: id

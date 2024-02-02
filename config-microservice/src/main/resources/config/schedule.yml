@@ -1,0 +1,39 @@
+server:
+  port: 8300
+
+ip:
+  address: ${IP.ADDRESS}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${APP.SERVER.URL}:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: ${DATASOURCE.URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_DB_APP_USER}
+    password: ${POSTGRES_DB_APP_PASS}
+    liquibase:
+      enabled: true
+      change-log: classpath:/db/changelog/db.changelog-master.yaml
