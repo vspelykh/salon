@@ -55,6 +55,12 @@ spring:
             - Path=/front/**,/v3/api-docs/front
           filters:
             - RewritePath=^/front/(?<path>.*), /api/v1/$\{path}
+        - id: feedback
+          uri: ${APP.SERVER.URL}:8500
+          predicates:
+            - Path=/feedback/**,/v3/api-docs/feedback
+          filters:
+            - RewritePath=^/feedback/(?<path>.*), /api/v1/$\{path}
         - id: openapi
           uri: ${APP.SERVER.URL}:8900
           predicates:
@@ -90,4 +96,7 @@ springdoc:
       - url: /v3/api-docs/front
         name: Front Service
         primaryName: Front Service
+      - url: /v3/api-docs/feedback
+        name: Feedback Service
+        primaryName: Feedback Service
 

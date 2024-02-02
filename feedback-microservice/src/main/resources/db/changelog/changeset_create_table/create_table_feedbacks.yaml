@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-feedback-table
+      author: vspelykh
+      changes:
+        - createTable:
+            tableName: feedbacks
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: appointment_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: timestamp
+                  constraints:
+                    nullable: false

@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset_create_table/create_table_feedbacks.yaml
+  - include:
+      file: db/changelog/changeset_create_table/create_table_invitations.yaml
