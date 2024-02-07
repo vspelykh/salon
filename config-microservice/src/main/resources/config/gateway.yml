@@ -52,9 +52,9 @@ spring:
         - id: front
           uri: ${APP.SERVER.URL}:8400
           predicates:
-            - Path=/front/**,/v3/api-docs/front
+            - Path=/ui/**,/v3/api-docs/front
           filters:
-            - RewritePath=^/front/(?<path>.*), /api/v1/$\{path}
+            - RewritePath=^/ui/(?<path>.*), /api/v1/$\{path}
         - id: feedback
           uri: ${APP.SERVER.URL}:8500
           predicates:
@@ -79,6 +79,7 @@ springdoc:
   enable-native-support: true
   api-docs:
     enabled: true
+
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
@@ -96,6 +97,7 @@ springdoc:
       - url: /v3/api-docs/front
         name: Front Service
         primaryName: Front Service
+        enabled: false
       - url: /v3/api-docs/feedback
         name: Feedback Service
         primaryName: Feedback Service

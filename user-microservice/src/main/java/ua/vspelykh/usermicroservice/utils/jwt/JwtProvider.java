@@ -37,6 +37,17 @@ public class JwtProvider {
         this.jwtParser = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))).build();
     }
 
+    public boolean validateToken(String token) {
+        Claims claims;
+        try {
+            claims = this.getAllClaimsFromToken(token);
+        } catch (Exception var4) {
+            return false;
+        }
+
+        return claims.getExpiration().after(new Date());
+    }
+
     public LoginResponse createLoginResponse(User user) {
         return LoginResponse.builder()
                 .email(user.getEmail())

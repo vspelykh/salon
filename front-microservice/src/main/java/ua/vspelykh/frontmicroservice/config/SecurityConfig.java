@@ -29,9 +29,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api/v1/**", "/v3/api-docs/front")
-                                .access(hasIpAddress(allowedIpAddress))
-                                .anyRequest().denyAll())
+                                .requestMatchers("/api/v1/**", "/webjars/**", "/v3/api-docs/salon")
+                                .access(hasIpAddress(allowedIpAddress)))
                 .build();
     }
 

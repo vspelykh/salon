@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.vspelykh.usermicroservice.controller.request.LoginRequest;
 import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
 import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
@@ -25,6 +22,7 @@ import ua.vspelykh.usermicroservice.model.entity.User;
 import ua.vspelykh.usermicroservice.service.UserService;
 import ua.vspelykh.usermicroservice.utils.jwt.JwtProvider;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -70,6 +68,14 @@ public class AuthenticationController {
         LoginResponse loginResponse = jwtProvider.refreshAccessToken(refreshRequest.getRefreshToken(), user);
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @GetMapping("/token")
+    @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
+            schema = @Schema(type = "string", allowableValues = {"swg"}))
+    public ResponseEntity<Boolean> isTokenValid(@RequestHeader Map<String, String> headers) {
+        String accessToken = jwtProvider.resolveToken(headers);
+        return ResponseEntity.ok(jwtProvider.validateToken(accessToken));
     }
 
     @PostMapping("/registration")
