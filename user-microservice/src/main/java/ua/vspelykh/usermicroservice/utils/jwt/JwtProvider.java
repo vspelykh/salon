@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import ua.vspelykh.usermicroservice.controller.dto.UserInfo;
-import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
 import ua.vspelykh.usermicroservice.controller.response.LoginResponse;
 import ua.vspelykh.usermicroservice.exception.AuthenticationException;
 import ua.vspelykh.usermicroservice.model.entity.User;
@@ -29,7 +28,7 @@ public class JwtProvider {
 
     private final JwtParser jwtParser;
 
-    private static final Integer ACCESS_TOKEN_LIFETIME = 10;
+    private static final Integer ACCESS_TOKEN_LIFETIME = 1;
     private static final Integer REFRESH_TOKEN_LIFETIME = 24 * 7 * 60;
 
     public JwtProvider(@Value("${JWT_SECRET}") String secret) {
@@ -173,7 +172,7 @@ public class JwtProvider {
         return jwtParser.parseClaimsJws(token).getBody();
     }
 
-    public String getUserIdFromRefreshToken(RefreshRequest refreshRequest) {
-        return this.getAllClaimsFromToken(refreshRequest.getRefreshToken()).getSubject();
+    public String getUserIdFromRefreshToken(String refreshToken) {
+        return this.getAllClaimsFromToken(refreshToken).getSubject();
     }
 }

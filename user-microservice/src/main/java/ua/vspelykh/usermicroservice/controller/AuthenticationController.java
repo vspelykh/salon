@@ -15,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ua.vspelykh.usermicroservice.controller.request.LoginRequest;
-import ua.vspelykh.usermicroservice.controller.request.RefreshRequest;
 import ua.vspelykh.usermicroservice.controller.request.RegistrationRequest;
 import ua.vspelykh.usermicroservice.controller.response.LoginResponse;
 import ua.vspelykh.usermicroservice.model.entity.User;
@@ -30,6 +29,7 @@ import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.
 import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Code.CODE_404;
 import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Message.MESSAGE_200;
 import static ua.vspelykh.usermicroservice.controller.response.SwaggerConstants.Message.MESSAGE_404;
+import static ua.vspelykh.usermicroservice.utils.SystemConstants.REFRESH_TOKEN;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,10 +62,11 @@ public class AuthenticationController {
     @Operation(summary = "Get new access token by refresh token")
     @Parameter(name = "Source", in = ParameterIn.HEADER, description = "disable cors", required = true,
             schema = @Schema(type = "string", allowableValues = {"swg"}))
-    public ResponseEntity<LoginResponse> refreshAccessToken(@RequestBody RefreshRequest refreshRequest) {
-        String userId = jwtProvider.getUserIdFromRefreshToken(refreshRequest);
+    public ResponseEntity<LoginResponse> refreshAccessToken(@RequestHeader Map<String, String> headers) {
+        String refreshToken = headers.get(REFRESH_TOKEN);
+        String userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
         User user = userService.findUserById(UUID.fromString(userId));
-        LoginResponse loginResponse = jwtProvider.refreshAccessToken(refreshRequest.getRefreshToken(), user);
+        LoginResponse loginResponse = jwtProvider.refreshAccessToken(refreshToken, user);
 
         return ResponseEntity.ok(loginResponse);
     }

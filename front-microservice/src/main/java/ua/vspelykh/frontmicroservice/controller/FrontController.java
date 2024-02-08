@@ -23,10 +23,14 @@ public class FrontController {
         return "sign-up";
     }
 
-
-    @GetMapping
-    public String test() {
-        return "template";
+    @GetMapping("/profile")
+    public String profile() {
+        System.out.println("kuki");
+        return "profile";
     }
 
+    @GetMapping("/masters")
+    public String masters() {
+        return "masters";
+    }
 }

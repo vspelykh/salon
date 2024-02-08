@@ -6,10 +6,45 @@
 </head>
 <body>
 <div class="container">
-<!--    <th:block th:replace="~{fragments/header :: header}"></th:block>-->
-HURAAA
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<!--    <th:block th:replace="~{fragments/footer :: footer}"></th:block>-->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 </div>
 </body>
 </html>
+
+<script>
+    function testAuth() {
+        let accessToken = localStorage.getItem('accessToken');
+
+        fetch("/ui/test-auth", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "text/html"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.text();
+            })
+            .then(htmlResponse => {
+                document.getElementById("responseContainer").innerHTML = htmlResponse;
+            })
+            .catch(error => {
+                console.error("Error during fetch:", error);
+                fetch("/ui/forbidden")
+                    .then(response => response.text())
+                    .then(htmlContent => {
+                        document.getElementById("mainContainer").innerHTML = htmlContent;
+                    })
+                    .catch(fetchError => {
+                        console.error("Error during fetching 403.html:", fetchError);
+                        document.getElementById("mainContainer")
+                            .innerHTML = "Произошла ошибка 403, и файл 403.html не может быть загружен.";
+                    });
+            });
+    }
+</script>

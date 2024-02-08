@@ -8,10 +8,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.lang.NonNull;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -21,6 +23,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -82,6 +85,15 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 //                clr.setDefaultLocale(Locale.ITALIAN);
 //        return clr;
 //    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        resolver.setDefaultLocale(new Locale("en")); // Устанавливаем дефолтную локаль, например, "en" для английского
+        resolver.setCookieName("lang");
+        resolver.setCookieMaxAge(4800); // Время жизни куки (в секундах)
+        return resolver;
+    }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {

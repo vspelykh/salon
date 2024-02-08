@@ -15,7 +15,7 @@ public class SecurityConstants {
 
             /*FRONT*/
             "/ui/home", "/ui/login", "/ui/sign-up", "/ui/images/**", "/ui/styles/**", "/ui/js/**",
-            "/ui/forbidden"
+            "/ui/forbidden", "/ui/masters"
     };
 
     static final String[] PERMIT_AUTHENTICATED = {
@@ -23,7 +23,7 @@ public class SecurityConstants {
             "/user/test",
 
             /*FRONT*/
-            "/ui/test-auth"
+            "/ui/profile"
     };
 
     static final String[] PERMIT_ADMIN_OR_HAIRDRESSER = {"/admin-hair"};

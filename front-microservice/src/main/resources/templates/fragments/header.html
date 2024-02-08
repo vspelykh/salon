@@ -13,7 +13,7 @@
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
 
-    <!--    <link rel="stylesheet" href="/webjars/flag-icon-css/2.4.0/css/flag-icon.min.css">-->
+    <link rel="stylesheet" href="/webjars/flag-icon-css/2.4.0/css/flag-icon.min.css">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"/>
@@ -31,7 +31,32 @@
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                 <img alt="" th:src="@{/ui/images/logo.jpg}" width="50" height="50">
                 <li><a th:href="@{/ui/home}" class="nav-link px-2 link-secondary">Home</a></li>
-                <li><a href="#" class="nav-link px-2">Masters</a></li>
+                <script>
+                    function redirectWithParams() {
+                        let locale = localStorage.getItem("lang")
+                        localStorage.setItem('lang', locale);
+
+
+                        let accessToken = localStorage.getItem('accessToken');
+
+                        let xhr = new XMLHttpRequest();
+
+                        xhr.open('GET', window.location.href, true);
+
+                        xhr.setRequestHeader('lang', locale);
+                        xhr.setRequestHeader('accessToken', accessToken);
+
+                        xhr.send();
+
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                window.location.reload();
+                            }
+                        };
+                    }
+                </script>
+
+                <li><a th:href="@{/ui/masters}" class="nav-link px-2">Masters</a></li>
                 <li><a href="#" class="nav-link px-2">Pricing</a></li>
                 <li><a href="#" class="nav-link px-2">Consultation</a></li>
 
@@ -41,92 +66,66 @@
                         Language
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item"
-                        ><i
-                                class="flag flag-ukraine"></i></i>
+                        <li><a class="dropdown-item" href="#" onclick="changeLocale('ua')">
+                            <i class="flag flag-ukraine"></i>
                             Ukrainian
                         </a></li>
-                        <li><a class="dropdown-item"
-                        ><i
-                                class="flag flag-united-kingdom"></i></i>
+                        <li><a class="dropdown-item" href="#" onclick="changeLocale('en')">
+                            <i class="flag flag-united-kingdom"></i>
                             English
                         </a></li>
                     </ul>
                 </li>
             </ul>
             <div class="col-md-3 ml-md-auto">
-                <div  id="authButtons">
+                <div id="authButtons">
 
                 </div>
             </div>
         </div>
     </div>
     <script>
-        function logout() {
-            // Удалить токен из localStorage
-            localStorage.removeItem('accessToken');
-            // Перенаправить пользователя на страницу выхода или куда-либо еще
-            window.location.href = '/ui/home'; // Замените на ваш реальный URL для выхода
-        }
-
-        function testAuth() {
-            let accessToken = localStorage.getItem('accessToken');
-
-            // Проверка, есть ли токен доступа в localStorage
-
-            fetch("/ui/test-auth", {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + accessToken,
-                    "Content-Type": "text/html"
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.text();
-                })
-                .then(htmlResponse => {
-                    // Вставка HTML-ответа в элемент с id "responseContainer"
-                    document.getElementById("responseContainer").innerHTML = htmlResponse;
-                })
-                .catch(error => {
-                    // Обработка ошибок
-                    console.error("Error during fetch:", error);
-                    fetch("/ui/forbidden")
-                        .then(response => response.text())
-                        .then(htmlContent => {
-                            document.getElementById("mainContainer").innerHTML = htmlContent;
-                        })
-                        .catch(fetchError => {
-                            console.error("Error during fetching 403.html:", fetchError);
-                            document.getElementById("mainContainer")
-                                .innerHTML = "Произошла ошибка 403, и файл 403.html не может быть загружен.";
-                        });
-                });
-        }
-    </script>
-
-    <script>
         $(document).ready(function () {
-            // Функция для отправки запроса на сервер для проверки токена
             function checkTokenValidity() {
-                var accessToken = localStorage.getItem('accessToken');
+                let accessToken = localStorage.getItem('accessToken');
                 if (!accessToken) {
                     renderAuthButtons();
                     return;
                 }
 
                 $.ajax({
-                    url: '/user/token',  // Замените на ваш эндпоинт проверки токена
+                    url: '/user/token',
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + accessToken
                     },
                     success: function (data) {
-                        if (!data.valid) {
+                        if (data === true) {
                             renderLoggedInButtons();
+                        } else {
+                            console.log("lets refresh")
+                            let refreshToken = localStorage.getItem('refreshToken')
+                            console.log(refreshToken)
+                            refreshAccessToken(refreshToken);
+                        }
+                    },
+                    error: function () {
+                        renderAuthButtons();
+                    }
+                });
+            }
+
+            function refreshAccessToken(refreshToken) {
+                $.ajax({
+                    url: '/user/refresh',
+                    method: 'POST',
+                    headers: {
+                        'refreshToken': refreshToken
+                    },
+                    success: function (data) {
+                        if (data.accessToken) {
+                            localStorage.setItem('accessToken', data.accessToken);
+                            checkTokenValidity();
                         } else {
                             renderAuthButtons();
                         }
@@ -137,14 +136,13 @@
                 });
             }
 
-            // Функция для отображения кнопок при успешной авторизации
             function renderLoggedInButtons() {
                 $('#authButtons').html(`
         <button onclick="logout()" type="button" class="btn btn-outline-primary me-2">Logout</button>
-        <button onclick="viewProfile()" type="button" class="btn btn-success">Profile</button>`);
+        <button onclick="viewPageByUrl('/ui/profile', 'mainContainer')"
+        type="button" class="btn btn-success">Profile</button>`);
             }
 
-            // Функция для отображения кнопок при неуспешной авторизации или отсутствии токена
             function renderAuthButtons() {
                 $('#authButtons').html(`
                 <button onclick="redirect('/ui/login')" type="button" class="btn btn-outline-primary me-2">Login</button>
@@ -152,26 +150,143 @@
             `);
             }
 
-            // Функция для выхода из системы
             window.logout = function () {
                 localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
                 renderAuthButtons();
+                window.location.href = "/ui/home";
             };
 
-            // Функция для перехода на страницу профиля
-            window.viewProfile = function () {
-                // Реализуйте переход на страницу профиля
-                console.log('View Profile');
+            window.viewPageByUrl = function (url, container) {
+                function handleErrorResponse(response) {
+                    if (response.status === 401 || response.status === 403) {
+                        // Обновляем токен
+                        refreshAccessToken()
+                            .then(() => {
+                                // Повторяем запрос после успешного обновления токена
+                                return fetch(url, {
+                                    method: "GET",
+                                    headers: {
+                                        "Authorization": "Bearer " + localStorage.getItem('accessToken'),
+                                        "Content-Type": "text/html"
+                                    }
+                                });
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    handleFetchError();
+                                }
+                                return response.text();
+                            })
+                            .then(htmlResponse => {
+                                console.log(htmlResponse);
+                                document.getElementById(container).innerHTML = htmlResponse;
+                            })
+                            .catch(error => {
+                                console.error("Error during fetch after token refresh:", error);
+                                handleFetchError();
+                            });
+                    } else {
+                        // Обрабатываем другие ошибки
+                        handleFetchError();
+                    }
+                }
+
+                function handleFetchError() {
+                    fetch("/ui/forbidden")
+                        .then(response => response.text())
+                        .then(htmlContent => {
+                            document.getElementById("mainContainer").innerHTML = htmlContent;
+                        })
+                        .catch(fetchError => {
+                            console.error("Error during fetching 403.html:", fetchError);
+                            document.getElementById("mainContainer")
+                                .innerHTML = "Произошла ошибка 403, и файл 403.html не может быть загружен.";
+                        });
+                }
+
+                // Функция для обновления accessToken
+                function refreshAccessToken() {
+                    return new Promise((resolve, reject) => {
+                        let refreshToken = localStorage.getItem('refreshToken');
+                        if (!refreshToken) {
+                            reject("Refresh token not found");
+                            return;
+                        }
+
+                        $.ajax({
+                            url: '/user/refresh',  // Замените на ваш эндпоинт обновления токена
+                            method: 'POST',
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('refreshToken', refreshToken);
+                            },
+                            success: function (data) {
+                                if (data.accessToken) {
+                                    localStorage.setItem('accessToken', data.accessToken);
+                                    resolve();
+                                } else {
+                                    reject("Failed to refresh token");
+                                }
+                            },
+                            error: function () {
+                                reject("Error during token refresh");
+                            }
+                        });
+                    });
+                }
+
+                let accessToken = localStorage.getItem('accessToken');
+
+                fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + accessToken,
+                        "Content-Type": "text/html"
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            handleErrorResponse(response);
+                        }
+                        return response.text();
+                    })
+                    .then(htmlResponse => {
+                        console.log(htmlResponse);
+                        document.getElementById(container).innerHTML = htmlResponse;
+                    })
+                    .catch(error => {
+                        console.error("Error during fetch:", error);
+                        handleFetchError();
+                    });
             };
 
-            // Функция для перехода по указанному пути
             window.redirect = function (path) {
                 window.location.href = path;
             };
 
-            // Проверка токена при загрузке страницы
             checkTokenValidity();
         });
+
+        function setDefaultLocale() {
+            var storedLocale = localStorage.getItem('lang');
+
+            if (!storedLocale || !isValidLocale(storedLocale)) {
+                localStorage.setItem('lang', 'en');
+            }
+        }
+
+        function isValidLocale(locale) {
+            return locale === 'en' || locale === 'ua';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setDefaultLocale();
+        });
+
+        function changeLocale(locale) {
+            localStorage.setItem('lang', locale);
+            location.reload();
+        }
     </script>
 </header>
 

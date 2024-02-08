@@ -87,7 +87,8 @@
                     success: function (response) {
                         if (response.accessToken) {
                             localStorage.setItem('accessToken', response.accessToken);
-
+                            localStorage.setItem('refreshToken', response.refreshToken)
+                            console.log(response.refreshToken)
                             window.location.href = '/ui/home';
                         } else {
                             document.getElementById('errorText').innerText = 'Invalid credentials';
